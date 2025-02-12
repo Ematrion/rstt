@@ -11,5 +11,8 @@ class Player():
         return self._level
     
     # --- magic methods --- #
+    def __repr__(self) -> str:
+        return str(self)
+    
     def __str__(self) -> str:
         return f"Player - name: {self._name}, level: {self._level}"
