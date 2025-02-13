@@ -1,18 +1,18 @@
 class Player():
     def __init__(self, name: str, level: float) -> None:
-        self._name = name
-        self._level = level
+        self.__name = name
+        self.__level = level
     
     # --- getter --- #
     def name(self) -> str:
-        return self._name
+        return self.__name
     
     def level(self) -> float:
-        return self._level
+        return self.__level
     
     # --- magic methods --- #
     def __repr__(self) -> str:
         return str(self)
     
     def __str__(self) -> str:
-        return f"Player - name: {self._name}, level: {self._level}"
+        return f"Player - name: {self.__name}, level: {self.__level}"

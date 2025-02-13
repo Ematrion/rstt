@@ -1,1 +1,1 @@
-from .solvers import BradleyTerry
+from .solvers import BetterWin, BradleyTerry
