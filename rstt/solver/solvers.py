@@ -43,12 +43,12 @@ class BetterWin():
                 
         
 class BradleyTerry():
+    # !!! Only works for Duel
     def __init__(self, scores: Optional[Any]=[WIN, LOSE], func: Optional[Callable]=None):
         self._scores = scores
         self._func = func if func else self.__probabilities
     
     def __probabilities(self, match=Duel) -> List[float]:
-        # !!! This only works for Duel
         level1 = match.teams()[0][0].level()
         level2 = match.teams()[1][0].level()
         return [uf.bradleyterry(level1, level2), 
