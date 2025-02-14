@@ -16,4 +16,4 @@ class Player():
     
     def __str__(self) -> str:
         return f"Player - name: {self.__name}, level: {self.__level}"
-    
+

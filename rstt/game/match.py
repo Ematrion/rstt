@@ -28,6 +28,8 @@ class Match():
     def ranks(self) -> List[int]:
         return [len([other for other in self.__scores if other > value]) + 1 for value in self.__scores]
     
+    # ??? Game.unpack() -> dict{players, scores, ranks, weight}
+    
     # --- user interface --- #
     def live(self) -> bool:
         return True if self.__scores is None else False

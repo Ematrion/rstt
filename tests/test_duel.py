@@ -5,6 +5,8 @@ from rstt.solver.solvers import WIN, LOSE, DRAW
 
 
 
+# TODO: move funtion to test_match when fully supported
+
 p1, p2, p3 = Player('p1', 2000), Player('p2', 1500), Player('p3', 1500)
 duel1 = Duel(p1, p2)
 duel2 = Duel(p2, p1)
@@ -33,10 +35,26 @@ def test_opponent_error():
 
 def test_live():
     assert duel1.live() == True
+    
+def test_set_result_must_be_list():
+    with pytest.raises(ValueError):
+        duel = Duel(p3, p1)
+        duel._Match__set_result(True)
 
-def test_set_corret_result():
+def test_set_result_must_be_list_of_float():
+    with pytest.raises(ValueError):
+        duel = Duel(p3, p1)
+        duel._Match__set_result([1, 0])
+        
+def test_set_result_lenght_2():
+    with pytest.raises(ValueError):
+        duel = Duel(p3, p1)
+        duel._Match__set_result([1.0, 1.0, 0.0])
+        
+def test_set_result_success():
     duel = Duel(p3, p1)
     duel._Match__set_result(WIN)
+        
     
 def test_played_not_live():
     duel = Duel(p3, p1)
@@ -56,7 +74,7 @@ def test_no_loser():
 def test_no_draw():
     assert not duel1.isdraw()
 
-def test_play():
+def test_play(): # ??? what does it test
     BetterWin().solve(duel1)
     BetterWin().solve(duel2)
   
@@ -75,6 +93,11 @@ def test_loser():
 def test_no_draw():
     assert not duel1.isdraw()
     assert not duel2.isdraw()
+
+def test_draw():
+    duel = Duel(p1, p2)
+    duel._Match__set_result(DRAW)
+    assert duel.isdraw()
     
 def test_scores():
     assert duel1.scores() == [1.0, 0.0]
