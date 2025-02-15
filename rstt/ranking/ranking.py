@@ -3,7 +3,7 @@ from typing import Any, Union, List, Callable
 
 from rstt import Player
 from rstt.ranking import Standing
-from rstt.stypes import Inference, DataModel, Observer
+from rstt.stypes import Inference, RatingSystem, Observer
 
 
 def set_equi(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -40,10 +40,10 @@ def set_disamb(func: Callable[..., Any]) -> Callable[..., Any]:
 class Ranking():
     '''   
     NOTE:
-        - The Ranking class has two dict[Player, ...], (Datamodel, Standing) - which induce redundancy and ambiguity.
+        - The Ranking class has two dict[Player, ...], (RatingSystem, Standing) - which induce redundancy and ambiguity.
         The 'Container Equivalence' and 'Rank Disambiguity' (SEE GLOSSARY) are two properties that needs to be enforced
         to guarantee a well defined behaviour for the Ranking class. Hopefully it is also sufficient.
-        - The datamodel act like a defaultdict. Get operations can induce set operations.
+        - The RatingSystem act like a defaultdict. Get operations can induce set operations.
         This is tricky as a player could be inserted in the ranking using 'read' methods of the interface.
         
     GLOSSARY:
@@ -66,7 +66,7 @@ class Ranking():
     @typechecked
     def __init__(self, name: str = '',
                  standing: Standing = Standing(),
-                 datamodel: DataModel = None, 
+                 datamodel: RatingSystem = None, 
                  backend: Inference = None,
                  handler: Observer = None,
                  players: Union[None, List[Player]] = None):
@@ -131,13 +131,13 @@ class Ranking():
         ''' delete element from the Ranking
         
         REQ:
-            - element needs to be remove both from the standing and the datamodel
+            - element needs to be remove both from the standing and the RatingSystem
             
         NOBUG:
-            - del standing[key] is typechecked. CALL MUST BE BEFORE datamodel
+            - del standing[key] is typechecked. CALL MUST BE BEFORE RatingSystem
         
         # ???:
-            - could del succeed on standing but fail on datamodel.
+            - could del succeed on standing but fail on RatingSystem.
             This would otentialy lead to an invalid ranking state because __delitem__ is not decorated.
             A ranking invalid state can exactly be the reason why this scenario happens.
             What is the best approach to this situation ?
@@ -181,13 +181,13 @@ class Ranking():
         Returns
         -------
         _type_
-            The associated model to the provided key. The type is defined by Ranking.datamodel.rtype
+            The associated model to the provided key. The type is defined by Ranking.RatingSystem.rtype
             
         Raises
         ------
         KeyError
         """
-        if player in self: # NOBUG datamodel is a defaultdict
+        if player in self: # NOBUG RatingSystem is a defaultdict
             return self.datamodel.get(player)
         else:
             msg = f"{player} is not present in {self.standing}"
@@ -254,8 +254,8 @@ class Ranking():
         """A method to assign a rating to a Player
 
         
-        The Ranking delegate this task to a 'DataModel' instance stored as attribute 'rankink.datamodel'.
-        The DataModel define what rating type is accepted and wether a set operation is authorized for the provided key.
+        The Ranking delegate this task to a 'RatingSystem' instance stored as attribute 'rankink.datamodel'.
+        The RatingSystem define what rating type is accepted and wether a set operation is authorized for the provided key.
         
         Parameters
         ----------
@@ -310,7 +310,7 @@ class Ranking():
         
         '''
         self.handler.handle_observations(infer=self.backend,
-                            datamodel=self.datamodel,
+                            RatingSystem=self.datamodel,
                             *args, **kwargs)
 
     @get_disamb
@@ -353,15 +353,15 @@ class Ranking():
         '''
         # get keys
         standing_keys = set(self.standing.keys())
-        datamodel_keys = set(self.datamodel.keys())
+        RatingSystem_keys = set(self.datamodel.keys())
         
-        if standing_keys == datamodel_keys:
+        if standing_keys == RatingSystem_keys:
             self.__equivalence = True
-        elif standing_keys <= datamodel_keys: # a <= b means 'a.issubset(b)
-            not_ranked_players = list(datamodel_keys - standing_keys) # a - b means a.difference(b)
+        elif standing_keys <= RatingSystem_keys: # a <= b means 'a.issubset(b)
+            not_ranked_players = list(RatingSystem_keys - standing_keys) # a - b means a.difference(b)
             new_points = []
             for player in not_ranked_players:
-                # NOBUG: player is in the datamodel. 'get()' is safe to perform.
+                # NOBUG: player is in the RatingSystem. 'get()' is safe to perform.
                 new_points.append(self.datamodel.ordinal(self.datamodel.get(player)))
             # NOBUG: no ambiguity is introduce this way
             self.standing.add(keys=not_ranked_players, values=new_points)

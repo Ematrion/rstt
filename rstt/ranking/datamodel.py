@@ -139,5 +139,3 @@ class GaussianModel(KeyModel):
     def tiebreaker(self, rating):
         return [rating.mu, rating.sigma]
 
-
-

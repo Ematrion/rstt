@@ -1,7 +1,7 @@
 from typeguard import typechecked
 from typing import List, Dict, Union, Tuple, Any, Optional
 
-from rstt.stypes import Inference, DataModel
+from rstt.stypes import Inference, RatingSystem
 from rstt import Match, Player
 import rstt.utils.utils as uu
 
@@ -9,12 +9,12 @@ import rstt.utils.utils as uu
 
 
 @typechecked
-def assign_ratings(datamodel: DataModel, ratings: Dict[Player, Any]):
+def assign_ratings(datamodel: RatingSystem, ratings: Dict[Player, Any]):
     for key, rating in ratings.items():
         datamodel.set(key, rating)
         
 @typechecked
-def match_formating(datamodel: DataModel, game: Match) -> Tuple[List[List[Player]], List[List[ Any]], List[int]]:
+def match_formating(datamodel: RatingSystem, game: Match) -> Tuple[List[List[Player]], List[List[ Any]], List[int]]:
     teams_as_players = game.teams()
     teams_as_ratings = [[datamodel.get(player) for player in team] for team in teams_as_players]
     
@@ -34,7 +34,7 @@ def result_formating(players: List[List[Player]], ratings: List[List[Any]]) -> D
 class GameByGame:
     @typechecked
     def handle_observations(self, infer: Inference,
-                            datamodel: DataModel,
+                            datamodel: RatingSystem,
                             games: Optional[Union[Match, List[Match]]]=None,
                             event: Optional[Any]=None, # FIXME: when Tournament class is added and type defined
                             *args, **kwargs):
@@ -51,7 +51,7 @@ class GameByGame:
                 self.single_game(infer, datamodel, game, *args, **kwargs)
     
     @typechecked
-    def single_game(self, infer: Inference, datamodel: DataModel, game: Match, *args, **kwargs):
+    def single_game(self, infer: Inference, datamodel: RatingSystem, game: Match, *args, **kwargs):
         players, ratings, score, ranks = match_formating(datamodel, game)
         try: 
             output = infer.rate(ratings, ranks=ranks, *args, **kwargs)
@@ -62,7 +62,7 @@ class GameByGame:
     
 
 class KeyChecker:
-    def handle_observations(self, infer: Inference, datamodel: DataModel, *args, **kwargs):
+    def handle_observations(self, infer: Inference, datamodel: RatingSystem, *args, **kwargs):
         new_ratings = {}
         
         for player in datamodel.keys():
@@ -73,7 +73,7 @@ class KeyChecker:
 class BatchGame:
     @typechecked
     def handle_observations(self, infer: Inference,
-                            datamodel: DataModel,
+                            datamodel: RatingSystem,
                             games: Optional[Union[Match, List[Match]]]=None,
                             event: Optional[Any]=None, # FIXME
                             *args, **kwargs):

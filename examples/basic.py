@@ -24,3 +24,11 @@ BradleyTerry().solve(duel)
 # print
 print(match)
 print(duel)
+
+# Play a Bunch of game between two random players
+p3, p4 = Player.create(nb=2)
+for i in range(10):
+    duel = Duel(player1=p3, player2=p4)
+    BradleyTerry().solve(duel)
+    print(duel)
+    

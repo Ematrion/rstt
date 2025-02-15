@@ -212,9 +212,9 @@ class Standing:
 
         Print the Standing in a text form as Index-Key-Value.
         """
-        print('----------- {standing_name} -----------')
+        print(f"----------- {standing_name} -----------")
         for i, (k, v) in enumerate(self.ranks):
-            print("{:>5} {:>20} {}".format('%d.' % i, '%s' % k, '%d' % v))
+            print("{:>5} {:>20} {:>10}".format('%d.' % i, '%s' % k, '%d' % v))
     
     @typechecked
     def fit(self, keys: List[Player]):

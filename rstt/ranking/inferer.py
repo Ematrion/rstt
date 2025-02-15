@@ -9,7 +9,7 @@ import copy
 
 class PlayerLevel:
     @typechecked
-    def rate(self, player: Player) -> Dict[Player, float]:
+    def rate(self, player: Player, *args, **kwars) -> Dict[Player, float]:
         return {player: player.level()} # FIXME: standardize rate() output
 
     
