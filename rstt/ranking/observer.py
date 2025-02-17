@@ -14,7 +14,7 @@ def assign_ratings(datamodel: RatingSystem, ratings: Dict[Player, Any]):
         datamodel.set(key, rating)
         
 @typechecked
-def match_formating(datamodel: RatingSystem, game: Match) -> Tuple[List[List[Player]], List[List[ Any]], List[int]]:
+def match_formating(datamodel: RatingSystem, game: Match) -> Tuple[List[List[Player]], List[List[ Any]], List[float], List[int]]:
     teams_as_players = game.teams()
     teams_as_ratings = [[datamodel.get(player) for player in team] for team in teams_as_players]
     

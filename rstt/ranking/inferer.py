@@ -20,7 +20,7 @@ class Elo:
         # TODO self.distribution = dist & change expectedScore
 
     @typechecked
-    def rate(self, groups: List[List[float]], scores: List[float]) -> List[List[float]]:        
+    def rate(self, groups: List[List[float]], scores: List[float], *args, **kwars) -> List[List[float]]:        
         # NOTE: groups: [[winner_elo][loser_elo]], scores [[1.0][0.0]]
         
         # unpack args

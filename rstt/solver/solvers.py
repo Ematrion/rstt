@@ -53,7 +53,7 @@ class ScoreProb:
         self.scores = scores
         self.probabilities = func
     
-    def solve(self, duel: Duel) -> None:
+    def solve(self, duel: Duel, *args, **kwars) -> None:
         score = random.choices(population=self.scores, 
                                weights=self.probabilities(duel),
                                k=1)[0]

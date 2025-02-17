@@ -310,7 +310,7 @@ class Ranking():
         
         '''
         self.handler.handle_observations(infer=self.backend,
-                            RatingSystem=self.datamodel,
+                            datamodel=self.datamodel,
                             *args, **kwargs)
 
     @get_disamb
