@@ -1,8 +1,10 @@
 from typing import List
+from typeguard import typechecked
 
 from rstt.player import Player
 
 class Match():
+    @typechecked
     def __init__(self, teams: List[List[Player]]) -> None:
         self.__teams = teams
         self.__scores = None

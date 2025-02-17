@@ -1,13 +1,13 @@
 from rstt import Player, BTRanking
-from rstt.scheduler.tournament.snake import Snake
+from rstt.scheduler.tournament.knockout import SingleEliminationBracket as SEB
 
 
 # competitiors
-players = [Player(name=f"Player_{i}", level=i*100) for i in range(25)]
+players = [Player(name=f"Player_{i}", level=i*100) for i in range(8)]
 ranking = BTRanking(name="Consensus Ranking", players=players)
 
 # snake cup
-cup = Snake(name="Snake Cup Example", seeding=ranking)
+cup = SEB(name="Snake Cup Example", seeding=ranking)
 cup.registration(players)
 cup.run()
 

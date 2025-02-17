@@ -1,6 +1,10 @@
 import numpy as np
 
 
+def flatten(list):
+    # https://stackoverflow.com/questions/952914/how-do-i-make-a-flat-list-out-of-a-list-of-lists
+    return [item for sublist in list for item in sublist]
+
 def uniques(values: list):
     # inspired by:
     # https://stackoverflow.com/questions/61378055/how-to-find-values-repeated-more-than-n-number-of-times-using-only-numpy
@@ -11,3 +15,7 @@ def uniques(values: list):
 
 def multiples(values: list):
     return set([value for value in values if value not in uniques(values)])
+
+def power_of_two(n):
+    # https://stackoverflow.com/questions/57025836/how-to-check-if-a-given-number-is-a-power-of-two
+    return (n != 0) and (n & (n-1) == 0)
