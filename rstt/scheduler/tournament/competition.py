@@ -10,11 +10,16 @@ import rstt.utils.utils as uu
 from collections import defaultdict
 
 
-def playersToDuel(players: List[Player]) -> List[Duel]:
-    return [Duel(players[2*i], players[2*i+1]) for i in range(len(players)//2)]    
-
 
 class Competition(metaclass=abc.ABCMeta):
+    '''
+        NOTE: In the future the competition class could evolve.
+            - inherit from a Scheduler class
+            - composition over inheritance:
+                * PlayerManager
+                * GameManager
+                * EventManager
+    '''
     @typechecked
     def __init__(self, name: str,
                  seeding: Ranking,
@@ -50,15 +55,18 @@ class Competition(metaclass=abc.ABCMeta):
     def over(self):
         return self.__closed
     
+    @typechecked
     def games(self, by_rounds=False):
         return self.played_matches if by_rounds else uu.flatten(self.played_matches)
     
+    @typechecked
     def top(self, place: Optional[int]=None) -> Union[Dict[int, List[Player]], List[Player]]:
         if place:
             return [key for key, value in self.standing.items() if value == place]
         else:
             return {v: [key for key, value in self.standing.items() if value == place] for v in self.standing.values()}
 
+    # --- general mechanism --- #
     @typechecked
     def registration(self, players: Union[Player, List[Player], Set[Player]]):
         if not self.__started:
@@ -67,7 +75,10 @@ class Competition(metaclass=abc.ABCMeta):
             self.participants = list(playerset)
 
     def run(self):
-        if not self.__started:
+        if self.__started:
+            msg = f"Can not run an event that has already started. Did you mean to use play() or perhaps did you wrongly call start()?"
+            raise AttributeError(msg)
+        else:
             self.start()
             self.play()
             self.trophies()
@@ -75,25 +86,32 @@ class Competition(metaclass=abc.ABCMeta):
     def start(self):
         if not self.__started:
             self.seeding = self.seeding.fit(self.participants)
-            self.initialise()
+            self._initialise()
             self.__started = True
 
     def play(self):
+        if not self.__started:
+            msg = f"Can not play an event that has not yet started. Did you mean to use .run() or perhaps did you forgot to call .start() first?"
+            raise AttributeError(msg)
         while not self.__finished:
             current_round = self.generate_games()
             results = self.play_games(current_round)
             self.__finished = self.edit(results)
 
-    @typechecked
     def play_games(self, games: List[Duel]):
         played = []
         for game in games:
             self.solver.solve(game)
             played.append(game)
-        self.played_matches.append(played)
         return played
 
+    def edit(self, games: List[Duel]):
+            self.played_matches.append(games)
+            self._update()
+            return self._end_of_stage()
+
     def trophies(self):
+        self.standing = self._standing()
         for player in self.participants:
             try: 
                 result = Achievement(self.name, self.standing[player], self.cashprize[self.standing[player]])
@@ -102,14 +120,23 @@ class Competition(metaclass=abc.ABCMeta):
                 continue
         self.__closed= True
 
-    def initialise(self):
-        pass
+    # --- subclass specificity --- #
+    def _initialise(self) -> None:
+        '''Function called once, after seedings computation but before any game is played.'''
+    
+    def _update(self) -> None:
+        '''This function is called at the end of every 'rounds', after the game have been stored, but before checking the competition end condition.'''
+    
+    @abc.abstractmethod
+    def _end_of_stage(self) -> bool:
+        '''Test if the competition should stop.'''
+    
+    @abc.abstractmethod
+    def _standing(self) -> Dict[Player, int]:
+        '''Function called once after every game is played. Builds the final standing of the event'''
 
     @abc.abstractmethod
-    def generate_games(self):
-        pass
-
-    @abc.abstractmethod
-    def edit(self, games: List[Duel]):
-        return True
+    def generate_games(self) -> List[Duel]:
+        '''Function called every 'round' to generate games. Should return games WITHOUT scores assigned'''
+            
     

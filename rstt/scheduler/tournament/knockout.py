@@ -1,14 +1,13 @@
-from typing import List, Dict
+from typing import Dict
 from typeguard import typechecked
 
 
-from rstt.scheduler.tournament.competition import Competition, playersToDuel
+from rstt.scheduler.tournament.competition import Competition
 from rstt.ranking.ranking import Ranking
-from rstt import Duel, BetterWin
+from rstt import Player, BetterWin
 from rstt.stypes import Solver
 
-import rstt.utils.matching as um
-import rstt.utils.utils as uu
+from rstt.utils import utils as uu, matching as um, competition as uc
 
 import math
 
@@ -30,42 +29,40 @@ class SingleEliminationBracket(Competition):
                 solver: Solver = BetterWin(),
                 cashprize: Dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
-        self.players_left = []
 
-    def initialise(self):
+    # --- override --- #
+    def _initialise(self):
         if not uu.power_of_two(len(self.participants)):
             msg = (f'{type(self)} '
                    'needs a power of two as number of participants '
                    '(2,4,8,16,...)'
                    f', given {len(self.participants)}')
-            raise ValueError(msg)
+            raise AttributeError(msg)
 
         nb_rounds = int(math.log(len(self.participants), 2))
         self.players_left = self.seeding[[i-1 for i in balanced_tree(nb_rounds)]]
 
     def generate_games(self):
-        games = []
-        for i in range(0, len(self.players_left)//2):
-            p1 = self.players_left[2*i]
-            p2 = self.players_left[2*i+1]
-            match = Duel(p1, p2)
-            games.append(match)
-        return games
-
-    def edit(self, games: List[Duel]):
-        next = []
-        for game in games:
-            next.append(game.winner())
-            self.standing[game.loser()] = len(self.players_left)
+        return uc.playersToDuel(self.players_left)
+    
+    def _end_of_stage(self) -> bool:
+        return True if len(self.players_left) == 1 else False
+    
+    def _update(self):
+        next = [game.winner() for game in self.played_matches[-1]]
         self.players_left = next
-
-        if len(self.players_left) == 1:
-            self.standing[self.players_left[0]] = 1
-            finished = True
-        else:
-            finished = False
-
-        return finished
+    
+    def _standing(self) -> Dict[Player, int]:
+        standing = {}
+        top = len(self.participants)
+        for round in self.played_matches:
+            for game in round:
+                standing[game.loser()] = top
+            top = len(self.participants) - len(standing)
+        
+        # winner
+        standing[self.played_matches[-1][0].winner()] = 1
+        return standing
 
 
 class DoubleEliminationBracket(Competition):
@@ -80,13 +77,11 @@ class DoubleEliminationBracket(Competition):
                                               seeding, solver, cashprize=None)
         self.lower = [] # List[Player]
         self.injector = [] # List[List[Player]]
-
-        # NOTE: this is a um.riffle_shuffle for List[Player]
-        #self.policy = lambda list1, list2: [e for e1, e2 in zip(list1, list2) for e in [e1, e2]]
         self.policy = um.riffle_shuffle
 
-    def initialise(self):
-        # play upper bracket as a 'SEB'
+    # --- override --- #
+    def _initialise(self):
+        # NOBUG: do notrun(). Not 'event' in itself -> no upper.trophies() called
         self.upper.registration(self.participants)
         self.upper.start()
         self.upper.play()
@@ -97,25 +92,28 @@ class DoubleEliminationBracket(Competition):
     def generate_games(self):
         # lower bracket games
         if len(self.lower[0]) != len(self.lower[1]):
-            
-            games = playersToDuel(self.lower.pop(0))
+            games = uc.playersToDuel(self.lower.pop(0))
         # injector games
         elif self.injector:
             lower = self.lower.pop(0)
             injector = self.lower.pop(0)
-            games = playersToDuel(self.policy(lower, injector))
+            games = uc.playersToDuel(self.policy(lower, injector))
+        # else -> error
         return games
 
-    def edit(self, games: List[Duel]):
-        self.standing.update({
-            game.loser(): len(self.participants)-len(self.standing)
-            for game in games})
-        self.lower.insert(0, [game.winner() for game in games])
+    def _update(self):
+        self.lower.insert(0, [game.winner() for game in self.played_matches[-1]])
+    
+    def _standing(self) -> Dict[uc.Player, int]:
+        standing = {}
+        top = len(self.participants)
+        for round in self.played_matches:
+            for game in round:
+                standing[game.loser()] = top
+            top = self.len(self.participants) - len(standing)
+        # winner
+        standing[self.played_matches[-1][0].winner()] = 1
+        return standing
 
-        if not self.lower: # empty when the grand final is played
-            self.standing[games[0].winner()] = 1
-            self.standing[games[0].loser()] = 2
-            finished = True
-        else:
-            finished = False
-        return finished
+    def _end_of_stage(self) -> bool:
+        return not self.lower

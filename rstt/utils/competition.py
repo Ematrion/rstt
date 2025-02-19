@@ -1,0 +1,51 @@
+from typing import List
+from typeguard import typechecked
+
+from rstt import Player, Duel
+
+@typechecked
+def playersToDuel(players: List[Player]) -> List[Duel]:
+    return [Duel(players[2*i], players[2*i+1]) for i in range(len(players)//2)]
+
+@typechecked
+def new_matchup(game: Duel, games: List[Duel], symetric: bool=True) -> bool:
+    p1, p2 = game.player1(), game.player2()
+    confrontations = [(duel.player1(), duel.player2()) for duel in games]
+    if (p1, p2) in confrontations:
+        return False
+    if symetric and (p2, p1) in confrontations:
+        return False
+    return True
+
+@typechecked
+def find_valid_draw(draws: List[List[Duel]], games: List[Duel], symetric: bool=True) -> List[Duel]:
+    # avoid side-effect (usage of .pop)
+    options = [option for option in options]
+    
+    # default return value
+    first_option = draws[0]
+    
+    # find draw
+    good_draw = None
+    while not good_draw and draws:
+        option = draws.pop(0)
+        if valid_draw(option, games):
+            good_draw = option
+            
+    # deal with mission failed
+    if not good_draw:
+        good_draw = first_option
+        msg = f"""No Valid matchups where found. (symetry={symetric})\n
+        'draws' = {draws}\name\n
+        'old_games' = {games}"""
+        raise RuntimeWarning(msg)
+    
+    return good_draw
+
+@typechecked
+def valid_draw(draw: List[Duel], games: List[Duel]) -> bool:
+    for game in draw:
+        if not new_matchup(game, games):
+                # even if only one game has already been played, then the draw is not valid
+            return False
+    return True

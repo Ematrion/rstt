@@ -1,4 +1,3 @@
-import sys
 from rstt import Player, BTRanking, LogSolver, BasicElo
 from rstt.scheduler.tournament.knockout import SingleEliminationBracket
 

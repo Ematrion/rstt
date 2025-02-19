@@ -27,6 +27,11 @@ class Match():
     def scores(self) -> List[float]:
         return self.__scores
     
+    def score(self, player: Player):
+        for team, score in zip(self.__teams, self.__scores):
+            if player in team:
+                return score
+            
     def ranks(self) -> List[int]:
         return [len([other for other in self.__scores if other > value]) + 1 for value in self.__scores]
     
