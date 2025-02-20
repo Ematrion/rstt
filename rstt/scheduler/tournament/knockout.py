@@ -68,15 +68,15 @@ class SingleEliminationBracket(Competition):
 class DoubleEliminationBracket(Competition):
     def __init__(self, name: str,
                 seeding: Ranking,
-                solver: Solver = BetterWin,
-                # TODO: add policy params
+                solver: Solver = BetterWin(),
+                # TODO: add injector policy param
+                # ??? add lower policy param
                 cashprize: Dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
         
         self.upper = SingleEliminationBracket(name+'_UpperBracket',
                                               seeding, solver, cashprize=None)
         self.lower = [] # List[Player]
-        self.injector = [] # List[List[Player]]
         self.policy = um.riffle_shuffle
 
     # --- override --- #
@@ -86,20 +86,9 @@ class DoubleEliminationBracket(Competition):
         self.upper.start()
         self.upper.play()
         
+        # lower bracket
         self.lower = [[game.loser() for game in r] for r in self.upper.games(by_rounds=True)]
-        self.lower.append(self.upper.top(place=1))
-
-    def generate_games(self):
-        # lower bracket games
-        if len(self.lower[0]) != len(self.lower[1]):
-            games = uc.playersToDuel(self.lower.pop(0))
-        # injector games
-        elif self.injector:
-            lower = self.lower.pop(0)
-            injector = self.lower.pop(0)
-            games = uc.playersToDuel(self.policy(lower, injector))
-        # else -> error
-        return games
+        self.lower += [[self.upper.games(by_rounds=True)[-1][0].winner()]]
 
     def _update(self):
         self.lower.insert(0, [game.winner() for game in self.played_matches[-1]])
@@ -110,10 +99,21 @@ class DoubleEliminationBracket(Competition):
         for round in self.played_matches:
             for game in round:
                 standing[game.loser()] = top
-            top = self.len(self.participants) - len(standing)
+            top = len(self.participants) - len(standing)
         # winner
         standing[self.played_matches[-1][0].winner()] = 1
         return standing
 
     def _end_of_stage(self) -> bool:
-        return not self.lower
+        return len(self.lower) == 1
+
+    def generate_games(self):
+        if len(self.lower[0]) != len(self.lower[1]):
+            # lower bracket games
+            games = uc.playersToDuel(self.lower.pop(0)) # ??? suffling policy
+        else:
+            # injector games
+            lower = self.lower.pop(0)
+            injector = self.lower.pop(0)
+            games = uc.playersToDuel(self.policy(lower, injector))
+        return games

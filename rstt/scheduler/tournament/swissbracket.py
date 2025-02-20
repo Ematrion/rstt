@@ -78,6 +78,7 @@ class Generator(Protocol):
         """
         ...
 
+
 @runtime_checkable
 class Evaluator(Protocol):
     @typechecked

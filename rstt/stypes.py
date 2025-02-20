@@ -17,12 +17,13 @@ class Achievement:
     # ??? categorie (world event, domestic league, playoffs etc.)
     # ??? event_type (SEB, Snake, MM etc)
     # ??? teamates
-    
+
     
 @runtime_checkable
 class Solver(Protocol):
     def solve(self, match: Match, *agrs, **kwargs) -> None:
         ...
+
 
 # -------------------------- #
 # --- Typing for Ranking --- #
@@ -55,7 +56,6 @@ class Observer(Protocol):
 # ---------------------------- #
 # --- Typing for Shceduler --- #
 # ---------------------------- #
-
 @runtime_checkable
 class Shuffler(Protocol):
     def rearange(status: List[int]) -> List[int]:
@@ -120,6 +120,7 @@ class Generator(Protocol):
             Idealy the first option is a direct, and 'obvious' transformation of status
         """
         ...
+    
 
 @runtime_checkable
 class Evaluator(Protocol):
@@ -144,3 +145,4 @@ class Evaluator(Protocol):
             _description_
         """
         ...
+
