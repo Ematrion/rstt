@@ -77,7 +77,7 @@ class Competition(metaclass=abc.ABCMeta):
     def run(self):
         if self.__started:
             msg = f"Can not run an event that has already started. Did you mean to use play() or perhaps did you wrongly call start()?"
-            raise AttributeError(msg)
+            raise RuntimeError(msg)
         else:
             self.start()
             self.play()
@@ -92,7 +92,7 @@ class Competition(metaclass=abc.ABCMeta):
     def play(self):
         if not self.__started:
             msg = f"Can not play an event that has not yet started. Did you mean to use .run() or perhaps did you forgot to call .start() first?"
-            raise AttributeError(msg)
+            raise RuntimeError(msg)
         while not self.__finished:
             current_round = self.generate_games()
             results = self.play_games(current_round)

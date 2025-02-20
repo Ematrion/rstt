@@ -79,7 +79,7 @@ def test_play(): # ??? what does it test
     BetterWin().solve(duel2)
   
 def test_play_error():
-    with pytest.raises(AttributeError):
+    with pytest.raises(RuntimeError):
         BetterWin().solve(duel1)
     
 def test_winner():

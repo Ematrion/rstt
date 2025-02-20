@@ -1,6 +1,8 @@
 from typing import List
 from typeguard import typechecked
 
+import warnings
+
 from rstt import Player, Duel
 
 @typechecked
@@ -20,7 +22,7 @@ def new_matchup(game: Duel, games: List[Duel], symetric: bool=True) -> bool:
 @typechecked
 def find_valid_draw(draws: List[List[Duel]], games: List[Duel], symetric: bool=True) -> List[Duel]:
     # avoid side-effect (usage of .pop)
-    options = [option for option in options]
+    draws = [option for option in draws]
     
     # default return value
     first_option = draws[0]
@@ -37,8 +39,8 @@ def find_valid_draw(draws: List[List[Duel]], games: List[Duel], symetric: bool=T
         good_draw = first_option
         msg = f"""No Valid matchups where found. (symetry={symetric})\n
         'draws' = {draws}\name\n
-        'old_games' = {games}"""
-        raise RuntimeWarning(msg)
+        'games' = {games}"""
+        warnings.warn(msg, RuntimeWarning)
     
     return good_draw
 
@@ -46,6 +48,5 @@ def find_valid_draw(draws: List[List[Duel]], games: List[Duel], symetric: bool=T
 def valid_draw(draw: List[Duel], games: List[Duel]) -> bool:
     for game in draw:
         if not new_matchup(game, games):
-                # even if only one game has already been played, then the draw is not valid
             return False
     return True

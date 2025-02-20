@@ -61,13 +61,13 @@ def test_start_seeding():
     
 def test_play_not_started():
     cup = DummyCup('test', seeding)
-    with pytest.raises(AttributeError):
+    with pytest.raises(RuntimeError):
         cup.play()
 
 def test_run_already_started():
     cup = DummyCup('test', seeding)
     cup.start()
-    with pytest.raises(AttributeError):
+    with pytest.raises(RuntimeError):
         cup.run()
 
 

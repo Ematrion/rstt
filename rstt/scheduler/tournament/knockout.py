@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import List, Dict, Callable, Any
 from typeguard import typechecked
 
 
@@ -24,6 +24,7 @@ def balanced_tree(rounds):
 
 
 class SingleEliminationBracket(Competition):
+    @typechecked
     def __init__(self, name: str,
                 seeding: Ranking,
                 solver: Solver = BetterWin(),
@@ -32,12 +33,11 @@ class SingleEliminationBracket(Competition):
 
     # --- override --- #
     def _initialise(self):
-        if not uu.power_of_two(len(self.participants)):
-            msg = (f'{type(self)} '
-                   'needs a power of two as number of participants '
-                   '(2,4,8,16,...)'
-                   f', given {len(self.participants)}')
-            raise AttributeError(msg)
+        msg = (f'{type(self)} '
+                'needs a power of two as number of participants '
+                '(2,4,8,16,...)'
+                f', given {len(self.participants)}')
+        assert uu.power_of_two(len(self.participants)), msg
 
         nb_rounds = int(math.log(len(self.participants), 2))
         self.players_left = self.seeding[[i-1 for i in balanced_tree(nb_rounds)]]
@@ -66,18 +66,20 @@ class SingleEliminationBracket(Competition):
 
 
 class DoubleEliminationBracket(Competition):
+    @typechecked
     def __init__(self, name: str,
                 seeding: Ranking,
                 solver: Solver = BetterWin(),
-                # TODO: add injector policy param
-                # ??? add lower policy param
+                lower_policy: Callable[[List[Any]], List[Any]]=lambda x: x ,
+                injector_policy: Callable[[List[Any], List[Any]], List[Any]]=um.riffle_shuffle,
                 cashprize: Dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
         
         self.upper = SingleEliminationBracket(name+'_UpperBracket',
-                                              seeding, solver, cashprize=None)
+                                              seeding, solver)
         self.lower = [] # List[Player]
-        self.policy = um.riffle_shuffle
+        self.lower_policy = lower_policy
+        self.injector_policy = injector_policy
 
     # --- override --- #
     def _initialise(self):
@@ -110,10 +112,26 @@ class DoubleEliminationBracket(Competition):
     def generate_games(self):
         if len(self.lower[0]) != len(self.lower[1]):
             # lower bracket games
-            games = uc.playersToDuel(self.lower.pop(0)) # ??? suffling policy
+            games = uc.playersToDuel(self.lower_policy(self.lower.pop(0)))
         else:
             # injector games
             lower = self.lower.pop(0)
             injector = self.lower.pop(0)
-            games = uc.playersToDuel(self.policy(lower, injector))
+            games = uc.playersToDuel(self.injector_policy(lower, injector))
         return games
+    
+    @typechecked
+    def games(self, by_rounds=False, upper=False, lower=False):
+        if upper and lower:
+            msg = f"At most one of upper and lower can be True. Received values upper: {upper}, lower: {lower}"
+            raise ValueError(msg)
+        if upper:
+            return self.upper.games(by_rounds)
+        elif lower:
+            return super().games(by_rounds)
+        else:
+            games = self.upper.played_matches + self.played_matches
+            if by_rounds:
+                return games
+            else:
+                return uu.flatten(games)

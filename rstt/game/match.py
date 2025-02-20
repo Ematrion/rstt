@@ -45,7 +45,7 @@ class Match():
     def __set_result(self, result: List[float]):
         if self.__scores is not None:
             msg = f'Attempt to assign a score to a game that has already one {self}'
-            raise AttributeError(msg) # ??? RuntimeError
+            raise RuntimeError(msg) # ??? RuntimeError
         else:
             if not isinstance(result, list):
                 msg  = f"result must be instance of List[float], received {type(result)}"

@@ -47,7 +47,7 @@ def not_sorted_error(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper_check(self: Any, *args, **kwargs) -> Any:
         if not self._Standing__sorted:
             msg = f"Can not call {func.__name__} on unsorted Standing"
-            raise AttributeError(msg) # ??? RuntimeError
+            raise RuntimeError(msg)
         return func(self, *args, **kwargs)
     return wrapper_check
 '''

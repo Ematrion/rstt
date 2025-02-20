@@ -17,13 +17,12 @@ test_data = [(2**i, i) for i in range(1, power+1)]
     
 '''
 
-
 @pytest.mark.parametrize("nb", [i for i in range(2, total+1) if i%2 == 1])
 def test_initialise_error(nb):
     seb = SEB('test', seeding, BetterWin())
     seb.registration(population[:nb])
-    with pytest.raises(AttributeError):
-        seb.initialise()
+    with pytest.raises(AssertionError):
+        seb._initialise()
 
 @pytest.mark.parametrize("nb_part, nb_r", test_data)
 def test_nb_rounds(nb_part, nb_r):

@@ -39,6 +39,9 @@ def parallel_match(elems: List[Any]) -> List[List[Any]]:
 def neighboor_match(elems: List[Any]) -> List[List[Any]]:
     return [[elems[2*i], elems[2*i+1]] for i in range(len(elems)//2)]
 
+# --------------- #
+# --- Common ---- #
+# --------------- #
 def ruban(players: List[Any]) -> List[List[Any]]:
     # QUEST: does it work with odd length of players input ?
     # QUEST: return List[List[List[Any]]] to match other matching func logic ?
@@ -101,4 +104,71 @@ def ruban(players: List[Any]) -> List[List[Any]]:
 
     return rounds
 
+# NOTE: I do not know a algorithm to compute chord diagrams for an abritrary n=2*k (in reseaonable complexity)
+# But n=6 is a frequent needs in SwissBracket for 16 players variations so I hard coded the 15 solutions
+def chord_diagrams_n6(players: List[Any]) -> List[List[Any]]:
+    '''
+    source:
+    https://en.wikipedia.org/wiki/Double_factorial
+    https://en.wikipedia.org/wiki/Chord_diagram_(mathematics)
+    
+    NOTE: I do not know a algorithm to compute it for an abritrary n=2*k (in reseaonable complexity)
+    But n=6 is a frequent needs in SwissBracket for 16 players variations so I hard coded the 15 solutions
+    '''
+    
+    if len(players) != 6:
+        msg = f'chord_diagrams_n6 function is implemented only for 6 participants, len(players) = {len(players)})'
+        raise ValueError(msg)
+    
+    matchings = [
+        [players[0], players[5], players[1], players[4], players[2], players[3]],
+        [players[0], players[5], players[1], players[5], players[2], players[4]],
+        [players[0], players[4], players[1], players[5], players[2], players[3]],
+        [players[0], players[2], players[1], players[4], players[3], players[5]],
+        [players[0], players[3], players[1], players[4], players[2], players[5]],
+        
+        [players[0], players[1], players[2], players[5], players[3], players[4]],
+        [players[0], players[2], players[1], players[2], players[4], players[5]],
+        [players[0], players[4], players[1], players[2], players[3], players[5]],
+        [players[0], players[3], players[1], players[5], players[2], players[4]],
+        [players[0], players[5], players[1], players[2], players[3], players[4]],
+        
+        [players[0], players[3], players[1], players[2], players[4], players[5]],
+        [players[0], players[2], players[1], players[5], players[3], players[4]],
+        [players[0], players[1], players[2], players[4], players[3], players[5]],
+        [players[0], players[4], players[1], players[3], players[2], players[5]],
+        [players[0], players[1], players[2], players[3], players[4], players[5]],
+    ]
+    return matchings
+
+def swiss_bracket_n6(players: List[Any]) -> List[List[Any]]:
+    '''
+    Source : https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md
+    Look for the 'Priority' table in section 'Swiss Bracket'
+    '''
+    
+    if len(players) != 6:
+        msg = f'swiss_bracket_n6 function is implemented only for 6 participants, len(players) = {len(players)})'
+        raise ValueError(msg)
+    
+    matchings = [
+        [players[0], players[5], players[1], players[4], players[2], players[3]],
+        [players[0], players[5], players[1], players[3], players[2], players[4]],
+        [players[0], players[4], players[1], players[5], players[2], players[3]],
+        [players[0], players[4], players[1], players[3], players[2], players[5]],
+        [players[0], players[3], players[1], players[5], players[2], players[4]],
+
+        [players[0], players[3], players[1], players[4], players[2], players[5]],
+        [players[0], players[5], players[1], players[2], players[3], players[4]],
+        [players[0], players[4], players[1], players[2], players[3], players[5]],
+        [players[0], players[2], players[1], players[5], players[3], players[4]],
+        [players[0], players[2], players[1], players[4], players[3], players[5]],
+
+        [players[0], players[3], players[1], players[2], players[4], players[5]],
+        [players[0], players[2], players[1], players[3], players[4], players[5]],
+        [players[0], players[1], players[2], players[5], players[3], players[4]],
+        [players[0], players[1], players[2], players[4], players[3], players[5]],
+        [players[0], players[1], players[2], players[3], players[4], players[5]],
+    ]
+    return matchings
 
