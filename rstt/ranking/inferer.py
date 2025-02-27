@@ -3,16 +3,53 @@ from typeguard import typechecked
 
 from rstt.player import Player
 
+import numpy as np
 import math
 import copy
 
+import warnings
 
+
+'''
+    FIXME:
+    - There is no consensus on the return type of the rate() functions
+    - It is fine regarding the Protocol, but realy anoying when combine with Observer
+'''
+
+
+# ------------------------ #
+# --- Player Data Based -- #
+# ------------------------ #    
 class PlayerLevel:
     @typechecked
     def rate(self, player: Player, *args, **kwars) -> Dict[Player, float]:
-        return {player: player.level()} # FIXME: standardize rate() output
-
+        return {player: player.level()}
     
+class PlayerWinPRC:
+    def __init__(self, default: float=-1.0, scope: int=np.iinfo(np.int32).max):
+        self.default = default
+        self.scope = scope
+    
+    @typechecked
+    def rate(self, player: Player, *args, **kwargs):
+        return {player: self.win_rate(player)}
+    
+    def win_rate(self, player: Player):
+        games = player.games()
+        if games:
+            if self.scope:
+                games = games[-self.scope:]
+            nb_wins = sum([1 for game in games if player is game.winner()])
+            total = len(games)
+            winrate = nb_wins / total * 100
+        else:
+            winrate = self.default
+        return winrate
+
+
+# ------------------------ #
+# --- Game Score Based --- #
+# ------------------------ #
 class Elo:
     def __init__(self, k: float = 20.0, lc: float = 400.0):
         self.LC = lc
@@ -83,23 +120,39 @@ class Glicko:
         bigSum = 0
         for Gj, Ej, in zip(all_GJ, all_EJ):
             bigSum += Gj*Gj*Ej*(1-Ej)
-            
+        
+        '''
+        NOTE:
+        Try/Expect is not part of the Glicko official algorith  presentation.
+        But I have encountered Unexpected ZeroDivisionError
+        
+        The try/except ZeroDivErr/warn an be easly simplified by:
+        return 1 / min( self.Q*self.Q*bigSum, lower_bound)
+        
+        However I could note find any specfic details about the choice of the boundary.
+        Analytically, the term can not be equal to 0.0, it is always >0.
+        Nnumercialy, it happens in extreme situation i.e does not arise in standard 'intended' Glicko usage.
+        
+        The package is for scientifical experimentation,
+        It allows extreme case exploration and can not hide arbitrary choices.
+
+        # !!! Do not fix unless it is possible to link a scientifical source justifying the implementation
+        '''
         try:
             # d2 formula 
             return 1 / (self.Q*self.Q*bigSum)
         except ZeroDivisionError:
-            
             # !!! BUG: ZeroDivisionError observed with extreme rating differences
             # !!! this will now print variable of interest
             # !!! but code will run assuming maximal and mininal expected value possible between 0 and 1
-            # TODO: use warning instead of print
-            print('----------------------------------------------')
-            print(f'Glicko d2 ERROR: {rating1}, {games}')
-            print(f'{bigSum}, {all_EJ}, {all_GJ}')
-            print('----------------------------------------------')
-            # just assume a very low 'bigSum'
+
+            # HACK: just assume a very low 'bigSum'
             bigSum = 0.00000000001
-            return 1 / (self.Q*self.Q*bigSum)
+            correction = 1 / (self.Q*self.Q*bigSum)
+            
+            msg = f"Glicko d2 ERROR: {rating1}, {games}\n {bigSum}, {all_EJ}, {all_GJ}\n d2 return value as been adjusted to 1/0.00000000001 "
+            warnings.warn(msg, RuntimeWarning)
+            return correction
 
     def prePeriod_RD(self, rating):
         '''
@@ -124,7 +177,7 @@ class Glicko:
         for rating2, score in games:
             b += self.G(rating2.sigma)*(score - self.expectedScore(rating1, rating2, mode='update'))
         
-        # create new rating object to avoid'side effect'
+        # create new rating object to avoid 'side effect'
         rating = copy.copy(rating1)
         # post Period R
         rating.mu += a*b

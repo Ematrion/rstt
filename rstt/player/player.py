@@ -1,34 +1,50 @@
-from typing import List, Dict, Any, Union, Callable, Optional
+from typing import List, Union, Optional
+from typeguard import typechecked
 
-from rstt.config import PLAYER_DIST, PLAYER_DIST_ARGS
+from rstt.player.basicplayer import BasicPlayer
+from rstt.game import Match
+from rstt.stypes import Achievement
 
-import names
 
-class Player():
+
+
+class Player(BasicPlayer):
+    @typechecked
     def __init__(self, name: Optional[str]=None, level: Optional[float]=None) -> None:
-        self.__name = name if name else names.get_full_name()
-        self.__level = level if level else PLAYER_DIST(**PLAYER_DIST_ARGS)
-        
+        super().__init__(name=name, level=level)
         self.__achievements = []
+        self.__games = []
     
     # --- getter --- #
-    def name(self) -> str:
-        return self.__name
+    def achievements(self) -> List[Achievement]:
+        return self.__achievements
     
-    def level(self) -> float:
-        return self.__level
+    def earnings(self) -> float:
+        return sum([achievement.prize for achievement in self.__achievements]) 
+    
+    def games(self) -> List[Match]:
+        return self.__games   
+    
+    # --- setter --- #
+    @typechecked
+    def collect(self, achievement: Union[Achievement, List[Achievement]]):
+        if isinstance(achievement, Achievement):
+            achievements = [achievement]
         
-    # --- magic methods --- #
-    def __repr__(self) -> str:
-        return f"Player - name: {self.__name}, level: {self.__level}"
-    
-    def __str__(self) -> str:
-        return self.__name
-    
-    @classmethod
-    def create(cls, nb: int, name_gen: Callable[..., str]=names.get_full_name,
-               name_params: Dict[str, Any]={},
-               level_dist: Callable[..., float]=PLAYER_DIST,
-               level_params=PLAYER_DIST_ARGS):
-        return [cls(name=name_gen(**name_params), level=level_dist(**level_params)) for i in range(nb)]
+        previous_event = [past_event.event_name for past_event in self.__achievements]
+        for achievement in achievements:
+            if achievement not in previous_event:
+                self.__achievements.append(achievement)
+            else: 
+                msg=f"Can not collect {achievement}. {self} already participated in an event called {achievement.event_name}"
+                raise ValueError(msg)
+
+    def reset(self) -> None:
+        self.__achievements = []
+        self.__games = []
+        
+    # --- internal mechanism --- #
+    @typechecked
+    def add_game(self, match: Match) -> None:
+            self.__games.append(match)
 

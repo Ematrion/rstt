@@ -9,9 +9,6 @@ from rstt.scheduler.tournament.competition import Competition
 
 from rstt.utils import utils as uu, matching as um, competition as uc
 
-import warnings
-warnings.filterwarnings("error")
-
 
 class DummyParam(Shuffler, Seeder, Evaluator):
     def rearange(status: List[int]) -> List[int]:
@@ -95,11 +92,19 @@ class SwissBracket(Competition):
         return standing
 
     def generate_games(self):
-        # TODO: better warning msg than uc.find_valid_draw
         games = [uc.find_valid_draw(draws=self.draws(group=self.rounds[score]),
                                     games=self.games()) 
                                     for score in self.round_scores()]
         return uu.flatten(games)
+
+    '''def generate_games(self):
+        try:
+            games = [uc.find_valid_draw(draws=self.draws(group=self.rounds[score]),
+                                        games=self.games()) 
+                                        for score in self.round_scores()]
+        except RuntimeWarning:
+            warnings.warn('cacth and throw', RuntimeWarning)
+        return uu.flatten(games)'''
     
     # --- round mechanism --- #
     @typechecked

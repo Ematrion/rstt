@@ -5,6 +5,15 @@ from rstt import Player, BTRanking
 from rstt.scheduler.tournament.competition import Competition
 
 
+'''
+    FIXME: multiple asserts in single test
+    
+    Many test check the correct evolution of the instances vairable
+    usually a before and an after.
+    
+    Find a better way to do it
+'''
+
 
 class DummyCup(Competition):    
     def generate_games(self):

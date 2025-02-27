@@ -2,7 +2,10 @@ from typing import List, Callable
 from typeguard import typechecked
 
 from rstt import Duel
+from rstt.stypes import Score
 import rstt.utils.functions as uf
+
+from rstt.config import LOGSOLVER_BASE, LOGSOLVER_LC
 
 import random
 
@@ -20,7 +23,6 @@ import random
 
 '''
 
-type Score = list[float]
 
 WIN = [1.0, 0.0]
 LOSE = [0.0, 1.0]
@@ -77,14 +79,15 @@ class BradleyTerry(ScoreProb):
     def __init__(self):
         super().__init__(scores=[WIN, LOSE], func=self.__probabilities)
     
-    def __probabilities(self, duel=Duel) -> List[float]:
+    def __probabilities(self, duel: Duel) -> List[float]:
         level1 = duel.teams()[0][0].level()
         level2 = duel.teams()[1][0].level()
         prob = uf.bradleyterry(level1, level2)
         return [prob, 1-prob]
 
+
 class LogSolver(ScoreProb):
-    def __init__(self, base: float=10, lc: float=400):
+    def __init__(self, base: float=LOGSOLVER_BASE, lc: float=LOGSOLVER_LC):
         super().__init__(scores=[WIN, LOSE], func=self.__probabilities)
         self.base = base
         self.lc = lc

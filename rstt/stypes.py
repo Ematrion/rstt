@@ -1,12 +1,33 @@
 from dataclasses import dataclass
 from typing import List,Union,  Any, Iterable, Protocol, runtime_checkable
 
-from rstt import Player, Match
-
 
 # TODO: define 'Event', 'Tournament', 'MatchMaking'
 
 
+
+
+
+class SPlayer(Protocol):
+    def name(self) -> str:
+        ...
+    
+    def level(self) -> float:
+        ...
+
+
+Score = list[float] # type Score = list[float] -> SYNTAX VALID SINCE 3.12, package build for 3.10
+
+
+@runtime_checkable
+class SMatch(Protocol):
+    def players(self) -> List[SPlayer]:
+        ...
+    
+    def scores(self) -> Score:
+        ...
+    
+    # FIXME: def __set_result(self, score: Score) -> None:
 
 
 @dataclass
@@ -21,7 +42,7 @@ class Achievement:
     
 @runtime_checkable
 class Solver(Protocol):
-    def solve(self, match: Match, *agrs, **kwargs) -> None:
+    def solve(self, match: SMatch, *agrs, **kwargs) -> None:
         ...
 
 
@@ -37,10 +58,10 @@ class Inference(Protocol):
 
 @runtime_checkable        
 class RatingSystem(Protocol):
-    def get(self, key: Player) -> Any:
+    def get(self, key: SPlayer) -> Any:
         ...
         
-    def set(self, key: Player, rating: Any) -> None:
+    def set(self, key: SPlayer, rating: Any) -> None:
         ...
         
     def ordinal(self, rating: Any) -> float:
@@ -77,7 +98,7 @@ class Shuffler(Protocol):
 
 @runtime_checkable
 class Seeder(Protocol):
-    def seed(players: List[Player], initial_seeds: Iterable, results: Any, **kwargs) -> List[Player]:
+    def seed(players: List[SPlayer], initial_seeds: Iterable, results: Any, **kwargs) -> List[SPlayer]:
         """reorder players in a 'meaningfull' fashion
 
         Parameters
@@ -99,14 +120,14 @@ class Seeder(Protocol):
 
 @runtime_checkable
 class Generator(Protocol):
-    def generate(status: Union[List[int], List[Player]]) -> Union[List[int], List[Player]]:
+    def generate(status: Union[List[int], List[SPlayer]]) -> Union[List[int], List[SPlayer]]:
         """Generate different ordering version of a given List
         
         
         the different version produced are refered as 'options'
         For short input, this function could just produce all possible orderings.
         For long inout, this function could implement greedy strategy.
-        For this reason the input is a list, and the initial ordering could be meaningfull for the strategy
+        Thus the input is a list, and the initial ordering is meaningfull for the strategy
         
         Parameters
         ----------
@@ -124,7 +145,7 @@ class Generator(Protocol):
 
 @runtime_checkable
 class Evaluator(Protocol):
-    def eval(options: List[List[Player]], initial_seeds: Iterable, results: Any, **kwargs) -> List[List[Player]]:
+    def eval(options: List[List[SPlayer]], initial_seeds: Iterable, results: Any, **kwargs) -> List[List[SPlayer]]:
         """reorder options based on criteria
 
         The options can be evaluated based on an history of Game(s), or Player(s) appreciation.

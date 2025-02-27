@@ -1,9 +1,10 @@
 from typing import List
 from typeguard import typechecked
 
+from rstt import Player, Duel
+
 import warnings
 
-from rstt import Player, Duel
 
 @typechecked
 def playersToDuel(players: List[Player]) -> List[Duel]:
@@ -37,9 +38,7 @@ def find_valid_draw(draws: List[List[Duel]], games: List[Duel], symetric: bool=T
     # deal with mission failed
     if not good_draw:
         good_draw = first_option
-        msg = f"""No Valid matchups where found. (symetry={symetric})\n
-        'draws' = {draws}\name\n
-        'games' = {games}"""
+        msg = f"No Valid matchups where found"
         warnings.warn(msg, RuntimeWarning)
     
     return good_draw

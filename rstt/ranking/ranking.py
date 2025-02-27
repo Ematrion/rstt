@@ -1,9 +1,10 @@
 from typeguard import typechecked
-from typing import Any, Union, List, Callable
+from typing import Any, Union, List, Callable, Optional
 
 from rstt import Player
 from rstt.ranking import Standing
 from rstt.stypes import Inference, RatingSystem, Observer
+
 
 
 def set_equi(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -64,18 +65,17 @@ class Ranking():
         How to detect it and what to do ?
     '''
     @typechecked
-    def __init__(self, name: str = '',
-                 standing: Standing = Standing(),
-                 datamodel: RatingSystem = None, 
-                 backend: Inference = None,
-                 handler: Observer = None,
-                 players: Union[None, List[Player]] = None):
+    def __init__(self, name: str, 
+                 datamodel: RatingSystem, 
+                 backend: Inference,
+                 handler: Observer,
+                 players: Optional[List[Player]] = None):
         
         # name/identifier - usefull for plot
         self.name = name
         
         # fundamental notion of the Ranking Class
-        self.standing = standing
+        self.standing = Standing()
         self.backend = backend
         self.datamodel = datamodel
         self.handler = handler
@@ -279,9 +279,8 @@ class Ranking():
     @set_disamb
     @set_equi
     def update(self, *args, **kwargs):
-        """Update the Ratings
+        """Update the Ranking
 
-        # TODO: explain what happen here. GL&HF
 
         Parameters
         ----------
@@ -291,23 +290,13 @@ class Ranking():
         
         self.forward(*args, **kwargs)
       
-        # BUG: How do we know if the ranking state changed ?
-        # HACK: assume we did change everything
+        # NOTE: How do we know if the ranking state changed ?
+        # HACK: always assume it did
         self.__disambiguity = False
         self.__equivalence = False
     
     def forward(self, *args, **kwargs):
         '''
-        BUG:
-            - while using BasicElo
-        TypeError: GameByGame.handle_observations() got multiple values for argument 'infer'
-        This was fixed 'user side' by giving a param 'games' to GameByGame.handle_observations() and explicilty calling
-        Ranking.update(games=[])
-        But it should not be necessary to make an explicit arg assignement. 
-        And the source of the error never identified.
-        
-        It happens in the wrapper. an explanation could be related to the self parameters
-        
         '''
         self.handler.handle_observations(infer=self.backend,
                             datamodel=self.datamodel,

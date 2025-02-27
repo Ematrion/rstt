@@ -1,20 +1,19 @@
 from typeguard import typechecked
 from typing import List, Dict, Union, Tuple, Any, Optional
 
-from rstt.stypes import Inference, RatingSystem
-from rstt import Match, Player
+from rstt.stypes import SMatch, SPlayer, Inference, RatingSystem
 import rstt.utils.utils as uu
 
 # QUEST: Do Observer realy need to be typechecked ?
 
 
 @typechecked
-def assign_ratings(datamodel: RatingSystem, ratings: Dict[Player, Any]):
+def assign_ratings(datamodel: RatingSystem, ratings: Dict[SPlayer, Any]):
     for key, rating in ratings.items():
         datamodel.set(key, rating)
         
 @typechecked
-def match_formating(datamodel: RatingSystem, game: Match) -> Tuple[List[List[Player]], List[List[ Any]], List[float], List[int]]:
+def match_data(game: SMatch, datamodel: RatingSystem) -> Tuple[List[List[SPlayer]], List[List[ Any]], List[float], List[int]]:
     teams_as_players = game.teams()
     teams_as_ratings = [[datamodel.get(player) for player in team] for team in teams_as_players]
     
@@ -27,7 +26,7 @@ def match_formating(datamodel: RatingSystem, game: Match) -> Tuple[List[List[Pla
     return teams_as_players, teams_as_ratings, scores, ranks
 
 @typechecked
-def result_formating(players: List[List[Player]], ratings: List[List[Any]]) -> Dict[Player, Any]:
+def players_ratings_to_dict(players: List[List[SPlayer]], ratings: List[List[Any]]) -> Dict[SPlayer, Any]:
     return {p: r for p,r in zip(uu.flatten(players), uu.flatten(ratings))}
 
 
@@ -35,7 +34,7 @@ class GameByGame:
     @typechecked
     def handle_observations(self, infer: Inference,
                             datamodel: RatingSystem,
-                            games: Optional[Union[Match, List[Match]]]=None,
+                            games: Optional[Union[SMatch, List[SMatch]]]=None,
                             event: Optional[Any]=None, # FIXME: when Tournament class is added and type defined
                             *args, **kwargs):
         if event:
@@ -44,20 +43,20 @@ class GameByGame:
                 raise ValueError(msg)
             else: 
                 self.handle_observations(infer=infer, datamodel=datamodel, games=event.games())
-        elif isinstance(games, Match):
+        elif isinstance(games, SMatch):
             self.single_game(infer, datamodel, games, *args, **kwargs)
         else:
             for game in games:
                 self.single_game(infer, datamodel, game, *args, **kwargs)
     
     @typechecked
-    def single_game(self, infer: Inference, datamodel: RatingSystem, game: Match, *args, **kwargs):
-        players, ratings, score, ranks = match_formating(datamodel, game)
+    def single_game(self, infer: Inference, datamodel: RatingSystem, game: SMatch, *args, **kwargs):
+        players, ratings, score, ranks = match_data(game, datamodel)
         try: 
             output = infer.rate(ratings, ranks=ranks, *args, **kwargs)
         except:
             output = infer.rate(ratings, score, *args, **kwargs)
-        new_ratings = result_formating(players, output)
+        new_ratings = players_ratings_to_dict(players, output)
         assign_ratings(datamodel, new_ratings)
     
 
@@ -74,8 +73,8 @@ class BatchGame:
     @typechecked
     def handle_observations(self, infer: Inference,
                             datamodel: RatingSystem,
-                            games: Optional[Union[Match, List[Match]]]=None,
-                            event: Optional[Any]=None, # FIXME
+                            games: Optional[Union[SMatch, List[SMatch]]]=None,
+                            event: Optional[Any]=None,
                             *args, **kwargs):
         
         if event:
@@ -98,7 +97,7 @@ class BatchGame:
             assign_ratings(datamodel, new_ratings)
     
     @typechecked      
-    def player_score(self, player: Player, game: Match):
+    def player_score(self, player: SPlayer, game: SMatch):
         if game.winner() == player:
             return 1.0
         elif game.loser() == player:
@@ -110,18 +109,18 @@ class BatchGame:
             raise ValueError(msg)
     
     @typechecked
-    def game_of_interest(self, player: Player, games: List[Match]) -> List[Match]:
+    def game_of_interest(self, player: SPlayer, games: List[SMatch]) -> List[SMatch]:
         return [game for game in games if player in game]
     
     @typechecked
-    def involved_keys(self, games: List[Match]) -> List[Player]:
+    def involved_keys(self, games: List[SMatch]) -> List[SPlayer]:
         winners = [game.winner() for game in games]
         losers = [game.loser() for game in games]
         return list(set(winners+losers))
 
     @typechecked
-    def to_list(self, games: Union[Match, List[Match]]) -> List[Match]:
-        if isinstance(games, Match):
+    def to_list(self, games: Union[SMatch, List[SMatch]]) -> List[SMatch]:
+        if not isinstance(games, list):
             games = [games]
         return games
 
