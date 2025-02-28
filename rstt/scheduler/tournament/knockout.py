@@ -2,7 +2,7 @@ from typing import List, Dict, Callable, Any
 from typeguard import typechecked
 
 
-from rstt.scheduler.tournament.competition import Competition
+from . import Competition
 from rstt.ranking.ranking import Ranking
 from rstt import Player, BetterWin
 from rstt.stypes import Solver

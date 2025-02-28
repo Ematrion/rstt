@@ -5,7 +5,7 @@ from typeguard import typechecked
 from rstt import Player, Duel, BetterWin
 from rstt.ranking.ranking import Ranking
 from rstt.stypes import Solver, Shuffler, Seeder, Generator, Evaluator
-from rstt.scheduler.tournament.competition import Competition
+from . import Competition
 
 from rstt.utils import utils as uu, matching as um, competition as uc
 

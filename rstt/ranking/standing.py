@@ -3,7 +3,7 @@ from typing import Union, List, Dict, Tuple, Callable, Any, Optional
 from typeguard import typechecked
 import numpy as np
 
-from rstt import Player
+from rstt import BasicPlayer
 import rstt.utils.utils as uu
 
 
@@ -217,7 +217,7 @@ class Standing:
             print("{:>5} {:>20} {:>10}".format('%d.' % i, '%s' % k, '%d' % v))
     
     @typechecked
-    def fit(self, keys: List[Player]):
+    def fit(self, keys: List[BasicPlayer]):
         """Create a new Standing instance containing only the given Keys
 
         The Keys will have the same value as in the current Standing if present
@@ -299,7 +299,7 @@ class Standing:
         float
             the percentile associated to the elem in the Standing
         """
-        if isinstance(elem, Player):
+        if isinstance(elem, BasicPlayer):
             value = self.value(elem)
         else:
             value = elem
@@ -327,7 +327,7 @@ class Standing:
     
     # TODO: define clearly output format
     @get_sort
-    def tied_items(self) -> Dict[float, List[Player]]:
+    def tied_items(self) -> Dict[float, List[BasicPlayer]]:
         """Method to find tied items in the Standing
 
         Returns
@@ -388,7 +388,7 @@ class Standing:
 
     @typechecked
     @set_sort
-    def insert(self, index: int, key: Player):
+    def insert(self, index: int, key: BasicPlayer):
         """List like insertion
 
         insert a key at a given position in the list.
@@ -405,7 +405,7 @@ class Standing:
 
     # TODO: support other signature such as list of tuples and dictionaries - typecheck
     @set_sort
-    def add(self, keys: List[Player], values: List[float] = []):
+    def add(self, keys: List[BasicPlayer], values: List[float] = []):
         """Add key-value pairs to the Standing
 
         Built-in method to add items to the Standing.
@@ -445,7 +445,7 @@ class Standing:
 
     # --- Containers standard methods --- #
     @get_sort
-    def keys(self) -> List[Player]:
+    def keys(self) -> List[BasicPlayer]:
         """Get method for keys
 
         Similar to dict.keys() but it returns a list, not a view.
@@ -473,7 +473,7 @@ class Standing:
     @get_sort
     @typechecked
     # !!! value() is a user level method. yet it is used in many places and triggers a lot of unecessary get_sort
-    def value(self, key: Union[Player, int]) -> float:
+    def value(self, key: Union[BasicPlayer, int]) -> float:
         """Get value for a single key
 
         Return the value associated to the key in the Standing.
@@ -491,12 +491,12 @@ class Standing:
         """
         if isinstance(key, int):
             return self.ranks[key][1]
-        elif isinstance(key, Player):
+        elif isinstance(key, BasicPlayer):
             return self.ranks[self.index(key)][1]
 
     @get_sort
     @typechecked
-    def items(self) -> List[Tuple[Player, float]]:
+    def items(self) -> List[Tuple[BasicPlayer, float]]:
         """Get method for key value pairs
 
         Similar to dict.items(). It returns a list of tuples (key, value).
@@ -510,7 +510,7 @@ class Standing:
     
     @get_sort 
     @typechecked
-    def index(self, key: Player) -> int:
+    def index(self, key: BasicPlayer) -> int:
         """Get index for key
 
         Similar to list.index(). Standing implements an 'Ordinal Ranking' upon the set of keys based on associtaed values.
@@ -529,7 +529,7 @@ class Standing:
 
     @get_sort
     @typechecked
-    def pop(self, key: Union[int, List[int], Player, List[Player]]) -> Union[Player, List[Player], int, List[int]]:
+    def pop(self, key: Union[int, List[int], BasicPlayer, List[BasicPlayer]]) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
         """Get and remove method for element.
 
         Similar list.pop() and dict.pop() with some notable distinction. It deletes the corresponding items but:
@@ -552,7 +552,7 @@ class Standing:
     
     @get_sort
     @typechecked
-    def remove(self, key: Union[int, List[int], Player, List[Player]]) -> Union[Player, List[Player], int, List[int]]:
+    def remove(self, key: Union[int, List[int], BasicPlayer, List[BasicPlayer]]) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
         """Remove item method
 
         Works as Standing.pop() but without return values.
@@ -565,7 +565,7 @@ class Standing:
         self.__delitem__(key)
     
     # --- internal mechanism --- #
-    def __add(self, key: Player, value: float = None):
+    def __add(self, key: BasicPlayer, value: float = None):
         '''
         method responsible of the inclusion of new item inside the Standing
         
@@ -609,7 +609,7 @@ class Standing:
             for i in sorted(index, reverse=True):
                 del self.ranks[i]
                 
-    def __delitem_key(self, key: Union[Player, List[Player]]):
+    def __delitem_key(self, key: Union[BasicPlayer, List[BasicPlayer]]):
         '''
         Method responsible to delete items based on keys
         
@@ -620,14 +620,14 @@ class Standing:
             - no typechecking because it is called internaly
             - Is not sorting dependant.
         '''
-        if isinstance(key, Player):
+        if isinstance(key, BasicPlayer):
             self.__delitem_index(self.index(key))
         else:
             for k in key:
                 # QUEST: use self.__delitem_key(k) ?
                 self.__delitem_index(self.index(k))
 
-    def __setitem_key_value(self, key: Player, value: float):
+    def __setitem_key_value(self, key: BasicPlayer, value: float):
         '''
         Method responsible to set an item value based on the key
         
@@ -644,7 +644,7 @@ class Standing:
         else:
             self.__change_key_value(key, value)
 
-    def __setitem_index_key(self, index: int, key: Player):
+    def __setitem_index_key(self, index: int, key:BasicPlayer):
         '''
         Method responsible to set an item value based on the key
         
@@ -670,7 +670,7 @@ class Standing:
             point = (self.ranks[index-1][1] + self.ranks[index][1]) / 2
         self.__add(key, point)
 
-    def __change_key_value(self, key: Player, value: float):
+    def __change_key_value(self, key: BasicPlayer, value: float):
         '''Method responsible to change the value of a key.
         
         This Method assign to an already present key a new value in adict-like fashion
@@ -693,8 +693,8 @@ class Standing:
     # --- magic methods --- #
     @get_sort
     @typechecked
-    def __getitem__(self, key: Union[int, slice, List[int], Player, List[Player]]
-                    ) -> Union[Player, List[Player], int, List[int]]:
+    def __getitem__(self, key: Union[int, slice, List[int], BasicPlayer, List[BasicPlayer]]
+                    ) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
         '''
         Method responsible to get an item
         
@@ -723,11 +723,11 @@ class Standing:
         '''
         if isinstance(key, slice):
             return [player[0] for player in self.ranks][key]
-        elif isinstance(key, Player):
+        elif isinstance(key, BasicPlayer):
             return self.index(key)
         elif isinstance(key, int):
             return self.ranks[key][0]
-        elif isinstance(key, list) and isinstance(key[0], Player):
+        elif isinstance(key, list) and isinstance(key[0], BasicPlayer):
             return [self.index(player) for player in key]
         elif isinstance(key, list) and isinstance(key[0], int):
             players = [player[0] for player in self.ranks]
@@ -735,7 +735,7 @@ class Standing:
     
     @set_sort
     @typechecked
-    def __setitem__(self, key: Union[int, Player], value: Union[Player, float]):
+    def __setitem__(self, key: Union[int, BasicPlayer], value: Union[BasicPlayer, float]):
         '''
         Method responsible set an item in the Standing
         
@@ -763,15 +763,15 @@ class Standing:
             at least raise a warning
         
         '''
-        if isinstance(key, int) and isinstance(value, Player):
+        if isinstance(key, int) and isinstance(value, BasicPlayer):
             self.__setitem_index_key(key, value)
-        elif isinstance(key, Player) and isinstance(value, float):
+        elif isinstance(key, BasicPlayer) and isinstance(value, float):
             self.__setitem_key_value(key, value)
-        elif isinstance(key, Player) and isinstance(value, int):
+        elif isinstance(key, BasicPlayer) and isinstance(value, int):
             self.__setitem_index_key(value, key)
     
     @typechecked
-    def __delitem__(self, elem: Union[slice, int, List[int], Player, List[Player]]):
+    def __delitem__(self, elem: Union[slice, int, List[int], BasicPlayer, List[BasicPlayer]]):
         '''
         Method responsible to delete item
         
@@ -789,13 +789,13 @@ class Standing:
             - When keep_sorting is false it should raise a warning at least.
         '''
         
-        if isinstance(elem, Player) or (isinstance(elem, list) and isinstance(elem[0], Player)):
+        if isinstance(elem, BasicPlayer) or (isinstance(elem, list) and isinstance(elem[0], BasicPlayer)):
             self.__delitem_key(elem)
         else:
             self.__delitem_index(elem)
     
     @typechecked
-    def __contains__(self, key: Player):
+    def __contains__(self, key: BasicPlayer):
         return key in [item[0] for item in self.ranks]
     
     def __len__(self):

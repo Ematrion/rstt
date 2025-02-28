@@ -2,6 +2,7 @@ from typing import  List, Dict, Tuple, Any
 from typeguard import typechecked
 
 from rstt.player import Player
+from rstt.stypes import SPlayer
 
 import numpy as np
 import math
@@ -18,11 +19,11 @@ import warnings
 
 
 # ------------------------ #
-# --- Player Data Based -- #
+# --- Player as Rating --- #
 # ------------------------ #    
 class PlayerLevel:
     @typechecked
-    def rate(self, player: Player, *args, **kwars) -> Dict[Player, float]:
+    def rate(self, player: SPlayer, *args, **kwars) -> Dict[Player, float]:
         return {player: player.level()}
     
 class PlayerWinPRC:

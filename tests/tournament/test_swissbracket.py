@@ -4,21 +4,25 @@ from rstt import Player, BetterWin, BTRanking
 from rstt.scheduler.tournament.swissbracket import SwissBracket
 from rstt.utils import matching as um
 
-population = Player.seeded_players(16)
-seeding = BTRanking('Seedings', population)
-
 class Chord6:
     def generate(self, status, *args, **kwargs):
         return um.chord_diagrams_n6(status)
 
 @pytest.fixture
-def sbf():
+def population():
+    return Player.seeded_players(16)
+
+@pytest.fixture
+def seeding(population):
+    return BTRanking('Seedings', population)
+
+@pytest.fixture
+def sbf(seeding):
     sb = SwissBracket('test', seeding=seeding, solver=BetterWin(), generators={(2,2): Chord6()})
-    sb.registration(population)
+    sb.registration(seeding.players())
     sb.run()
     return sb
     
-
 
 def test_initialise_error():
     pop = Player.create(nb=32)

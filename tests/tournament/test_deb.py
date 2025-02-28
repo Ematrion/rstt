@@ -16,7 +16,7 @@ def test_games_error_lower_and_upper():
     
 @pytest.mark.parametrize("nb", [2**i for i in range(1, power+1)]) 
 def test_nb_games(nb):
-    deb = DEB('test', seeding, BetterWin())
+    deb = DEB(f"test games {nb}", seeding, BetterWin())
     deb.registration(population[:nb])
     deb.run()
     # WikiPedia:
@@ -27,7 +27,7 @@ def test_nb_games(nb):
 @pytest.mark.parametrize("nb", [2**i for i in range(1, power+1)]) 
 def test_nb_rounds(nb):
     # NOTE: The test is build on deb.upper being an 'already tested' SingleEliminationBracket
-    deb = DEB('test', seeding, BetterWin())
+    deb = DEB(f"test rounds {nb}", seeding, BetterWin())
     deb.registration(population[:nb])
     deb.run()
     '''
@@ -40,14 +40,14 @@ def test_nb_rounds(nb):
 
 @pytest.mark.parametrize("nb", [2**i for i in range(1, power+1)]) 
 def test_get_upper_games(nb):
-    deb = DEB('test', seeding, BetterWin())
+    deb = DEB(f"test ug {nb}", seeding, BetterWin())
     deb.registration(population[:nb])
     deb.run()
     assert deb.upper.games() == deb.games(upper=True)
 
 @pytest.mark.parametrize("nb", [2**i for i in range(1, power+1)]) 
 def test_get_lower_games(nb):
-    deb = DEB('test', seeding, BetterWin())
+    deb = DEB(f"test lg {nb}", seeding, BetterWin())
     deb.registration(population[:nb])
     deb.run()
     upper_games = set(deb.games(upper=True))

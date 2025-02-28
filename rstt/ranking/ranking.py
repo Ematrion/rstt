@@ -1,7 +1,7 @@
 from typeguard import typechecked
 from typing import Any, Union, List, Callable, Optional
 
-from rstt import Player
+from rstt import BasicPlayer
 from rstt.ranking import Standing
 from rstt.stypes import Inference, RatingSystem, Observer
 
@@ -69,7 +69,7 @@ class Ranking():
                  datamodel: RatingSystem, 
                  backend: Inference,
                  handler: Observer,
-                 players: Optional[List[Player]] = None):
+                 players: Optional[List[BasicPlayer]] = None):
         
         # name/identifier - usefull for plot
         self.name = name
@@ -95,7 +95,7 @@ class Ranking():
     @set_disamb
     @set_equi
     @typechecked
-    def add(self, keys: List[Player]):
+    def add(self, keys: List[BasicPlayer]):
         # turn maintainance for optimization
         should_maintain = self.__maintain_equivalence
         self.__maintain_equivalence = False
@@ -107,7 +107,7 @@ class Ranking():
         # restaure Ranking status
         self.__maintain_equivalence = should_maintain
              
-    def __add(self, key: Player):
+    def __add(self, key: BasicPlayer):
         if key in self:
             msg = f'Can not add a key already present in the Ranking, {key}'
             raise ValueError(msg)
@@ -118,7 +118,7 @@ class Ranking():
         self.__equivalence = False
     
     # --- magic methods --- #
-    def __getitem__(self, *args, **kwargs) -> Union[Player, List[Player], int, List[int]]:
+    def __getitem__(self, *args, **kwargs) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
         ''' get item based on a rank or a key
         
         NOBUG:
@@ -127,7 +127,7 @@ class Ranking():
         '''
         return self.standing.__getitem__(*args, **kwargs)
     
-    def __delitem__(self, key: Player):
+    def __delitem__(self, key: BasicPlayer):
         ''' delete element from the Ranking
         
         REQ:
@@ -145,7 +145,7 @@ class Ranking():
         del self.standing[key]
         del self.datamodel[key]
             
-    def __contains__(self, key: Player):
+    def __contains__(self, key: BasicPlayer):
         '''
         NOTE:
             - it does match standing behavior as specified but
@@ -161,13 +161,13 @@ class Ranking():
         return self.standing.__iter__()
                 
     # --- getter --- #
-    def rank(self, player: Player) -> int:
+    def rank(self, player: BasicPlayer) -> int:
         return self[player]
         
-    def ranks(self, players: List[Player]) -> List[int]:
+    def ranks(self, players: List[BasicPlayer]) -> List[int]:
         return [self.rank(player) for player in players]
         
-    def rating(self, player: Player) -> Any:
+    def rating(self, player: BasicPlayer) -> Any:
         """Get method for rating
 
         Rating object is the internal model associated to a key.
@@ -203,7 +203,7 @@ class Ranking():
         """
         return [self.rating(player) for player in self]
     
-    def players(self) -> List[Player]:
+    def players(self) -> List[BasicPlayer]:
         """Get method of all keys
 
         Alias for Ranking.standing.keys()
@@ -215,7 +215,7 @@ class Ranking():
         """
         return self.standing.keys()
 
-    def point(self, player: Player) -> float:
+    def point(self, player: BasicPlayer) -> float:
         """Get the point associated to a key
 
         Alias for Ranking.standing.value(player)
@@ -250,7 +250,7 @@ class Ranking():
     # --- setter --- #
     @set_disamb
     @set_equi
-    def set_rating(self, key: Player, rating: Any):
+    def set_rating(self, key: BasicPlayer, rating: Any):
         """A method to assign a rating to a Player
 
         
@@ -324,7 +324,7 @@ class Ranking():
     
     @get_disamb
     @get_equi
-    def fit(self, players: List[Player], name: str = ''):
+    def fit(self, players: List[BasicPlayer], name: str = ''):
         seeding= Standing()
         points = []
         for player in players:

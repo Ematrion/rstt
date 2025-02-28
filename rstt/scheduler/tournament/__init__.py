@@ -1,0 +1,1 @@
+from .competition import Competition

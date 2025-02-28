@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from rstt import Duel, Player
-from rstt.scheduler.tournament.competition import Competition
+from . import Competition
 
 
 class Snake(Competition):

@@ -2,7 +2,7 @@ from typing import List, Dict
 from typeguard import typechecked
 
 from rstt import Duel, BetterWin
-from .competition import Competition
+from . import Competition
 from rstt.ranking.ranking import Ranking
 from rstt.stypes import Solver
 from rstt.solver.solvers import WIN, LOSE, DRAW
@@ -94,6 +94,6 @@ class SwissRound(RoundRobin):
             self.future_rounds.append(players)
     
     def draws(self, players):
-        # TODO: explore other methods / make it tunable
+        # FIXME: explore other methods / make it tunable. It could result in bug
         return [uc.playersToDuel(round) for round in um.ruban(players)]
     

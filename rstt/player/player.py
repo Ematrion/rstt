@@ -30,10 +30,12 @@ class Player(BasicPlayer):
     def collect(self, achievement: Union[Achievement, List[Achievement]]):
         if isinstance(achievement, Achievement):
             achievements = [achievement]
+        else:
+            achievements = achievement
         
         previous_event = [past_event.event_name for past_event in self.__achievements]
         for achievement in achievements:
-            if achievement not in previous_event:
+            if achievement.event_name not in previous_event:
                 self.__achievements.append(achievement)
             else: 
                 msg=f"Can not collect {achievement}. {self} already participated in an event called {achievement.event_name}"

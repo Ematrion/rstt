@@ -29,7 +29,7 @@ LOSE = [0.0, 1.0]
 DRAW = [0.5, 0.5]
 
         
-class BetterWin():
+class BetterWin:
     def __init__(self, with_draw: bool=False):
         self.with_draw = with_draw
         self.win = WIN
