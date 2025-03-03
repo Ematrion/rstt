@@ -18,10 +18,16 @@ PLAYER_DIST_ARGS = {'mu': PLAYER_GAUSSIAN_MU,
 
 # ExpPlayer
 
-
+# tracking game history 
+MATCH_HISTORY = False
+DUEL_HISTORY = False
 
 # -------------------- #
-# --- Solver cfg ----- #
+# ---- Match cfg ----- #
+# -------------------- #
+
+# -------------------- #
+# ---- Solver cfg ---- #
 # -------------------- #
 
 LOGSOLVER_BASE = 10

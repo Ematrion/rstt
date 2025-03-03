@@ -1,6 +1,6 @@
 [project]
 name = "rstt"
-version = "0.4.1"
+version = "0.5.0"
 description = "Ranking Simulation Testing Tool"
 authors = [
     {name = "Bucher David", email = "davidbucherdev@gmail.com"}

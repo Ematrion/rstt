@@ -4,12 +4,11 @@ from rstt import Player, Duel, BetterWin
 from rstt.stypes import Achievement
 
 
-
 # players
 p0, p1 = Player('p0', 1500), Player('p1', 1500)
 
 # games
-played_game = Duel(p0, p1)
+played_game = Duel(p0, p1, tracking=True)
 BetterWin().solve(played_game)
 
 # events
@@ -42,11 +41,6 @@ def test_collect_event_name_error(p):
 def test_earnings(p, achievements):
     assert p.earnings() == sum([ach.prize for ach in achievements])
     
-
-
-
-
-'''
 def test_games_played():
     assert played_game in p0.games() and played_game in p1.games()
 
@@ -62,6 +56,6 @@ def test_reset_games():
 def test_reset_all():
     p1.reset()
     assert p1.games() == []
-    assert p1.trophies() == []
-    assert p1.money() == 0
-'''
+    assert p1.achievements() == []
+    assert p1.earnings() == 0
+

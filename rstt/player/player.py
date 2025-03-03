@@ -48,5 +48,8 @@ class Player(BasicPlayer):
     # --- internal mechanism --- #
     @typechecked
     def add_game(self, match: Match) -> None:
-            self.__games.append(match)
+        if match in self.__games:
+            msg = f"{match} already present in game history of player {self}"
+            raise ValueError(msg)
+        self.__games.append(match)
 

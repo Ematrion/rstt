@@ -2,12 +2,14 @@ from typing import List
 from typeguard import typechecked
 
 from rstt.stypes import SPlayer, Score
+import rstt.config as cfg 
 
 class Match():
     @typechecked
-    def __init__(self, teams: List[List[SPlayer]]) -> None:
+    def __init__(self, teams: List[List[SPlayer]], tracking: bool=cfg.MATCH_HISTORY) -> None:
         self.__teams = teams
         self.__scores = None
+        self.__tracking = tracking
         
     # --- getter --- #
     def teams(self) -> List[List[SPlayer]]:
@@ -44,23 +46,35 @@ class Match():
     
     # --- internal mechanism --- #
     def __set_result(self, result: Score):
+        # bunch of errors to raise
         if self.__scores is not None:
             msg = f'Attempt to assign a score to a game that has already one {self}'
-            raise RuntimeError(msg) # ??? RuntimeError
-        else:
-            if not isinstance(result, list):
-                msg  = f"result must be instance of List[float], received {type(result)}"
-                raise ValueError(msg)
-            if not isinstance(result[0], float):
-                msg = f'result must be instance of List[float], received List[{type(result[0])}]'
-                raise ValueError(msg)
-            # TODO: check value, match lenght with teams etc.
-            if len(result) != len(self._Match__teams):
-                msg = f"""result lenght does not match number of teams,
-                        len(result) == {len(result)}, excepted: {len(self._Match__teams)}"""
-                raise ValueError(msg)
-            self.__scores = result
+            raise RuntimeError(msg)
+        if not isinstance(result, list):
+            msg  = f"result must be instance of List[float], received {type(result)}"
+            raise TypeError(msg)
+        if not isinstance(result[0], float):
+            msg = f'result must be instance of List[float], received List[{type(result[0])}]'
+            raise TypeError(msg)
+        if len(result) != len(self._Match__teams):
+            msg = f"""result lenght does not match number of teams,
+                    len(result) == {len(result)}, excepted: {len(self._Match__teams)}"""
+            raise ValueError(msg)
         
+        # actual result assignement
+        self.__scores = result
+        
+        # player may track match history
+        if self.__tracking:
+            self.__update_players_history()
+   
+    def __update_players_history(self):
+        for player in self.players():
+            try:
+                player.add_game(self)
+            except AttributeError:
+                pass # ??? raise warning
+            
     # --- magic methods --- #
     def __repr__(self) -> str:
         return str(self)
@@ -73,8 +87,8 @@ class Match():
     
     
 class Duel(Match):
-    def __init__(self, player1: SPlayer, player2: SPlayer) -> None:
-        super().__init__(teams=[[player1], [player2]])
+    def __init__(self, player1: SPlayer, player2: SPlayer, tracking: bool=cfg.DUEL_HISTORY) -> None:
+        super().__init__(teams=[[player1], [player2]], tracking=tracking)
         
     # --- getter --- #
     def player1(self) -> SPlayer:

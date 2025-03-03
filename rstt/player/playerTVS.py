@@ -44,7 +44,7 @@ class ExponentialPlayer(PlayerTVS):
         # parameters of the relaxation
         self.__tau = tau
         
-    def Update_level(self, *args, **kwars) -> float:
+    def update_level(self, *args, **kwars) -> float:
         self._time += 1
         self._PlayerTVS__current_level = self.__final - (self.__final - self._PlayerTVS__current_level)*self.__relax(time=self.__time, tau=self.__tau)
 
