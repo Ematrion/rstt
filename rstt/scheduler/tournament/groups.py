@@ -13,7 +13,7 @@ import numpy as np
 import math
 
 class RoundRobin(Competition):
-    def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin,
+    def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin(),
                 cashprize: Dict[int, float] = {}):
         
         super().__init__(name, seeding, solver, cashprize)
@@ -32,11 +32,14 @@ class RoundRobin(Competition):
     def _update(self):
         for game in self.played_matches[-1]:
             p1, p2 = game.player1(), game.player2()
-            self.table[p1][p2] += game.score(p1)
-            self.table[p2][p1] += game.score(p2)
+            s1, s2 = self.seeding[[p1, p2]]
+            self.table[s1][s2] += game.score(p1)
+            self.table[s2][s1] += game.score(p2)
  
     def _standing(self):
+        standing = {}
         groups = []
+        
         scores = np.sum(self.table, axis=0)
         values = np.unique(scores)
         for value in values:
@@ -46,7 +49,9 @@ class RoundRobin(Competition):
         top = 0
         for group in groups:
             top += len(group)
-            self.standing.update({player: top for player in group})
+            standing.update({player: top for player in group})
+            
+        return standing
         
     def generate_games(self):
         return self.next_round()
@@ -79,7 +84,7 @@ class SwissRound(RoundRobin):
             self.make_groups()
 
     def next_round(self):
-        games = [uc.find_valid_draw(draws=self.draws(group)) for group in self.future_rounds]
+        games = [uc.find_valid_draw(draws=self.draws(group),games=self.games()) for group in self.future_rounds]
         return uu.flatten(games)
     
     # --- round mechanisme --- #

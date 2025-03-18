@@ -1,14 +1,12 @@
 from typing import Any, Callable
-
-from dataclasses import dataclass
 from collections import defaultdict
-
-import copy
 
 from rstt.player import Player
     
-    
-class keydefaultdict(dict[Player, Any]):
+import copy
+
+
+class keydefaultdict(defaultdict[Player, Any]):
     ''' a defaultdict accpeting lambda x: func(x)
     source:
     Minor modification from the answer of Paulo Costa in: 
@@ -28,26 +26,25 @@ class keydefaultdict(dict[Player, Any]):
 
 class KeyModel:
     def __init__(self, default=None, template=None, factory=None, *args, **kwargs):
-        self.ratings = self.__init_ratings(default, template, factory, *args, **kwargs)
+        self.__ratings = self.__init_ratings(default, template, factory, *args, **kwargs)
         self.__rtype = self.__get_rating_type()
         self.__default = self.__get_default_rating()
 
     # --- setter --- #
     def set(self, key, rating):
         # TODO: test rating type before assignement and thorw TypeError
-        self.ratings[key] = rating
+        self.__ratings[key] = rating
 
     # --- getter --- #
     def get(self, key):
         # QUEST: __getitem__ ?
-        return self.ratings[key]
+        return self.__ratings[key]
 
     def items(self):
-        # ??? ambiguous behaviour items() sugest a collection of (key, rating)
-        return self.ratings
+        return self.__ratings.items()
     
     def keys(self):
-        return self.ratings.keys()
+        return self.__ratings.keys()
 
     # --- general purpose methords --- #
     def rtype(self):
@@ -111,18 +108,18 @@ class KeyModel:
 
     def __get_rating_type(self):
         dummy = Player('dummy', 0.0)
-        rtype = type(self.ratings[dummy])
-        del self.ratings[dummy]
+        rtype = type(self.__ratings[dummy])
+        del self.__ratings[dummy]
         return rtype
 
     def __get_default_rating(self):
         dummy = Player('dummy', 0.0)
-        self.ratings[dummy]
-        return self.ratings.pop(dummy)
+        self.__ratings[dummy]
+        return self.__ratings.pop(dummy)
     
     # --- magic methods --- #
     def __delitem__(self, key: Player):
-        del self.ratings[key]
+        del self.__ratings[key]
     
     # ??? __setitem__
     # ??? __getitem__
@@ -132,6 +129,13 @@ class KeyModel:
 class GaussianModel(KeyModel):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, **kwargs)
+        
+        '''
+        TODO: type check the ratings, something like:
+        if not hasattr(self.default(), 'mu') or not hasattr(self.default(), 'sigma'):
+            # raise some kind of error
+            
+        '''
         
     def ordinal(self, rating):
         return rating.mu - 2*rating.sigma

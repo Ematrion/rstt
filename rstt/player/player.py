@@ -40,16 +40,19 @@ class Player(BasicPlayer):
             else: 
                 msg=f"Can not collect {achievement}. {self} already participated in an event called {achievement.event_name}"
                 raise ValueError(msg)
-
-    def reset(self) -> None:
-        self.__achievements = []
-        self.__games = []
-        
-    # --- internal mechanism --- #
+    
     @typechecked
     def add_game(self, match: Match) -> None:
         if match in self.__games:
             msg = f"{match} already present in game history of player {self}"
             raise ValueError(msg)
+        self.__add_game(match)
+        
+    def reset(self) -> None:
+        self.__achievements = []
+        self.__games = []
+        
+    # --- internal mechanism --- #
+    def __add_game(self, match: Match) -> None:
         self.__games.append(match)
 

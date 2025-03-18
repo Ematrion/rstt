@@ -1,5 +1,5 @@
 from rstt import Player, BTRanking, LogSolver, BasicElo
-from rstt.scheduler.tournament.knockout import SingleEliminationBracket
+from rstt import SingleEliminationBracket
 
 # some player
 population = Player.create(nb=16)

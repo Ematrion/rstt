@@ -1,8 +1,9 @@
-from typing import  List, Dict, Tuple, Any
+from typing import  List, Dict, Tuple, Union,Optional, Any
 from typeguard import typechecked
 
+import rstt.config as cfg
 from rstt.player import Player
-from rstt.stypes import SPlayer
+from rstt.stypes import SPlayer, Event
 
 import numpy as np
 import math
@@ -48,6 +49,58 @@ class PlayerWinPRC:
         return winrate
 
 
+# ------------------------ #
+# ----- Event Based ------ #
+# ------------------------ #
+class EventStanding:
+    def __init__(self, buffer: int, best: int, default: Optional[Dict[int, float]]=None):
+        self.buffer = buffer
+        self.best = best
+        
+        self.events = []
+        self.points = {}
+        
+        self.__default_points = default if default else cfg.EVENTSTANDING_DEFAULT_POINTS
+    
+    @typechecked
+    def add_event(self, event: Union[Event, str], points: Optional[Dict[int, float]]=None):
+        points = points if points else self.__default_points
+        if isinstance(event, str): # by str
+            self.events.append(event)
+            self.points[event] = points
+        else: # by Event
+            self.events.append(event.name())
+            self.points[event.name()] = points
+    
+    @typechecked
+    def remove_event(self, event: Union[Event, str]):
+        if isinstance(event, str): # by str
+            self.events.remove(event)
+            del self.points[event]
+        else: # by Event
+            self.events.remove(event.name())
+            del self.points[event.name()]
+    
+    @typechecked
+    def rate(self, player: Player):
+        # events that matter
+        events = self.events[-self.buffer:]
+        
+        # collected points in events
+        results = []
+        for achievement in player.achievements():
+            if achievement.event_name in events:
+                results.append(self.points[achievement.event_name][achievement.place])
+
+        # get only the best results
+        results.sort()
+        best_results = results[-min(len(results),self.best):]
+        
+        # sum the best results considered
+        points = sum(best_results)
+        return {player: points}
+
+    
 # ------------------------ #
 # --- Game Score Based --- #
 # ------------------------ #
@@ -187,7 +240,7 @@ class Glicko:
         
         return rating
 
-    def rate(self, rating, ratings: List[Any], scores: List[float]):
+    def rate(self, rating, ratings: List[Any], scores: List[float], *args, **kwars):
         # formating
         games = [(r, s) for r, s in zip(ratings, scores)]
         return self.newRating(rating, games)

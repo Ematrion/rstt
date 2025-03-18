@@ -26,7 +26,7 @@ class Competition(metaclass=abc.ABCMeta):
                  solver: Solver=BetterWin(),
                  cashprize: Optional[Dict[int, float]]=None):
         # a name
-        self.name = name
+        self.__name = name
         
         # 'settings'
         self.participants = []
@@ -38,7 +38,7 @@ class Competition(metaclass=abc.ABCMeta):
         
         # result related variable
         self.played_matches = []
-        self.standing = {}
+        self.__standing = {}
         
         # control variable
         self.__started = False
@@ -46,6 +46,9 @@ class Competition(metaclass=abc.ABCMeta):
         self.__closed = False
 
     # --- getter --- #
+    def name(self):
+        return self.__name
+
     def started(self):
         return self.__started
     
@@ -55,16 +58,21 @@ class Competition(metaclass=abc.ABCMeta):
     def over(self):
         return self.__closed
     
+    def standing(self):
+        return self.__standing
+    
     @typechecked
     def games(self, by_rounds=False):
+        # ??? raise error/warnings if not finished
         return self.played_matches if by_rounds else uu.flatten(self.played_matches)
     
     @typechecked
     def top(self, place: Optional[int]=None) -> Union[Dict[int, List[Player]], List[Player]]:
+        # ??? raise error/warnings if not finshed
         if place:
-            return [key for key, value in self.standing.items() if value == place]
+            return [key for key, value in self.__standing.items() if value == place]
         else:
-            return {v: [key for key, value in self.standing.items() if value == place] for v in self.standing.values()}
+            return {v: [key for key, value in self.__standing.items() if value == place] for v in self.__standing.values()}
 
     # --- general mechanism --- #
     @typechecked
@@ -111,10 +119,10 @@ class Competition(metaclass=abc.ABCMeta):
             return self._end_of_stage()
 
     def trophies(self):
-        self.standing = self._standing()
+        self.__standing = self._standing()
         for player in self.participants:
             try: 
-                result = Achievement(self.name, self.standing[player], self.cashprize[self.standing[player]])
+                result = Achievement(self.__name, self.__standing[player], self.cashprize[self.__standing[player]])
                 player.collect(result)
             except AttributeError:
                 continue

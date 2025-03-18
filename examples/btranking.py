@@ -1,4 +1,4 @@
-from rstt import Player, Duel, BTRanking
+from rstt import Player, BTRanking
 
 
 population = [Player(name=f'Player_{i}', level=i*100) for i in range(20)]

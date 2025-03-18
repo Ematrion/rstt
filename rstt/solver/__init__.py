@@ -1,1 +1,1 @@
-from .solvers import BetterWin, BradleyTerry, LogSolver
+from .solvers import BetterWin, BradleyTerry, LogSolver, CoinFlip

@@ -2,7 +2,7 @@ from rstt.ranking import Standing
 from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import KeyModel, GaussianModel
 from rstt.ranking.rating import GlickoRating
-from rstt.ranking.inferer import Glicko, Elo, PlayerLevel, PlayerWinPRC
+from rstt.ranking.inferer import Glicko, Elo, PlayerLevel, PlayerWinPRC, EventStanding
 from rstt.ranking.observer import  GameByGame, BatchGame, KeyChecker
 
 
@@ -29,11 +29,32 @@ class WinRate(Ranking):
     def __init__(self, name: str='', default: float=-1.0, players=None):
         backend = PlayerWinPRC(default=default)
         super().__init__(name=name,
-                         standing=Standing(),
                          datamodel=KeyModel(factory = lambda x: backend.win_rate(x)),
                          backend=backend,
                          handler=KeyChecker(),
                          players=players)
+
+
+class SuccessRanking(Ranking):
+    def __init__(self, name: str =',', buffer: int=1, best: int=1, players=None, default=None):
+        super().__init__(name=name,
+                        datamodel=KeyModel(template=int),
+                        backend=EventStanding(buffer=buffer, best=best, default=default),
+                        handler=KeyChecker(),
+                        players=players)
+
+    def add_event(self, *args, **kwargs):
+        self.backend.add_event(*args, **kwargs)
+
+    def remove_event(self, *args, **kwargs):
+        self.backend.remove_event(*args, **kwargs)
+       
+    def forward(self, event=None, points=None, *args, **kwargs):
+        if event:
+            self.backend.add_event(event, points)
+        self.handler.handle_observations(infer=self.backend,
+                            datamodel=self.datamodel,
+                            *args, **kwargs)
 
 
 # ------------------------- #

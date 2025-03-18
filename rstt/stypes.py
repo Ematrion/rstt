@@ -1,13 +1,26 @@
+"""Types in RSTT
+
+This modules defines different componnents types for the package. RSTT user level functions and class methods are typehecked.
+It helps raising meaningfull errors at runtime, write understandable functions.
+The module purpose is also to help develloper to extent and integrate their own component that fit in the RSTT framework.
+
+When a type name clashes with an existing class, the type name is prefixed by a capital `S`.
+For example: :class:`rstt.stypes.SPlayer` should only be used for typehint in functions signatures, while :class:`rstt.player.player.Player` is a class representing competitors.
+RSTT relies on typeguard 3.0.0 and `Duck-Typing`.
+Which means that Protocol are defined by the existence of attributes/methods, and not their type signatures.
+"""
+
+
+
 from dataclasses import dataclass
-from typing import List,Union,  Any, Iterable, Protocol, runtime_checkable
+from typing import List, Dict, Union,  Any, Iterable, Protocol, runtime_checkable
 
 
-# TODO: define 'Event', 'Tournament', 'MatchMaking'
-
-
+# TODO: work on Scheduler typing and differences between 'Tournament' & 'MatchMaking'
 
 
 
+@runtime_checkable
 class SPlayer(Protocol):
     def name(self) -> str:
         ...
@@ -16,7 +29,7 @@ class SPlayer(Protocol):
         ...
 
 
-Score = list[float] # type Score = list[float] -> SYNTAX VALID SINCE 3.12, package build for 3.10
+Score = list[float]
 
 
 @runtime_checkable
@@ -26,8 +39,21 @@ class SMatch(Protocol):
     
     def scores(self) -> Score:
         ...
+
+
+@runtime_checkable
+class Event(Protocol):
+    '''    participants: List[Player]
+    standing = Dict[Player, int]'''
     
-    # FIXME: def __set_result(self, score: Score) -> None:
+    def name(self) -> str:
+        ...
+        
+    def games(self, by_rounds) -> List[SMatch]:
+        ...
+    
+    def standing(self) -> Dict[SPlayer, int]:
+        ...
 
 
 @dataclass
@@ -35,9 +61,9 @@ class Achievement:
     event_name: str
     place: int
     prize: float
-    # ??? categorie (world event, domestic league, playoffs etc.)
+    # ??? categorie/label(s) (world event, domestic league, playoffs etc.)
     # ??? event_type (SEB, Snake, MM etc)
-    # ??? teamates
+    # ??? teammates
 
     
 @runtime_checkable

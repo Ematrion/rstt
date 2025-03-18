@@ -96,15 +96,6 @@ class SwissBracket(Competition):
                                     games=self.games()) 
                                     for score in self.round_scores()]
         return uu.flatten(games)
-
-    '''def generate_games(self):
-        try:
-            games = [uc.find_valid_draw(draws=self.draws(group=self.rounds[score]),
-                                        games=self.games()) 
-                                        for score in self.round_scores()]
-        except RuntimeWarning:
-            warnings.warn('cacth and throw', RuntimeWarning)
-        return uu.flatten(games)'''
     
     # --- round mechanism --- #
     @typechecked

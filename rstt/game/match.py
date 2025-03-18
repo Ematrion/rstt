@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from typeguard import typechecked
 
 from rstt.stypes import SPlayer, Score
@@ -6,10 +6,10 @@ import rstt.config as cfg
 
 class Match():
     @typechecked
-    def __init__(self, teams: List[List[SPlayer]], tracking: bool=cfg.MATCH_HISTORY) -> None:
+    def __init__(self, teams: List[List[SPlayer]], tracking: Optional[bool]=None) -> None:
         self.__teams = teams
         self.__scores = None
-        self.__tracking = tracking
+        self.__tracking = tracking if tracking is not None else cfg.MATCH_HISTORY
         
     # --- getter --- #
     def teams(self) -> List[List[SPlayer]]:
@@ -87,7 +87,8 @@ class Match():
     
     
 class Duel(Match):
-    def __init__(self, player1: SPlayer, player2: SPlayer, tracking: bool=cfg.DUEL_HISTORY) -> None:
+    def __init__(self, player1: SPlayer, player2: SPlayer, tracking: Optional[bool]=None) -> None:
+        tracking = tracking if tracking is not None else cfg.DUEL_HISTORY
         super().__init__(teams=[[player1], [player2]], tracking=tracking)
         
     # --- getter --- #

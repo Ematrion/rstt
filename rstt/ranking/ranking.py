@@ -307,7 +307,7 @@ class Ranking():
     def rerank(self, permutation: List[int], name: str = None, direct: bool = True):
         # TODO: write doc
         # check permutation validity
-        if not (set(permutation) == set(i for i,_ in enumerate(self))):
+        if not (set(permutation) == set(list(range(len(self))))):
             # TODO: write good msg error
             msg = ''
             raise ValueError(msg)

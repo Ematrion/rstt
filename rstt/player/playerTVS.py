@@ -3,17 +3,20 @@ from typeguard import typechecked
 
 import abc
 
+from rstt.stypes import SMatch
 from rstt.player import Player
 import rstt.utils.functions as uf
 
 import numpy as np
 import random
 
+
 class PlayerTVS(Player, metaclass=abc.ABCMeta):
     def __init__(self, name: str, level: float) -> None:
         super().__init__(name=name, level=level)
         self.__current_level = self._BasicPlayer__level
-        self.__level_history = []
+        self.__level_history = [self.__current_level]
+        self._Player__games = [None]
         
     # --- getter --- #
     def level_history(self) -> List[float]:
@@ -22,15 +25,39 @@ class PlayerTVS(Player, metaclass=abc.ABCMeta):
     def original_level(self) -> float:
         return self._BasicPlayer__level
     
+    def level_in(self, game: SMatch) -> float:
+        return self.__level_history[self._Player__games.index(game)]
+    
+    # --- setter --- #
+    def update_level(self, *args, **kwars) -> None:
+        self._update_level(*args, **kwars)
+        self.__level_history.append(self.__current_level)
+        self._Player__add_game(None)
+
     # --- override --- #
     def level(self) -> float:
         return self.__current_level
     
+    def games(self) -> list[SMatch]: #Match
+        return [game for game in self.games() if game != None]
+    
+    def add_game(self, *args, **kwars) -> None:
+        super().add_game(*args, **kwars)
+        self.__level_history.append(self.__current_level)
+    
+    def reset(self):
+        self._reset_level()
+        super().reset()
+        self.__level_history.append(self.__current_level)
+    
     # --- internal mechanism --- #
+    def _reset_level(self) -> None:
+        self.__level_history = []
+        self.__current_level = self._BasicPlayer__level
+    
     @abc.abstractmethod
-    def update_level(self, *args, **kwars) -> None:
+    def _update_level(self) -> None:
         '''change the self.__current_level value'''
-
         
 class ExponentialPlayer(PlayerTVS):
     @typechecked

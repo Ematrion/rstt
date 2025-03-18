@@ -59,3 +59,4 @@ def test_reset_all():
     assert p1.achievements() == []
     assert p1.earnings() == 0
 
+
