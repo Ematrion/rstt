@@ -1,11 +1,11 @@
-from typing import List, Callable
+from typing import List, Optional, Callable
 from typeguard import typechecked
 
 from rstt import Duel
 from rstt.stypes import Score
 import rstt.utils.functions as uf
 
-from rstt.config import LOGSOLVER_BASE, LOGSOLVER_LC
+import rstt.config as cfg
 
 import random
 
@@ -87,10 +87,10 @@ class BradleyTerry(ScoreProb):
 
 
 class LogSolver(ScoreProb):
-    def __init__(self, base: float=LOGSOLVER_BASE, lc: float=LOGSOLVER_LC):
+    def __init__(self, base: Optional[float]=None, lc: Optional[float]=None):
         super().__init__(scores=[WIN, LOSE], func=self.__probabilities)
-        self.base = base
-        self.lc = lc
+        self.base = base if base is not None else cfg.LOGSOLVER_BASE
+        self.lc = lc if lc is not None else cfg.LOGSOLVER_LC
     
     def __probabilities(self, duel: Duel) -> List[float]:
         level1 = duel.teams()[0][0].level()

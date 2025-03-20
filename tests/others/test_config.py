@@ -54,13 +54,16 @@ def test_basicPlayer_default_gaussian_args():
     assert np.average(levels) == pytest.approx(cfg.PLAYER_GAUSSIAN_MU, 0.1)
     assert math.sqrt(np.var(levels)) == pytest.approx(cfg.PLAYER_GAUSSIAN_SIGMA, 0.1)
     
-def test_basicPlayer_set_gaussian_args():
+def test_basicPlayer_modify_PLAYER_DIST_ARGS():
     new_mu = 1000
     new_sigma = 100
     
+    # change the variables
     cfg.PLAYER_DIST_ARGS['mu'] = new_mu
     cfg.PLAYER_DIST_ARGS['sigma'] = new_sigma
     players = [BasicPlayer(f'player_{i}') for i in range(1000)]
+    
+    # undo to avoid side-effect
     cfg.PLAYER_DIST_ARGS['mu'] = cfg.PLAYER_GAUSSIAN_MU
     cfg.PLAYER_DIST_ARGS['sigma'] = cfg.PLAYER_GAUSSIAN_SIGMA
     
