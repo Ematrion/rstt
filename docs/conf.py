@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'RSTT Documentation'
+project = 'RSTT'
 copyright = '2025, David Bucher'
 author = 'David Bucher'
 release = '0.5.0'
