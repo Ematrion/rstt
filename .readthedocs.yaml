@@ -24,4 +24,4 @@ python:
 
 # my additions
 formats:
-  - htmlzip
+  - pdf
