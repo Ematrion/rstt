@@ -14,10 +14,10 @@ ALWAYS = 'always'
 
 
 def get_sort(func: Callable[..., Any]) -> Callable[..., Any]:
-    '''Sorting decorator
-    
+    """Sorting decorator
+
     This function sort the Standing before its access.
-    '''
+    """
     def wrapper_get(self: Any, *args, **kwars) -> Any:
         if self._Standing__protocol in [GET_SORT, ALWAYS]:
             self._Standing__sort()
@@ -25,15 +25,16 @@ def get_sort(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper_get
  
 def set_sort(func: Callable[..., Any]) -> Callable[..., Any]:
-    '''Sorting decorator
-    
+    """Sorting decorator
+
     This function sort the Standing after modification.
 
     FIXME:
         - 'lazy' sorting. Some set/edit operations are performing iteratively modifications.
         The sorting should only be called after the last operation, when the 'user call' is done.
         Example: add() and __add()
-    '''
+        
+    """
     def wrapper_set(self: Any, *args, **kwargs) -> Any:
         set_action = func(self, *args, **kwargs)
         if self._Standing__protocol in [SET_SORT, ALWAYS]:
@@ -41,16 +42,16 @@ def set_sort(func: Callable[..., Any]) -> Callable[..., Any]:
         return set_action
     return wrapper_set
 
-'''
-TODO: ADD
-def not_sorted_error(func: Callable[..., Any]) -> Callable[..., Any]:
-    def wrapper_check(self: Any, *args, **kwargs) -> Any:
-        if not self._Standing__sorted:
-            msg = f"Can not call {func.__name__} on unsorted Standing"
-            raise RuntimeError(msg)
-        return func(self, *args, **kwargs)
-    return wrapper_check
-'''
+
+#TODO: ADD
+#def not_sorted_error(func: Callable[..., Any]) -> Callable[..., Any]:
+#    def wrapper_check(self: Any, *args, **kwargs) -> Any:
+#        if not self._Standing__sorted:
+#            msg = f"Can not call {func.__name__} on unsorted Standing"
+#            raise RuntimeError(msg)
+#        return func(self, *args, **kwargs)
+#    return wrapper_check
+
 
 
 

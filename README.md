@@ -1,9 +1,13 @@
-# RSTT
+<div align="center">
+<h1>Awpy</h1>
+
+[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [
+
 
 ALPHA STATE - usable but frequent changes
 
 Rstt stands for Ranking Simulation Testing Tool. 
-A package to test how ranking and seedings of players, behave regarding different format of competitions.
+A package to test how ranking and seedings of players behave regarding different format of competitions.
 It has features to closely study interaction between ranking design, matchmaking algorithm and competitiors models.
 
 The goal is to offer an inituitive syntax to build complex simulation that output syntethetic dataset for analysis.
@@ -11,7 +15,20 @@ The package has been designed with modularity and inheritance in mind. Users sho
 
 
 ### Installation
-The package is available on PyPi
+
+The package is available on PyPi. To install, run
+
+```
+pip install rstt
+```
+
+User Documentation is available on readthedocs [Documentation](https://rstt.readthedocs.io/en/latest/).
+
+
+
+### Code Examples
+
+
 
 ### Concept
 

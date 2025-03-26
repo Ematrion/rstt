@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import List, Optional, Callable
 from typeguard import typechecked
 
 import abc
@@ -12,40 +12,109 @@ import random
 
 
 class PlayerTVS(Player, metaclass=abc.ABCMeta):
-    def __init__(self, name: str, level: float) -> None:
+    def __init__(self, name: Optional[str]=None, level: Optional[float]=None) -> None:
+        """Player with time varying level.
+
+        The class introduce a mechanism for Player to change their level during simulation while maintaining the ability to track their match properly.
+        Their is only one abstract method to implement when inheriting from it, the :func:`rstt.player.playerTVS.PlayerTVS._update_level`
+
+        Parameters
+        ----------
+        name : str, optional
+            A unique name to identify the player. By default None, in this case a name is randomly generated.
+        level : float, optional
+            The level/skill/strenght of the player. By default None, in this case a level is randoly generated.
+        """
         super().__init__(name=name, level=level)
-        self.__current_level = self._BasicPlayer__level
+        self.__current_level = self._BasicPlayer__level # ??? redundancy with self.__level_history[-1]
         self.__level_history = [self.__current_level]
         self._Player__games = [None]
         
     # --- getter --- #
     def level_history(self) -> List[float]:
+        """Getter for the player's level's evolution.
+
+        Returns
+        -------
+        List[float]
+            All the level the player had in chronological order
+        """
         return self.__level_history
     
     def original_level(self) -> float:
+        """The first level
+        
+        Sugar for PlayerTVS.level_history()[0]
+
+        Returns
+        -------
+        float
+            The original level (at instanciation)
+        """
         return self._BasicPlayer__level
     
     def level_in(self, game: SMatch) -> float:
+        """The level a player displayed in a given game
+
+        Parameters
+        ----------
+        game : SMatch
+            A match to query the player's level in.
+
+        Returns
+        -------
+        float
+            The player's level in the given game.
+        """
         return self.__level_history[self._Player__games.index(game)]
     
     # --- setter --- #
     def update_level(self, *args, **kwars) -> None:
+        """Method to update the player's level
+        """
         self._update_level(*args, **kwars)
         self.__level_history.append(self.__current_level)
         self._Player__add_game(None)
 
     # --- override --- #
     def level(self) -> float:
+        """Getter method for the player's level
+
+        Returns
+        -------
+        float
+            The current level of the player.
+        """
         return self.__current_level
     
-    def games(self) -> list[SMatch]: #Match
+    def games(self) -> list[SMatch]:
+        """Getter method for match the player participated in
+
+        Returns
+        -------
+        List[Match]
+            All the matches the player played in chronolgical order, from oldest to the most recent.
+        """
         return [game for game in self.games() if game != None]
     
     def add_game(self, *args, **kwars) -> None:
+        """Adds match to the player history
+
+        Parameters
+        ----------
+        match : Match
+            A match to track.
+
+        Raises
+        ------
+        ValueError
+            The match needs to be a game in which the player partipiated in and not already tracked. Either condition violated will raise an Error.
+        """
         super().add_game(*args, **kwars)
         self.__level_history.append(self.__current_level)
     
     def reset(self):
+        # TODO: check how to match the Player.reset() param calls
         self._reset_level()
         super().reset()
         self.__level_history.append(self.__current_level)
