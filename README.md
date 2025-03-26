@@ -1,7 +1,7 @@
 <div align="center">
 <h1>Awpy</h1>
 
-[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [
+[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest)
 
 
 ALPHA STATE - usable but frequent changes
