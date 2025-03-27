@@ -13,7 +13,6 @@ duel = Duel(player1=p1, player2=p2)
 print(duel.player1(), duel.player2())
 print(duel.opponent(duel.player1()))
 
-
 # print
 print(match)
 print(duel)
