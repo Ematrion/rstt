@@ -13,6 +13,15 @@ dependencies = [
     "numpy (>=2.2.2,<3.0.0)",
     "names (>=0.3.0,<0.4.0)",
 ]
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Games/Entertainement'
+    'Topic' :: Simulation,
+    'Typing :: Typed',
+]
+
 
 [project.urls]
 repository = "https://github.com/Ematrion/rstt"

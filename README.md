@@ -1,21 +1,23 @@
 <div align="center">
 <h1>RSTT</h1>
 
-[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![Awpy Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/CyB3Ptf3) 
+[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) ![PyPI - Types](https://img.shields.io/pypi/types/RSTT) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![Awpy Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/CyB3Ptf3) 
 </div>
 
-
-ALPHA STATE - usable but frequent changes
-
-Rstt stands for Ranking Simulation Testing Tool. 
-A package to test how ranking and seedings of players behave regarding different format of competitions.
-It has features to closely study interaction between ranking design, matchmaking algorithm and competitiors models.
-
-The goal is to offer an inituitive syntax to build complex simulation that output syntethetic dataset for analysis.
-The package has been designed with modularity and inheritance in mind. Users should be able to build upon the package and intergrete their own ranking, matchmaking or player models with ease. 
+**Simulation Framework for Tournament and Ranking in Competition**
 
 
-### Installation
+- :warning: ALPHA version. Package still under construction. Do not hesitate to suggest features addition
+- :bulb: Design for simulation based research
+- :minidisc: Production of large synthetic dataset
+- :computer: Automated simulation workflow
+- :page_with_curl: Document your model by referercing class sources
+- :chart_with_upwards_trend: Enhance Analysis by comparing trained models to simulation models. 
+- :wrench: Design and integrate your own custom componen
+- :question: Support and advise on [Discord](https://discord.gg/CyB3Ptf3) 
+
+
+## Installation
 
 The package is available on PyPi. To install, run
 
@@ -23,14 +25,25 @@ The package is available on PyPi. To install, run
 pip install rstt
 ```
 
-User Documentation is available on readthedocs [Documentation](https://rstt.readthedocs.io/en/latest/).
+User [Documentation](https://rstt.readthedocs.io/en/latest/) is available on readthedocs.
 
 
-### Code Examples
+## Description
+
+The package is meant for science and simulation based research in the context of competition.
+Whenever possible code is based on peer reviewed publication and cite the sources.
+
+This package provides everything needed to simulate competition and generate synthetic match dataset.
+It contains ranking implementation (such as Elo and Glicko ...), popular tournament format (Single elimination bracket, round robin, ...), many versus many game mode with automated outcome (score/result) generation methods. Additionaly different player model are available, including time varing strenght.
+
+RSTT is a framework, letting user developp and intergrate with ease their own models to test.
+
+## Code Examples
 
 
 
-### Concept
+
+## Concept
 
 The rstt package is build on 5 fundamental abstraction:
 - Player: who participate in games and are items in rankings
@@ -44,7 +57,7 @@ The rstt package is build on 5 fundamental abstraction:
 - Ranking: Ranking is a tuple (standing, rating system, inference method, observer) that estimate a skill value (or point) for player.
 
 
-The following concepts are directly related to the notion of Ranking. There are of interest only if you work on ranking design rather than ranking performances and properties.
+The following concepts are directly related to the notion of Ranking. There are of interest if you intend to use the package for ranking design or comparative studies.
 - Standing: is an hybrid container that implement a triplet relationship between (rank, player, point) and behave like a List[Player], Dict[Player, rank] and Dict[rank, Player]. 
 
 - RatingSystem: store data computed by ranking for player
