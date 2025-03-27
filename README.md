@@ -1,7 +1,7 @@
 <div align="center">
 <h1>RSTT</h1>
 
-[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![Awpy Discord](https://img.shields.io/discord/1354379146221981777/1354379146221981780?color=blue&label=Discord&logo=discord)](https://discord.gg/CyB3Ptf3) 
+[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![Awpy Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/CyB3Ptf3) 
 </div>
 
 
