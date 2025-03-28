@@ -106,7 +106,7 @@ class EventStanding:
 # ------------------------ #
 class Elo:
     def __init__(self, k: float = 20.0, lc: float = 400.0):
-        self.LC = lc
+        self.lc = lc
         self.K = k
         # TODO self.distribution = dist & change expectedScore
 
@@ -123,7 +123,8 @@ class Elo:
         return [[new_r1], [new_r2]]
 
     def expectedScore(self, rating1, rating2):
-        return 1.0 / (1.0 + math.pow(10, (rating2-rating1)/self.LC))
+        # TODO: 'DRY' -> use uf.logistic_elo
+        return 1.0 / (1.0 + math.pow(10, (rating2-rating1)/self.lc))
     
     def update_rating(self, rating1: float, rating2:float, score:float):
         expected_result = self.expectedScore(rating1, rating2)

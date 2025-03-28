@@ -9,6 +9,18 @@ It offers a simple approach to tune behaviour of simulations once instead of pas
     
 Example
 -------
+.. code-block:: python
+    :linenos:
+    
+    from rstt import Player
+    import rstt.config as cfg
+    
+    
+    cfg.PLAYER_DIST_ARGS['mu'] = 2000
+    cfg.PLAYER_DIST_ARGS['sigma'] = 50
+
+    # create players with an average level of approx. 2000 and a standard deviation of 50
+    players = Player.create(nb=10)
 """
 
 import random

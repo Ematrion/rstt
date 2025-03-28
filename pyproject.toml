@@ -1,6 +1,6 @@
 [project]
 name = "rstt"
-version = "0.5.3"
+version = "0.6.0"
 description = "Ranking Simulation Testing Tool"
 authors = [
     {name = "Bucher David", email = "davidbucherdev@gmail.com"}
@@ -17,8 +17,8 @@ classifiers = [
     'Development Status :: 3 - Alpha',
     'Intended Audience :: Science/Research',
     'Topic :: Scientific/Engineering',
-    'Topic :: Games/Entertainement'
-    'Topic' :: Simulation,
+    'Topic :: Games/Entertainment',
+    'Topic :: Games/Entertainment :: Simulation',
     'Typing :: Typed',
 ]
 

@@ -75,6 +75,20 @@ truth = BTRanking(name='Consensus Ranking', players=population)
 truth.plot()
 ```
 
+### Simulation Based Research
+
+The package is meant to enable research question and research in the field of competition. For those interested but unfamiliar with the fiels and best practices here are some ressources:
+
+- [Anu Maria](https://dl.acm.org/doi/pdf/10.1145/268437.268440) [[1]](#1), covers steps to follow and pitfalls to avoid in simulation based research.
+- [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) present base models in the context of sport competition and introduce research questiions. Several classes and features of the RSTT are inspired by this paper.
+- [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) uses synthetic dataset to provide insight about observations in real game data set.
+
+
+### Tutorial
+
+Simulation based research should not be code dependant, rather model dependant.
+Thus I propose as [tutrial](https://github.com/Ematrion/rstt/blob/main/tutorials/EloRatingBernoulliModel.ipynb) a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4), which was originaly performed in R. It is a great example of the rstt features as it uses ranking, solver and scheduler models.
+
 
 ### Package Concept
 
@@ -92,29 +106,11 @@ Regarding ranking's component.
 - Inferer: in charge of statistical inference and provide a rate() method.
 - Observer: manage the workflow from the observation that triggers the update of a ranking to the new computed ratings of players.
 
-
-### Simulation Based Research
-
-The package is meant to enable research question and research in the field of competition. For those interested but unfamiliar with the fiels and best practices here are some ressources:
-
-- [Anu Maria](https://dl.acm.org/doi/10.1145/268437.268440) [[1]](#1), covers steps to follow and pitfalls to avoid in simulation based research.
-- [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) present base models in the context of sport competition and introduce research questions
-- [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) uses synthetic dataset to provide insight about observations in real game data set.
-
-
-> [!IMPORTANT]
-> If you use RSTT, consider linking back to this repo!
-
-### Tutorial
-
-Simulation based research should not be code dependant, rather model dependant.
-Thus I propose as [tutrial](https://github.com/Ematrion/rstt/blob/main/tutorials/EloRatingBernoulliModel.ipynb) a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4), which was originaly performed in R. It is a great example of the rstt features as it uses ranking, solver and scheduler models.
-
 ## Community
 
 
-## How to cite pyosPackage
-
+## How to cite
+If you use RSTT, consider linking back to this repo!
 
 ## Source
 <a id="1">[1]</a> 
