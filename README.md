@@ -99,13 +99,16 @@ The package is meant to enable research question and research in the field of co
 
 - [Anu Maria](https://dl.acm.org/doi/10.1145/268437.268440) [[1]](#1), covers steps to follow and pitfalls to avoid in simulation based research.
 - [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) present base models in the context of sport competition and introduce research questions
-- [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) 
+- [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) uses synthetic dataset to provide insight about observations in real game data set.
 
+
+> [!IMPORTANT]
+> If you use RSTT, consider linking back to this repo!
 
 ### Tutorial
 
 Simulation based research should not be code dependant, rather model dependant.
-Thus I propose as [tutrial]() a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document), which was originaly performed in R.
+Thus I propose as [tutrial](https://github.com/Ematrion/rstt/blob/main/tutorials/EloRatingBernoulliModel.ipynb) a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4), which was originaly performed in R. It is a great example of the rstt features as it uses ranking, solver and scheduler models.
 
 ## Community
 

@@ -183,7 +183,7 @@ class Ranking():
 
         Returns
         -------
-        _type_
+        Any
             The associated model to the provided key. The type is defined by Ranking.RatingSystem.rtype
             
         Raises
