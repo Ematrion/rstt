@@ -10,10 +10,12 @@ elo = BasicElo(name='Elo Ranking', players=population)
 # display the ranking to the standard output
 elo.plot()
 
-# create a competition - we specify to use the elo ranking for seedings and the solver to produce use match outcome.
-tournament = SingleEliminationBracket(name='RSTT World Cup 2024', seeding=elo, solver=LogSolver())
+# create a competition with elo ranking for seedings.
+tournament = SingleEliminationBracket(name='RSTT World Cup 2024',
+                                      seeding=elo,
+                                      solver=LogSolver())
 
-# register player - the seedings do not define the participants, unranked partcipants get assigned lower seeds
+# register player - unranked partcipants get assigned lower seeds
 tournament.registration(population)
 
 # play the tournament

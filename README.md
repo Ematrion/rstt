@@ -40,7 +40,7 @@ RSTT is a framework, letting user developp and intergrate with ease their own mo
 
 ## Getting Started
 
-#### Basic package example
+### Basic package example
 
 ```python
 from rstt import Player, BTRanking, LogSolver, BasicElo
@@ -76,7 +76,7 @@ truth.plot()
 ```
 
 
-#### Package Concept
+### Package Concept
 
 The rstt package is build on 5 fundamental abstraction:
 - Player: who participate in games and are items in rankings. Different models are available including ones with 'time varying skills'
@@ -93,14 +93,19 @@ Regarding ranking's component.
 - Observer: manage the workflow from the observation that triggers the update of a ranking to the new computed ratings of players.
 
 
-#### Simulation Based Research
+### Simulation Based Research
 
-The package is meant to enable research question and research in the field of competition.
+The package is meant to enable research question and research in the field of competition. For those interested but unfamiliar with the fiels and best practices here are some ressources:
 
-If you are interested, but unfamiliar with simulation approach you can refer to Anu Maria's [paper](https://dl.acm.org/doi/10.1145/268437.268440) [[1]](#1). It covers steps to follow and pitfalls to avoid. 
+- [Anu Maria](https://dl.acm.org/doi/10.1145/268437.268440) [[1]](#1), covers steps to follow and pitfalls to avoid in simulation based research.
+- [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) present base models in the context of sport competition and introduce research questions
+- [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) 
 
-If you are interested in what and how research can be conducted specificaly in the context of this package, the
 
+### Tutorial
+
+Simulation based research should not be code dependant, rather model dependant.
+Thus I propose as [tutrial]() a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document), which was originaly performed in R.
 
 ## Community
 
@@ -127,4 +132,4 @@ arXiv preprint arXiv:2502.10985.
 <a id="4">[4]</a>
 Adrien Krifa, Florian Spinelli, Stéphane Junca.
 On the convergence of the Elo rating system for a Bernoulli model and round-robin tournaments.
-[Research Report] Université Côte D’Azur. 2021. ⟨hal-03286065⟩ (https://hal.science/hal-03286065v1/file/Elo%20M1%20IM%20hal.pdf).
+[Research Report] Université Côte D’Azur. 2021. ⟨hal-03286065⟩.
