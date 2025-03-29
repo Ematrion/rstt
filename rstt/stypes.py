@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Union,  Any, Iterable, Protocol, runtime_checkable
 
 
-# TODO: work on Scheduler typing and differences between 'Tournament' & 'MatchMaking'
+# TODO: work on Scheduler typing and similarities/differences between 'Tournament' & 'MatchMaking'
 
 
 
@@ -135,6 +135,7 @@ class Achievement:
     """The earnings of the player during the event"""
     # ??? categorie/label(s) (world event, domestic league, playoffs etc.)
     # ??? event_type (SEB, Snake, MM etc)
+    # ??? Match type (duel, many-versus-many, other not yet implemented ...)
     # ??? teammates
 
     
@@ -245,7 +246,7 @@ class RatingSystem(Protocol):
         """Convert a value to a float
 
         This methods is used to compare keys to each others based on their associated values.
-
+        
         Parameters
         ----------
         rating : Any
@@ -272,7 +273,7 @@ class Observer(Protocol):
 
     .. note::
         'Observation' is an abstract arbitrary notion, it does not even need to be something passed as a parameters to a :func:`rstt.ranking.ranking.Ranking.update` method.
-        For example the :class:`rstt.ranking.standard.BTRanking` rank players based on the returned value of their level() method, which is can potentially change silently during a simulation.
+        For example the :class:`rstt.ranking.standard.BTRanking` rank players based on the returned value of their level() method, which could change silently during a simulation.
         In this case the ranking.update() method is called without parameters.
         
     """
@@ -281,11 +282,11 @@ class Observer(Protocol):
         # TODO:
             - work on observer as a pipeline of transformation and operation
             - common components are:
+                * transform/format the observation(s)
                 * QUERY the datamodel
-                * transform the observation
                 * call the Inference
                 * POST updates in the datamodel
-                *...
+                * ...
     '''
     def handle_observations(self, infer: Inference, datamodel: RatingSystem, *args, **kwargs) -> None:
         """method that triggers a rating update routine

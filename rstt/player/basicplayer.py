@@ -96,7 +96,7 @@ class BasicPlayer():
         Names are of the form f"Seed_{i}", and the lowest i, the higher the level of the player.
         
         .. warning::
-            The rstt package relies on player'name to identify them. This method can result in name clashing and confusing which may lead to unexpected bahaviour accross simulations.
+            The rstt package relies on player's name to identify them - there is no ID. This method can result in name clashing which may lead to confusion and unexpected bahaviour accross simulations.
             It is heavly recommanded to be carefull when calling this method multiple times. Either by tuning the 'start' parameter or deleting previously created player.
 
         Parameters

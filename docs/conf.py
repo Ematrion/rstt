@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = 'RSTT'
 copyright = '2025, David Bucher'
 author = 'David Bucher'
-release = '0.5.0'
+release = '0.6.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -25,7 +25,9 @@ extensions = ["sphinx.ext.todo",
               ]
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build',
+                    'Thumbs.db',
+                    '.DS_Store',]
 
 
 
