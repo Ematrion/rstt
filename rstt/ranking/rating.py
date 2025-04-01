@@ -1,3 +1,9 @@
+"""Module for rating
+
+Contains standard rating for common Ranking systems.
+"""
+
+
 
 from dataclasses import dataclass
 import rstt.utils.constants as cst

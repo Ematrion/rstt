@@ -74,7 +74,6 @@ GAUSSIAN_PLAYER_SIGMA_ARGS = {'mu': GAUSSIAN_PLAYER_SIGMA_MEAN,
 """Default args for level deviation generator used by :class:`rstt.player.gaussian.GaussianPlayer` when param 'sigma' is None"""
 
 
-
 # --- ExpPlayer --- #
 EXPONENTIAL_START_MEAN = 1500
 EXPONENTIAL_START_SIGMA = 500
@@ -99,6 +98,12 @@ LOGISTIC_DIFF_ARGS = {'mu': LOGISTIC_DIFF_MEAN,
                       'sigma': LOGISTIC_DIFF_SIGMA}
 LOGISTIC_START_DIST = random.gauss
 LOGISTIC_DIFF_DIST = random.gauss
+
+
+# --- CyclePlayer --- #
+
+
+# --- JumpPlayer --- #
 
 
 # -------------------- #

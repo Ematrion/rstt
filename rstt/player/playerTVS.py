@@ -281,3 +281,10 @@ class JumpPlayer(PlayerTVS):
             # new level
             self._PlayerTVS__current_level += random.gauss(0, self.__sigma)
 
+
+# TODO: add the Ornstein-Uhlenbeck model from D. Aldous
+
+
+# TODO: add learning effect model proposed by  B. Düring & Cie 
+# source: https://arxiv.org/pdf/1806.06648 
+# source: https://arxiv.org/pdf/2204.10260

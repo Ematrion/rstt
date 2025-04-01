@@ -12,8 +12,7 @@ Subpackages
    rstt.ranking
    rstt.scheduler
    rstt.solver
-   rstt.utils
-
+   
 Submodules
 ----------
 

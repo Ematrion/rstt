@@ -1,3 +1,6 @@
+"""Modules for ranking purposes
+"""
+
 from . import rating
 
 from .standing import Standing

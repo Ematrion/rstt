@@ -30,17 +30,14 @@ User [Documentation](https://rstt.readthedocs.io/en/latest/) is available on rea
 
 ## Description
 
-The package is meant for science and simulation based research in the context of competition.
-Whenever possible code is based on peer reviewed publication and cite the sources.
-
-This package provides everything needed to simulate competition and generate synthetic match dataset.
+The package provides everything needed to simulate competition and generate synthetic match dataset.
 It contains ranking implementation (such as Elo and Glicko ...), popular tournament format (Single elimination bracket, round robin, ...), many versus many game mode with automated outcome (score/result) generation methods. Additionaly different player model are available, including time varing strenght.
 
 RSTT is a framework, letting user developp and intergrate with ease their own models to test.
 
 ## Getting Started
 
-### Basic package example
+### Code Example
 
 ```python
 from rstt import Player, BTRanking, LogSolver, BasicElo
@@ -49,19 +46,19 @@ from rstt import SingleEliminationBracket
 # some player
 population = Player.create(nb=16)
 
-# a ranking
+# a ranking to infer player's skills.
 elo = BasicElo(name='Elo Ranking', players=population)
 
 # display the ranking to the standard output
 elo.plot()
 
-# create a competition - we specify to use the elo ranking for seedings and the LogSolver to produce match outcome.
+# create a competition - the solver param specify how match outcome are generated
 tournament = SingleEliminationBracket(name='RSTT World Cup 2024', seeding=elo, solver=LogSolver())
 
-# register player (the seedings do not define the participants) unranked partcipants get assigned lower seeds.
+# register player, unranked partcipants get assigned lower seeds.
 tournament.registration(population)
 
-# play the tournament - this triggers a bunch of stuff, including game generation and a the production of a final standing.
+# play the tournament - the magic happens!
 tournament.run()
 
 # update ranking based on games played
@@ -70,18 +67,21 @@ elo.update(games=tournament.games())
 # display the updated ranking
 elo.plot()
 
-# Using the LogSolver implies a 'Consensus' Ranking based on 'the real level' of players.
+# The LogSolver implies a 'Consensus' Ranking based on 'the real level' of players.
 truth = BTRanking(name='Consensus Ranking', players=population)
 truth.plot()
 ```
 
 ### Simulation Based Research
 
-The package is meant to enable research question and research in the field of competition. For those interested but unfamiliar with the fiels and best practices here are some ressources:
+RSTT is meant for science and simulation based research in the context of competition.
+Whenever possible code is based on peer reviewed publication and cite the sources.
+
+The following papers can be good read to start a journey in the field:
 
 - [Anu Maria](https://dl.acm.org/doi/pdf/10.1145/268437.268440) [[1]](#1), covers steps to follow and pitfalls to avoid in simulation based research.
-- [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) present base models in the context of sport competition and introduce research questiions. Several classes and features of the RSTT are inspired by this paper.
-- [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) uses synthetic dataset to provide insight about observations in real game data set.
+- [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) presents base models in the context of sport competition and introduce research questiions. Several classes and features of RSTT are implemetion from this paper.
+- [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) Is a recent example of reseach. It uses synthetic dataset to provide insight about observations in real game data set.
 
 
 ### Tutorial
