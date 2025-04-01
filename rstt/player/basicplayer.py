@@ -4,11 +4,12 @@ import rstt.config as cfg
 
 import names
 
+
 class BasicPlayer():
     @typechecked
-    def __init__(self, name: Optional[str]=None, level: Optional[float]=None) -> None:
+    def __init__(self, name: Optional[str] = None, level: Optional[float] = None) -> None:
         """Basic Player
-    
+
         BasicPlayer have a level and a name, that is it. The bare minimum for simulation to run.
         This class is usefull for when your player do not need to track their match history and do not have a time varying level.
 
@@ -22,8 +23,9 @@ class BasicPlayer():
             with default parameters :class:`rstt.config.PLAYER_DIST_ARGS`
         """
         self.__name = name if name else names.get_full_name()
-        self.__level = level if level is not None else cfg.PLAYER_DIST(**cfg.PLAYER_DIST_ARGS)
-    
+        self.__level = level if level is not None else cfg.PLAYER_DIST(
+            **cfg.PLAYER_DIST_ARGS)
+
     # --- getter --- #
     def name(self) -> str:
         """Getter method for the name of the player
@@ -34,7 +36,7 @@ class BasicPlayer():
            The name of the player
         """
         return self.__name
-    
+
     def level(self) -> float:
         """Getter method for the player's level
 
@@ -44,21 +46,21 @@ class BasicPlayer():
             The level of the player.
         """
         return self.__level
-        
+
     # --- magic methods --- #
     def __repr__(self) -> str:
         return f"Player - name: {self.__name}, level: {self.__level}"
-    
+
     def __str__(self) -> str:
         return self.__name
-    
+
     @classmethod
     @typechecked
     def create(cls, nb: int,
-               name_gen: Optional[Callable[..., str]]=None,
-               name_params: Optional[Dict[str, Any]]=None,
-               level_dist: Optional[Callable[..., float]]=None,
-               level_params: Optional[Dict]=None): # -> List[SPlayer]
+               name_gen: Optional[Callable[..., str]] = None,
+               name_params: Optional[Dict[str, Any]] = None,
+               level_dist: Optional[Callable[..., float]] = None,
+               level_params: Optional[Dict] = None):  # -> List[SPlayer]
         """Class method to generate multiple player at once.
 
         Customizable method to generate a bunch of players with your favorite settings.
@@ -89,12 +91,12 @@ class BasicPlayer():
 
     @classmethod
     @typechecked
-    def seeded_players(cls, nb: int, inc: float=100, start: int=1):
+    def seeded_players(cls, nb: int, inc: float = 100, start: int = 1):
         """Create 'seeded' players
 
         Unlike the :func:`rstt.player.basicplayer.BasicPlayer.create` method, players generated have a deterministic name and level.
         Names are of the form f"Seed_{i}", and the lowest i, the higher the level of the player.
-        
+
         .. warning::
             The rstt package relies on player's name to identify them - there is no ID. This method can result in name clashing which may lead to confusion and unexpected bahaviour accross simulations.
             It is heavly recommanded to be carefull when calling this method multiple times. Either by tuning the 'start' parameter or deleting previously created player.

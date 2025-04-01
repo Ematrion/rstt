@@ -26,13 +26,12 @@ Example
 import random
 
 
-
 # -------------------- #
 # --- Player cfg ----- #
 # -------------------- #
 
 # --- BasicPlayer --- #
-PLAYER_GAUSSIAN_MU = 1500 
+PLAYER_GAUSSIAN_MU = 1500
 """Deafault mu of :class:`PLAYER_DIST_ARGS`"""
 
 PLAYER_GAUSSIAN_SIGMA = 500
@@ -80,9 +79,9 @@ EXPONENTIAL_START_SIGMA = 500
 EXPONENTIAL_DIFF_MEAN = 500
 EXPONENTIAL_DIFF_SIGMA = 250
 EXPONENTIAL_START_ARGS = {'mu': EXPONENTIAL_START_MEAN,
-                       'sigma': EXPONENTIAL_START_SIGMA}
+                          'sigma': EXPONENTIAL_START_SIGMA}
 EXPONENTIAL_DIFF_ARGS = {'mu': EXPONENTIAL_DIFF_MEAN,
-                      'sigma': EXPONENTIAL_DIFF_SIGMA}
+                         'sigma': EXPONENTIAL_DIFF_SIGMA}
 EXPONENTIAL_START_DIST = random.gauss
 EXPONENTIAL_DIFF_DIST = random.gauss
 
@@ -110,7 +109,7 @@ LOGISTIC_DIFF_DIST = random.gauss
 # ---- Match cfg ----- #
 # -------------------- #
 
-# tracking game history 
+# tracking game history
 MATCH_HISTORY = False
 """Default behaviour of the :class:`rstt.game.match.Match` when param 'tracking' is None.
 If set to True, the Match instance will 'try' to add the match to its participants game history.  
@@ -120,7 +119,6 @@ DUEL_HISTORY = False
 """Default behaviour of the :class:`rstt.game.match.Duel` when param 'tracking' is None.
 If set to True, the Duel instance will 'try' to add the match to its participants game history.  
 """
-
 
 
 # -------------------- #

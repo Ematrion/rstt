@@ -12,20 +12,21 @@ from rstt.utils import utils as uu, matching as um, competition as uc
 import numpy as np
 import math
 
+
 class RoundRobin(Competition):
     def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin(),
-                cashprize: Dict[int, float] = {}):
-        
+                 cashprize: Dict[int, float] = {}):
+
         super().__init__(name, seeding, solver, cashprize)
-        
+
         self.table = None
         self.future_rounds = []
-    
+
     # --- Override --- #
     def _initialise(self):
         self._init_table()
         self._init_future_rounds()
-        
+
     def _end_of_stage(self):
         return not self.future_rounds
 
@@ -35,33 +36,35 @@ class RoundRobin(Competition):
             s1, s2 = self.seeding[[p1, p2]]
             self.table[s1][s2] += game.score(p1)
             self.table[s2][s1] += game.score(p2)
- 
+
     def _standing(self):
         standing = {}
         groups = []
-        
+
         scores = np.sum(self.table, axis=0)
         values = np.unique(scores)
         for value in values:
             index = np.where(scores == value)[0].tolist()
             groups.append(self.seeding[index])
-        
+
         top = 0
         for group in groups:
             top += len(group)
             standing.update({player: top for player in group})
-            
+
         return standing
-        
+
     def generate_games(self):
         return self.next_round()
-        
+
     # --- init stuff --- #
     def _init_table(self):
-        self.table = np.zeros(shape=(len(self.participants), len(self.participants)))
-    
+        self.table = np.zeros(
+            shape=(len(self.participants), len(self.participants)))
+
     def _init_future_rounds(self):
-        self.future_rounds = um.ruban([p for p in self.seeding if p in self.participants])
+        self.future_rounds = um.ruban(
+            [p for p in self.seeding if p in self.participants])
 
     # --- round mechanisme --- #
     def next_round(self):
@@ -77,16 +80,17 @@ class SwissRound(RoundRobin):
     # --- Override --- #
     def _end_of_stage(self):
         return len(self.played_matches) == int(math.log(len(self.participants), 2))
-    
+
     def _update(self):
         # !!! not how _end_of_stage() is meant to be used.
         if not self._end_of_stage():
             self.make_groups()
 
     def next_round(self):
-        games = [uc.find_valid_draw(draws=self.draws(group),games=self.games()) for group in self.future_rounds]
+        games = [uc.find_valid_draw(draws=self.draws(
+            group), games=self.games()) for group in self.future_rounds]
         return uu.flatten(games)
-    
+
     # --- round mechanisme --- #
     def make_groups(self):
         self.future_rounds = []
@@ -97,8 +101,7 @@ class SwissRound(RoundRobin):
             index = np.where(scores == value)[0].tolist()
             players = self.seeding[index]
             self.future_rounds.append(players)
-    
+
     def draws(self, players):
         # FIXME: explore other methods / make it tunable. It could result in bug
         return [uc.playersToDuel(round) for round in um.ruban(players)]
-    

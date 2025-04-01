@@ -6,11 +6,9 @@ from rstt.game import Match
 from rstt.stypes import Achievement
 
 
-
-
 class Player(BasicPlayer):
     @typechecked
-    def __init__(self, name: Optional[str]=None, level: Optional[float]=None) -> None:
+    def __init__(self, name: Optional[str] = None, level: Optional[float] = None) -> None:
         """Player with match history.
 
         Player extends :class:`rstt.player.basicPlayer.BasicPlayer` with the possibility to track games it played in and
@@ -28,7 +26,7 @@ class Player(BasicPlayer):
         super().__init__(name=name, level=level)
         self.__achievements = []
         self.__games = []
-    
+
     # --- getter --- #
     def achievements(self) -> List[Achievement]:
         """Getter method for achievement
@@ -41,7 +39,7 @@ class Player(BasicPlayer):
             All past success of the player in chronological order, from the oldest to the most recent.
         """
         return self.__achievements
-    
+
     def earnings(self) -> float:
         """Getter method for the earnings
 
@@ -52,8 +50,8 @@ class Player(BasicPlayer):
         float
             All the money earned in competitif event.
         """
-        return sum([achievement.prize for achievement in self.__achievements]) 
-    
+        return sum([achievement.prize for achievement in self.__achievements])
+
     def games(self) -> List[Match]:
         """Getter method for match the player participated in
 
@@ -62,8 +60,8 @@ class Player(BasicPlayer):
         List[Match]
             All the matches the player played in chronolgical order, from oldest to the most recent.
         """
-        return self.__games   
-    
+        return self.__games
+
     # --- setter --- #
     @typechecked
     def collect(self, achievement: Union[Achievement, List[Achievement]]):
@@ -83,15 +81,16 @@ class Player(BasicPlayer):
             achievements = [achievement]
         else:
             achievements = achievement
-        
-        previous_event = [past_event.event_name for past_event in self.__achievements]
+
+        previous_event = [
+            past_event.event_name for past_event in self.__achievements]
         for achievement in achievements:
             if achievement.event_name not in previous_event:
                 self.__achievements.append(achievement)
-            else: 
-                msg=f"Can not collect {achievement}. {self} already participated in an event called {achievement.event_name}"
+            else:
+                msg = f"Can not collect {achievement}. {self} already participated in an event called {achievement.event_name}"
                 raise ValueError(msg)
-    
+
     @typechecked
     def add_game(self, match: Match) -> None:
         """Adds match to the player history
@@ -109,13 +108,13 @@ class Player(BasicPlayer):
         if match in self.__games:
             msg = f"{match} already present in game history of player {self}"
             raise ValueError(msg)
-        if self not in match.players(): # !!! Untested Feature
+        if self not in match.players():  # !!! Untested Feature
             msg = f"Can not collect a match {match} that player {self} has not been part of."
             raise ValueError
         self.__add_game(match)
-    
+
     @typechecked
-    def reset(self, games: bool=True, achievement: bool=True) -> None:
+    def reset(self, games: bool = True, achievement: bool = True) -> None:
         """Clean the player history
 
         Removes all matchs and achievements from the players history. 
@@ -131,8 +130,7 @@ class Player(BasicPlayer):
             self.__achievements = []
         if games:
             self.__games = []
-        
+
     # --- internal mechanism --- #
     def __add_game(self, match: Match) -> None:
         self.__games.append(match)
-

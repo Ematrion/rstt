@@ -3,71 +3,73 @@ from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import KeyModel, GaussianModel
 from rstt.ranking.rating import GlickoRating
 from rstt.ranking.inferer import Glicko, Elo, PlayerLevel, PlayerWinPRC, EventStanding
-from rstt.ranking.observer import  GameByGame, BatchGame, KeyChecker
-
+from rstt.ranking.observer import GameByGame, BatchGame, KeyChecker
 
 
 # ------------------------- #
 # --- Consensus Ranking --- #
 # ------------------------- #
 class BTRanking(Ranking):
-    def __init__(self, name: str='', players=None):
+    def __init__(self, name: str = '', players=None):
         super().__init__(name=name,
-                        datamodel=KeyModel(factory=lambda x: x.level()),
-                        backend=PlayerLevel(),
-                        handler=KeyChecker(),
-                        players=players)
-        
+                         datamodel=KeyModel(factory=lambda x: x.level()),
+                         backend=PlayerLevel(),
+                         handler=KeyChecker(),
+                         players=players)
+
     def forward(self, *args, **kwargs):
-        self.handler.handle_observations(infer=self.backend, datamodel=self.datamodel)
-        
-     
+        self.handler.handle_observations(
+            infer=self.backend, datamodel=self.datamodel)
+
+
 # ------------------------- #
 # --- Empirical Ranking --- #
-# ------------------------- #   
+# ------------------------- #
 class WinRate(Ranking):
-    def __init__(self, name: str='', default: float=-1.0, players=None):
+    def __init__(self, name: str = '', default: float = -1.0, players=None):
         backend = PlayerWinPRC(default=default)
         super().__init__(name=name,
-                         datamodel=KeyModel(factory = lambda x: backend.win_rate(x)),
+                         datamodel=KeyModel(
+                             factory=lambda x: backend.win_rate(x)),
                          backend=backend,
                          handler=KeyChecker(),
                          players=players)
 
 
 class SuccessRanking(Ranking):
-    def __init__(self, name: str =',', buffer: int=1, best: int=1, players=None, default=None):
+    def __init__(self, name: str = ',', buffer: int = 1, best: int = 1, players=None, default=None):
         super().__init__(name=name,
-                        datamodel=KeyModel(template=int),
-                        backend=EventStanding(buffer=buffer, best=best, default=default),
-                        handler=KeyChecker(),
-                        players=players)
+                         datamodel=KeyModel(template=int),
+                         backend=EventStanding(
+                             buffer=buffer, best=best, default=default),
+                         handler=KeyChecker(),
+                         players=players)
 
     def add_event(self, *args, **kwargs):
         self.backend.add_event(*args, **kwargs)
 
     def remove_event(self, *args, **kwargs):
         self.backend.remove_event(*args, **kwargs)
-       
+
     def forward(self, event=None, points=None, *args, **kwargs):
         if event:
             self.backend.add_event(event, points)
         self.handler.handle_observations(infer=self.backend,
-                            datamodel=self.datamodel,
-                            *args, **kwargs)
+                                         datamodel=self.datamodel,
+                                         *args, **kwargs)
 
 
 # ------------------------- #
 # ---- Common Ranking ----- #
 # ------------------------- #
 class BasicElo(Ranking):
-    def __init__(self, name: str='', default: float=1500.0, k: float=20.0, lc: float=400.0, players=None):
+    def __init__(self, name: str = '', default: float = 1500.0, k: float = 20.0, lc: float = 400.0, players=None):
         super().__init__(name=name,
-                        datamodel=KeyModel(default=default),
-                        backend=Elo(k=k, lc=lc),
-                        handler=GameByGame(),
-                        players=players)
-    
+                         datamodel=KeyModel(default=default),
+                         backend=Elo(k=k, lc=lc),
+                         handler=GameByGame(),
+                         players=players)
+
     '''
     def predict(self, game):
         _, teams_as_ratings, _, _ = self.handler.match_formating(datamodel=self.datamodel, game=game)
@@ -78,12 +80,13 @@ class BasicElo(Ranking):
 
 
 class BasicGlicko(Ranking):
-    def __init__(self, name: str='', handler=BatchGame(), mu: float=1500.0, sigma: float=350.0, players=None):
-        super().__init__(name= name,
-                        datamodel=GaussianModel(default=GlickoRating(mu, sigma)),
-                        backend=Glicko(),
-                        handler=handler,
-                        players=players)
+    def __init__(self, name: str = '', handler=BatchGame(), mu: float = 1500.0, sigma: float = 350.0, players=None):
+        super().__init__(name=name,
+                         datamodel=GaussianModel(
+                             default=GlickoRating(mu, sigma)),
+                         backend=Glicko(),
+                         handler=handler,
+                         players=players)
 
     @get_disamb
     def __step1(self):
@@ -94,8 +97,9 @@ class BasicGlicko(Ranking):
 
     def forward(self, *args, **kwargs):
         self.__step1()
-        self.handler.handle_observations(infer=self.backend, datamodel=self.datamodel, *args, **kwargs)
-    
+        self.handler.handle_observations(
+            infer=self.backend, datamodel=self.datamodel, *args, **kwargs)
+
     '''    
     def predict(self, game):
         _, teams_as_ratings, _, _ = GameByGame().match_formating(datamodel=self.datamodel, game=game)
@@ -106,15 +110,17 @@ class BasicGlicko(Ranking):
 
 
 class BasicOS(Ranking):
-    def __init__(self, name: str='', model=None, players=None):
+    def __init__(self, name: str = '', model=None, players=None):
         super().__init__(name=name,
-                        datamodel=GaussianModel(factory=lambda x: model.rating(name=x.name)),
-                        backend=model,
-                        handler=GameByGame(),
-                        players=players)
-    
+                         datamodel=GaussianModel(
+                             factory=lambda x: model.rating(name=x.name)),
+                         backend=model,
+                         handler=GameByGame(),
+                         players=players)
+
     def quality(self, game) -> float:
-        _, teams_as_ratings, _, _ = self.handler.match_formating(datamodel=self.datamodel, game=game)
+        _, teams_as_ratings, _, _ = self.handler.match_formating(
+            datamodel=self.datamodel, game=game)
         return self.backend.predict_draw(teams_as_ratings)
 
     '''

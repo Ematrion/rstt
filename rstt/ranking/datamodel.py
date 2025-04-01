@@ -10,7 +10,7 @@ from typeguard import typechecked
 
 from rstt.stypes import SPlayer
 from rstt import BasicPlayer
-    
+
 import copy
 
 
@@ -20,7 +20,7 @@ class keydefaultdict(defaultdict[SPlayer, Any]):
 
         This allows rating system to have a default rating based on some data available in a Player instance, such has the level
         or a win rate ratio.
-        
+
         Parameters
         ----------
         default_factory : Callable[[Player], Any]
@@ -40,12 +40,12 @@ class keydefaultdict(defaultdict[SPlayer, Any]):
 
 class KeyModel:
     @typechecked
-    def __init__(self, default: Optional[Any]=None, template: Optional[Callable]=None, factory: Optional[Callable]=None, *args, **kwargs):
+    def __init__(self, default: Optional[Any] = None, template: Optional[Callable] = None, factory: Optional[Callable] = None, *args, **kwargs):
         """Basic Rating system
 
         The KeyModel is a intuitive implementation of :class:`rstt.stypes.RatingSystem` that strores ratings of player in a defauldict.
         The default rating value can be specified in three different fashions.
-        
+
         Parameters
         ----------
         default : Any, optional
@@ -55,11 +55,11 @@ class KeyModel:
         factory : _type_, optional
             A Callable of the form lambda x: ..., where x is the SPlayer with no rating, by default None. If you pass a factory,
             the KeyModel stores ratings in  a :class:`rstt.ranking.datamodel.keydefauldict`.
-            
+
         .. note::
             If you are using the 'template' you can additionaly specify *args and **kwargs to be passed to the template every time it is called to generate a new rating.
             In the case of the 'factory', only **kwargs can be specified. And for the 'default', no additonal parameters are allowed.
-            
+
         Raises
         ------
         ValueError
@@ -68,13 +68,14 @@ class KeyModel:
             KeyModel(template=GaussianRating, 1500, 250)
             KeyModel(factory=GaussianRating, mu=1500, sigma=250)
         """
-        self.__ratings = self.__init_ratings(default, template, factory, *args, **kwargs)
+        self.__ratings = self.__init_ratings(
+            default, template, factory, *args, **kwargs)
         self.__rtype = self.__get_rating_type()
         self.__default = self.__get_default_rating()
 
     # --- setter --- #
     @typechecked
-    def set(self, key:SPlayer, rating):
+    def set(self, key: SPlayer, rating):
         """Set method to manualy assign a rating to a player.
 
         Parameters
@@ -83,13 +84,13 @@ class KeyModel:
             A Player to modify the rating
         rating : Any
             a new rating.
-            
+
         .. warning::
             The KeyModel class is a 'Generic' container in the sense that it can store any sort of rating, however, all values must be of the same type.
             With the current implementation it is unclear how to enforce it. So it is the responsability of the user to be consistent.
-            
+
             The set operation will not throw any error. Yet, following calls to :func:`rstt.ranking.datamodel.KeyModel.ordinal` ordinal method could fail without proper error traceback.
-            
+
             Hopefull future version will fix this issue.
         """
         # TODO: test rating type before assignement and thorw TypeError
@@ -125,7 +126,7 @@ class KeyModel:
             items stored in the KeyModel
         """
         return self.__ratings.items()
-    
+
     def keys(self):
         """Dict like keys() method
 
@@ -145,14 +146,14 @@ class KeyModel:
         .. warning::
             The type of ratings is infered at instanciation of the KeyModel using the type() built-in functions.
             However this can be inconsistant with the user's intention. 
-        
+
         Returns
         -------
         type
             The rating type.
         """
         return self.__rtype
-        
+
     def default(self) -> Any:
         """Getter for default rating
 
@@ -169,7 +170,7 @@ class KeyModel:
         """Convert a rating into a float value
 
         The returned value is used to compare players to each other. An higher value is understood as a 'better' player
-        
+
         .. note::
             This method assume the existence of a magic __float__ method for the ratings.
             If one uses custom ratings object, it is good to either write such method, override the ordinal methods, or design an associated
@@ -185,8 +186,8 @@ class KeyModel:
         float
             The corresponding value used to compare players in an ordered fashion.
         """
-        
-        # REQ: Should not support arg type Player. This is the job of a Ranking/Standing 
+
+        # REQ: Should not support arg type Player. This is the job of a Ranking/Standing
         # NOTE: name source -> https://fr.wikipedia.org/wiki/Nombre_ordinal
         return float(rating)
 
@@ -194,23 +195,23 @@ class KeyModel:
         """
         .. warning:: 
             DO NOT USE.
-            
+
             Boilerplate code for future features.
-            
+
         """
         try:
             return list(rating)
         except:
             return 0
 
-    # --- internal mechanism --- #     
+    # --- internal mechanism --- #
     def __init_ratings(self, default, template, factory, *args, **kwargs):
         ''' rating initialization
-        
+
         return: defaultdict {key: rating}
             where key are the one contained in the standing
             and rating are object used to compute the associated value. 
-        
+
         REQ:
             - each key as its own rating
             - user can provide a rating object (a) or a type to use as model (b).
@@ -218,7 +219,7 @@ class KeyModel:
             - match the default value with the self.__rate_model(rating) method
             (a) We use deepcopy to create a new rating instance with equal value.
             (b) We use a Constructor with params to generate a new rating object.
-        
+
         TODO:
             - check functool.partial to improve code quaity and readabiltiy.
         '''
@@ -238,19 +239,20 @@ class KeyModel:
             msg = "Exactly one parameter among 'default', 'template' and 'template' should be passed."
             raise ValueError(msg)
         return ratings
-    
+
     def __default_ratings(self, value):
         return defaultdict(lambda: copy.deepcopy(value))
-    
+
     def __template_ratings(self, template, *args, **kwargs):
         return defaultdict(lambda: template(*args, **kwargs))
-    
+
     def __factory_ratings(self, func: Callable, **kwargs):
         return keydefaultdict(default_factory=func)
 
     def __get_rating_type(self):
         dummy = BasicPlayer('dummy', 0.0)
-        rtype = type(self.__ratings[dummy])         # !!! This may not always work as intended
+        # !!! This may not always work as intended
+        rtype = type(self.__ratings[dummy])
         del self.__ratings[dummy]
         return rtype
 
@@ -258,15 +260,15 @@ class KeyModel:
         dummy = BasicPlayer('dummy', 0.0)
         self.__ratings[dummy]
         return self.__ratings.pop(dummy)
-    
+
     # --- magic methods --- #
     def __delitem__(self, key: SPlayer):
         del self.__ratings[key]
-    
+
     # ??? __setitem__
     # ??? __getitem__
     # ??? __contain__
-        
+
 
 class GaussianModel(KeyModel):
     def __init__(self, *arg, **kwargs):
@@ -275,7 +277,7 @@ class GaussianModel(KeyModel):
         Associated ratings must have a mu and a sigma attributes. 
         """
         super().__init__(*arg, **kwargs)
-        
+
         '''
         TODO: type check the ratings, something like:
         if not hasattr(self.default(), 'mu') or not hasattr(self.default(), 'sigma'):
@@ -283,7 +285,7 @@ class GaussianModel(KeyModel):
         Or maybe use Protocol with attributes
             
         '''
-        
+
     # ??? How to typecheck: must at least support trueskill/openskill ratings and rstt GlickoRating
     def ordinal(self, rating) -> float:
         # TODO: cite a good source for the used policy
@@ -302,7 +304,6 @@ class GaussianModel(KeyModel):
             The corresponding value used to compare players in an ordered fashion
         """
         return rating.mu - 2*rating.sigma
-        
+
     def tiebreaker(self, rating):
         return [rating.mu, rating.sigma]
-

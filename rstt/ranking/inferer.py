@@ -3,7 +3,7 @@
 Inferer are protocol providing a rate() method for ranking to update ratings.
 """
 
-from typing import  List, Dict, Tuple, Union,Optional, Any
+from typing import List, Dict, Tuple, Union, Optional, Any
 from typeguard import typechecked
 
 import rstt.config as cfg
@@ -26,14 +26,14 @@ import warnings
 
 # ------------------------ #
 # --- Player as Rating --- #
-# ------------------------ #    
+# ------------------------ #
 class PlayerLevel:
     @typechecked
     def rate(self, player: SPlayer, *args, **kwars) -> Dict[SPlayer, float]:
         """Inferer based on players's level.
-        
+
         Rates players on the returned value of the level() method. Usefull for 'Consensus' ranking variation.
-        
+
         Parameters
         ----------
         player : SPlayer
@@ -45,9 +45,10 @@ class PlayerLevel:
             the player and its new rating.
         """
         return {player: player.level()}
-    
+
+
 class PlayerWinPRC:
-    def __init__(self, default: float=-1.0, scope: int=np.iinfo(np.int32).max):
+    def __init__(self, default: float = -1.0, scope: int = np.iinfo(np.int32).max):
         """Inferer based on Player win rate
 
 
@@ -60,7 +61,7 @@ class PlayerWinPRC:
         """
         self.default = default
         self.scope = scope
-    
+
     @typechecked
     def rate(self, player: Player, *args, **kwargs) -> Dict[Player, float]:
         """Win rate inference
@@ -76,7 +77,7 @@ class PlayerWinPRC:
             the player and its associated rating
         """
         return {player: self._win_rate(player)}
-    
+
     def _win_rate(self, player: SPlayer):
         games = player.games()
         if games:
@@ -94,7 +95,7 @@ class PlayerWinPRC:
 # ----- Event Based ------ #
 # ------------------------ #
 class EventStanding:
-    def __init__(self, buffer: int, nb: int, default: Optional[Dict[int, float]]=None):
+    def __init__(self, buffer: int, nb: int, default: Optional[Dict[int, float]] = None):
         """Inferer tracking performances in tournaments
 
         Can be usefull to build ranking emulating one like in tennis or formula1.
@@ -107,26 +108,26 @@ class EventStanding:
             The actual number of event in the buffer to use for the ratings computation.
         default : Optional[Dict[int, float]], optional
             Mapping placement in event to points for the rating, by default None
-            
-            
+
+
         Example
         -------
             >>> EventStanding(buffer=10, nb=5, default={i:100-i for i in range(100)})
-            
+
             Will rate each player based on his 5 best performances in the last 10 events added to the Inferer.
             Best performances in the sense of most points for his placements, not highest place (which could be different).
-            
+
         """
         self.buffer = buffer
         self.nb = nb
-        
+
         self.events = []
         self.points = {}
-        
+
         self.__default_points = default if default is not None else cfg.EVENTSTANDING_DEFAULT_POINTS
-    
+
     @typechecked
-    def add_event(self, event: Union[Event, str], points: Optional[Dict[int, float]]=None):
+    def add_event(self, event: Union[Event, str], points: Optional[Dict[int, float]] = None):
         """Add an event to consider for ratings
 
         Event are always append as the last, thus will stay longer in the buffer than all previous eevnts added.
@@ -139,13 +140,13 @@ class EventStanding:
             A dictionnary mapping placement with points, by default None. In this case the default one is used for the added event.
         """
         points = points if points else self.__default_points
-        if isinstance(event, str): # by str
+        if isinstance(event, str):  # by str
             self.events.append(event)
             self.points[event] = points
-        else: # by Event
+        else:  # by Event
             self.events.append(event.name())
             self.points[event.name()] = points
-    
+
     @typechecked
     def remove_event(self, event: Union[Event, str]):
         """Remove an event
@@ -155,17 +156,17 @@ class EventStanding:
         event : Union[Event, str]
             The event or its identifier, to remove from ratings considerations.
         """
-        if isinstance(event, str): # by str
+        if isinstance(event, str):  # by str
             self.events.remove(event)
             del self.points[event]
-        else: # by Event
+        else:  # by Event
             self.events.remove(event.name())
             del self.points[event.name()]
-    
+
     @typechecked
     def rate(self, player: Player) -> Dict[Player, float]:
         """Rate player based on performances.
-        
+
         Parameters
         ----------
         player : Player
@@ -178,22 +179,23 @@ class EventStanding:
         """
         # events that matter
         events = self.events[-self.buffer:]
-        
+
         # collected points in events
         results = []
         for achievement in player.achievements():
             if achievement.event_name in events:
-                results.append(self.points[achievement.event_name][achievement.place])
+                results.append(
+                    self.points[achievement.event_name][achievement.place])
 
         # get only the best results
         results.sort()
-        best_results = results[-min(len(results),self.nb):]
-        
+        best_results = results[-min(len(results), self.nb):]
+
         # sum the best results considered
         points = sum(best_results)
         return {player: points}
 
-    
+
 # ------------------------ #
 # --- Game Score Based --- #
 # ------------------------ #
@@ -233,7 +235,7 @@ class Elo:
         # NOTE: groups: [[winner_elo][loser_elo]], scores [[1.0][0.0]]
         # FIXME: Current implementation does not seem to support a BatchGame observer
         # TODO: add errors for bad params
-        
+
         # unpack args
         r1, r2 = groups[0][0], groups[1][0]
         s1, s2 = scores
@@ -243,7 +245,7 @@ class Elo:
         return [[new_r1], [new_r2]]
 
     @typechecked
-    def expectedScore(self, rating1: float, rating2:float) -> float:
+    def expectedScore(self, rating1: float, rating2: float) -> float:
         """Compute the expected score
 
         Parameters
@@ -260,8 +262,8 @@ class Elo:
         """
         # TODO: 'DRY' -> use uf.logistic_elo
         return 1.0 / (1.0 + math.pow(10, (rating2-rating1)/self.lc))
-    
-    def update_rating(self, rating1: float, rating2:float, score:float):
+
+    def update_rating(self, rating1: float, rating2: float, score: float):
         """Rating update
 
         Parameters
@@ -285,26 +287,26 @@ class Elo:
 class Glicko:
     @typechecked
     def __init__(self, minRD: float = 30.0,
-                maxRD: float = 350.0,
-                c: float = 63.2,
-                q: float = math.log(10, math.e)/400,
-                lc: int = 400):
+                 maxRD: float = 350.0,
+                 c: float = 63.2,
+                 q: float = math.log(10, math.e)/400,
+                 lc: int = 400):
         """Glicko Inferer
 
         The `Glicko <https://en.wikipedia.org/wiki/Glicko_rating_system>`_ rating system is often described as an improvement of :class:`rstt.ranking.inferer.Elo`.
         here, the implementation is based on Dr. Mark E. Glickman `description <https://www.glicko.net/glicko/glicko.pdf>`_.
-        
+
         .. note::
             The source paper gives more instruction (notion of rating period) than what an Inferer class should do in RSTT.
             Step1, for example is implemented by the :class:`rstt.ranking.standard.BasicGlicko`
             because it is related to the usage of the system, rather than what the Inferer does.
-        
+
         .. warning::
             There is no type-checker support for 'Glicko ratings'.
             In the documentation we use the typehint 'GlickoRating'.
             Anything with a public mu and sigma attribute fits the bill.
-            
-        
+
+
         Parameters
         ----------
         minRD : float, optional
@@ -318,14 +320,14 @@ class Glicko:
         lc : int, optional
             Logistic constant similar to the one in :class:`rstt.rnaking.inferer.Elo`, by default 400
         """
-        
+
         # model constant
         self.__maxRD = maxRD
         self.__minRD = minRD
         self.lc = lc
         self.C = c
         self.Q = q
-        
+
     def G(self, rd: float) -> float:
         """_summary_
 
@@ -341,9 +343,9 @@ class Glicko:
         float
             g(RD)
         """
-        return 1 / math.sqrt( 1 + 3*self.Q*self.Q*(rd*rd)/(math.pi*math.pi))
-    
-    def expectedScore(self, rating1, rating2, update: bool=True) -> float:
+        return 1 / math.sqrt(1 + 3*self.Q*self.Q*(rd*rd)/(math.pi*math.pi))
+
+    def expectedScore(self, rating1, rating2, update: bool = True) -> float:
         """Compute the expected score
 
         Implements: page 4, E(s|r,rj,RDj) when update=True
@@ -383,7 +385,7 @@ class Glicko:
         -------
         float
             the d2 value
-            
+
         Warns
         -----
             Rarely a ZeroDivisionError occurs. In this case, the warning contains all the computational information.
@@ -396,16 +398,16 @@ class Glicko:
             Ej = self.expectedScore(rating1, rating2, update=True)
             RDj = rating2.sigma
             Gj = self.G(RDj)
-            
+
             # store vairables
             all_EJ.append(Ej)
             all_GJ.append(Gj)
-        
+
         # big sum
         bigSum = 0
         for Gj, Ej, in zip(all_GJ, all_EJ):
             bigSum += Gj*Gj*Ej*(1-Ej)
-        
+
         '''
         NOTE:
         Try/Expect is not part of the Glicko official algorithm  presentation.
@@ -425,7 +427,7 @@ class Glicko:
         # !!! Do not fix unless it is possible to link a scientifical source justifying the implementation
         '''
         try:
-            # d2 formula 
+            # d2 formula
             return 1 / (self.Q*self.Q*bigSum)
         except ZeroDivisionError:
             # !!! BUG: ZeroDivisionError observed with extreme rating differences
@@ -435,7 +437,7 @@ class Glicko:
             # HACK: just assume a very low 'bigSum'
             bigSum = 0.00000000001
             correction = 1 / (self.Q*self.Q*bigSum)
-            
+
             msg = f"Glicko d2 ERROR: {rating1}, {games}\n {bigSum}, {all_EJ}, {all_GJ}\n d2 return value as been adjusted to 1/{bigSum}"
             warnings.warn(msg, RuntimeWarning)
             return correction
@@ -459,7 +461,7 @@ class Glicko:
         new_RD = math.sqrt(rating.sigma*rating.sigma + self.C*self.C)
         # check boundaries on sigma - ??? move max() elsewhere
         return max(min(new_RD, self.__maxRD), self.__minRD)
-    
+
     def newRating(self, rating1, games: List[Tuple[Any, float]]):
         """Rating Update method
 
@@ -477,23 +479,24 @@ class Glicko:
         GlickoRating
             the new updated rating
         """
-                    
+
         # compute term 'a'
         d2 = self.d2(rating1, games)
         a = self.Q / ((1/(rating1.sigma*rating1.sigma)) + (1/d2))
-        
+
         # lcompute term 'b'
         b = 0
         for rating2, score in games:
-            b += self.G(rating2.sigma)*(score - self.expectedScore(rating1, rating2, update=True))
-        
+            b += self.G(rating2.sigma)*(score -
+                                        self.expectedScore(rating1, rating2, update=True))
+
         # create new rating object to avoid 'side effect'
         rating = copy.copy(rating1)
         # post Period R
         rating.mu += a*b
         # post Period RD
-        rating.sigma = math.sqrt(1/( (1/rating1.sigma**2) + (1/d2) ))
-        
+        rating.sigma = math.sqrt(1/((1/rating1.sigma**2) + (1/d2)))
+
         return rating
 
     # FIXME: Does not support GameByGame observer
@@ -516,9 +519,7 @@ class Glicko:
         GlickoRating
             The new rating.
         """
-        
+
         # formating
         games = [(r, s) for r, s in zip(ratings, scores)]
         return self.newRating(rating, games)
-
-

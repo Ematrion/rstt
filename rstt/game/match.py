@@ -2,11 +2,12 @@ from typing import List, Optional
 from typeguard import typechecked
 
 from rstt.stypes import SPlayer, Score
-import rstt.config as cfg 
+import rstt.config as cfg
+
 
 class Match():
     @typechecked
-    def __init__(self, teams: List[List[SPlayer]], tracking: Optional[bool]=None) -> None:
+    def __init__(self, teams: List[List[SPlayer]], tracking: Optional[bool] = None) -> None:
         """Match base Class
 
         General purpose match class. It can be used to create arbitrary game mode such as Many-versus-Many or Free-For-All games.
@@ -17,7 +18,7 @@ class Match():
             Participants of the match organized in a list of list. Players in the same sublist are part of the same team.
         tracking : bool, optional
             If true, the match will try to add itself to the participants game history, by default None.
-        
+
         Raises
         ------
         ValueError:
@@ -26,11 +27,11 @@ class Match():
         self.__teams = teams
         self.__scores = None
         self.__tracking = tracking if tracking is not None else cfg.MATCH_HISTORY
-        
+
         if len(set(self.players())) != len(self.players()):
             msg = f"Teams must contain different players."
             raise ValueError(msg)
-        
+
     # --- getter --- #
     def teams(self) -> List[List[SPlayer]]:
         """Getter method for teams
@@ -41,7 +42,7 @@ class Match():
             All the players participating in the match grouped by teams. 
         """
         return self.__teams
-    
+
     def players(self) -> List[SPlayer]:
         """Getter method for player
 
@@ -70,7 +71,7 @@ class Match():
             A list of opponents playing against the player, in a single list, not grouped by teams
         """
         return [p for p in self.players() if p not in self.teammates(player)]
-    
+
     def teammates(self, player: SPlayer) -> List[SPlayer]:
         """Getter method for teammates
 
@@ -89,7 +90,7 @@ class Match():
         for team in self.players():
             if player in team:
                 return [p for p in team if p != player]
-    
+
     def scores(self) -> Score:
         """Getter method for the match outcome
 
@@ -102,7 +103,7 @@ class Match():
             The outcom of the match. None if the match has not been played yet. Ordering of the float value matches the ordering of the teams as return by :func:`rstt.game.match.Match.teams`
         """
         return self.__scores
-    
+
     def score(self, player: SPlayer) -> float:
         """Getter method for the score of a given player. 
 
@@ -126,11 +127,11 @@ class Match():
         if self.__scores is None:
             msg = f"Undefined score of player {player} is undefined. The match has not yet been assigned a score."
             raise RuntimeError(msg)
-        
+
         for team, score in zip(self.__teams, self.__scores):
             if player in team:
                 return score
-            
+
     def ranks(self) -> List[int]:
         """Getter method for the team ranks
 
@@ -152,7 +153,7 @@ class Match():
             raise RuntimeError(msg)
             # !!! What is the covention when multiple teams have the same score, are tied ?
         return [len([other for other in self.__scores if other > value]) + 1 for value in self.__scores]
-    
+
     # --- user interface --- #
     def live(self) -> bool:
         """Getter method for the match status
@@ -165,7 +166,7 @@ class Match():
             True if the match has yet to be played. False if the match has a scores assigned.
         """
         return True if self.__scores is None else False
-    
+
     # --- internal mechanism --- #
     def __set_result(self, result: Score):
         # bunch of errors to raise
@@ -173,7 +174,7 @@ class Match():
             msg = f'Attempt to assign a score to a game that has already one {self}'
             raise RuntimeError(msg)
         if not isinstance(result, list):
-            msg  = f"result must be instance of List[float], received {type(result)}"
+            msg = f"result must be instance of List[float], received {type(result)}"
             raise TypeError(msg)
         if not isinstance(result[0], float):
             msg = f'result must be instance of List[float], received List[{type(result[0])}]'
@@ -182,34 +183,34 @@ class Match():
             msg = f"""result lenght does not match number of teams,
                     len(result) == {len(result)}, excepted: {len(self._Match__teams)}"""
             raise ValueError(msg)
-        
+
         # actual result assignement
         self.__scores = result
-        
+
         # player may track match history
         if self.__tracking:
             self.__update_players_history()
-   
+
     def __update_players_history(self):
         for player in self.players():
             try:
                 player.add_game(self)
             except AttributeError:
-                pass # ??? raise warning
-            
+                pass  # ??? raise warning
+
     # --- magic methods --- #
     def __repr__(self) -> str:
         return str(self)
-    
+
     def __str__(self) -> str:
         return f"{type(self)} - teams: {self.__teams}, scores: {self.__scores}"
-         
+
     def __contains__(self, player: SPlayer) -> bool:
         return player in self.players()
-    
-    
+
+
 class Duel(Match):
-    def __init__(self, player1: SPlayer, player2: SPlayer, tracking: Optional[bool]=None) -> None:
+    def __init__(self, player1: SPlayer, player2: SPlayer, tracking: Optional[bool] = None) -> None:
         """Duel class
 
         Duel is a special type of :class:`rstt.game.match.Match` with only two teams each consisiting of one player.
@@ -226,7 +227,7 @@ class Duel(Match):
         """
         tracking = tracking if tracking is not None else cfg.DUEL_HISTORY
         super().__init__(teams=[[player1], [player2]], tracking=tracking)
-        
+
     # --- getter --- #
     def player1(self) -> SPlayer:
         """Getter method for player 1
@@ -239,7 +240,7 @@ class Duel(Match):
             the first player of the duel.
         """
         return self._Match__teams[0][0]
-    
+
     def player2(self) -> SPlayer:
         """Getter method for palyer 2
 
@@ -251,7 +252,7 @@ class Duel(Match):
             the 2nd player of the duel.
         """
         return self._Match__teams[1][0]
-    
+
     def opponent(self, player: SPlayer) -> SPlayer:
         """Getter method for the opponent of a player in a duel
 
@@ -266,16 +267,17 @@ class Duel(Match):
         -------
         Splayer
             The opponent of the parameter player.
-            
+
         Raises:
         -------
         KeyError
             When the parameter player is not a participant of the duel.
         """
         players = set(self.players())
-        players.remove(player) # this can raise a KeyError, which is what we want
+        # this can raise a KeyError, which is what we want
+        players.remove(player)
         return list(players)[0]
-    
+
     def winner(self) -> SPlayer:
         """Getter method for the winner of the duel
 
@@ -294,8 +296,8 @@ class Duel(Match):
             return self._Match__teams[1][0]
         else:
             return None
-        #return self._Match__teams[0][0] if self._Match__scores[0] > self._Match__scores[1] else self._Match__teams[1][0]
-    
+        # return self._Match__teams[0][0] if self._Match__scores[0] > self._Match__scores[1] else self._Match__teams[1][0]
+
     def loser(self) -> SPlayer:
         """Getter method for the loser of the duel
 
@@ -314,8 +316,8 @@ class Duel(Match):
             return self._Match__teams[0][0]
         else:
             return None
-        #return self._Match__teams[0][0] if self._Match__scores[1] > self._Match__scores[0] else self._Match__teams[1][0]
-    
+        # return self._Match__teams[0][0] if self._Match__scores[1] > self._Match__scores[0] else self._Match__teams[1][0]
+
     def isdraw(self) -> bool:
         """Getter method indicating a draw
 
@@ -329,4 +331,4 @@ class Duel(Match):
         """
         if not self._Match__scores:
             return False
-        return True if self._Match__scores[0] == self._Match__scores[1] else False    
+        return True if self._Match__scores[0] == self._Match__scores[1] else False

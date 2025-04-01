@@ -11,6 +11,7 @@ from rstt.utils import utils as uu, matching as um, competition as uc
 
 import math
 
+
 def balanced_tree(rounds):
     matches = [1, 2]
     for round in range(2, rounds+1):
@@ -26,32 +27,33 @@ def balanced_tree(rounds):
 class SingleEliminationBracket(Competition):
     @typechecked
     def __init__(self, name: str,
-                seeding: Ranking,
-                solver: Solver = BetterWin(),
-                cashprize: Dict[int, float] = {}):
+                 seeding: Ranking,
+                 solver: Solver = BetterWin(),
+                 cashprize: Dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
 
     # --- override --- #
     def _initialise(self):
         msg = (f'{type(self)} '
-                'needs a power of two as number of participants '
-                '(2,4,8,16,...)'
-                f', given {len(self.participants)}')
+               'needs a power of two as number of participants '
+               '(2,4,8,16,...)'
+               f', given {len(self.participants)}')
         assert uu.power_of_two(len(self.participants)), msg
 
         nb_rounds = int(math.log(len(self.participants), 2))
-        self.players_left = self.seeding[[i-1 for i in balanced_tree(nb_rounds)]]
+        self.players_left = self.seeding[[
+            i-1 for i in balanced_tree(nb_rounds)]]
 
     def generate_games(self):
         return uc.playersToDuel(self.players_left)
-    
+
     def _end_of_stage(self) -> bool:
         return True if len(self.players_left) == 1 else False
-    
+
     def _update(self):
         next = [game.winner() for game in self.played_matches[-1]]
         self.players_left = next
-    
+
     def _standing(self) -> Dict[Player, int]:
         standing = {}
         top = len(self.participants)
@@ -59,7 +61,7 @@ class SingleEliminationBracket(Competition):
             for game in round:
                 standing[game.loser()] = top
             top = len(self.participants) - len(standing)
-        
+
         # winner
         standing[self.played_matches[-1][0].winner()] = 1
         return standing
@@ -68,16 +70,17 @@ class SingleEliminationBracket(Competition):
 class DoubleEliminationBracket(Competition):
     @typechecked
     def __init__(self, name: str,
-                seeding: Ranking,
-                solver: Solver = BetterWin(),
-                lower_policy: Callable[[List[Any]], List[Any]]=lambda x: x ,
-                injector_policy: Callable[[List[Any], List[Any]], List[Any]]=um.riffle_shuffle,
-                cashprize: Dict[int, float] = {}):
+                 seeding: Ranking,
+                 solver: Solver = BetterWin(),
+                 lower_policy: Callable[[List[Any]], List[Any]] = lambda x: x,
+                 injector_policy: Callable[[
+                     List[Any], List[Any]], List[Any]] = um.riffle_shuffle,
+                 cashprize: Dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
-        
+
         self.upper = SingleEliminationBracket(name+'_UpperBracket',
                                               seeding, solver)
-        self.lower = [] # List[Player]
+        self.lower = []  # List[Player]
         self.lower_policy = lower_policy
         self.injector_policy = injector_policy
 
@@ -87,14 +90,16 @@ class DoubleEliminationBracket(Competition):
         self.upper.registration(self.participants)
         self.upper.start()
         self.upper.play()
-        
+
         # lower bracket
-        self.lower = [[game.loser() for game in r] for r in self.upper.games(by_rounds=True)]
+        self.lower = [[game.loser() for game in r]
+                      for r in self.upper.games(by_rounds=True)]
         self.lower += [[self.upper.games(by_rounds=True)[-1][0].winner()]]
 
     def _update(self):
-        self.lower.insert(0, [game.winner() for game in self.played_matches[-1]])
-    
+        self.lower.insert(0, [game.winner()
+                          for game in self.played_matches[-1]])
+
     def _standing(self) -> Dict[uc.Player, int]:
         standing = {}
         top = len(self.participants)
@@ -119,7 +124,7 @@ class DoubleEliminationBracket(Competition):
             injector = self.lower.pop(0)
             games = uc.playersToDuel(self.injector_policy(lower, injector))
         return games
-    
+
     @typechecked
     def games(self, by_rounds=False, upper=False, lower=False):
         if upper and lower:

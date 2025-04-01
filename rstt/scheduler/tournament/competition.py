@@ -10,7 +10,6 @@ import rstt.utils.utils as uu
 from collections import defaultdict
 
 
-
 class Competition(metaclass=abc.ABCMeta):
     '''
         NOTE: In the future the competition class could evolve.
@@ -23,11 +22,11 @@ class Competition(metaclass=abc.ABCMeta):
     @typechecked
     def __init__(self, name: str,
                  seeding: Ranking,
-                 solver: Solver=BetterWin(),
-                 cashprize: Optional[Dict[int, float]]=None):
+                 solver: Solver = BetterWin(),
+                 cashprize: Optional[Dict[int, float]] = None):
         # a name
         self.__name = name
-        
+
         # 'settings'
         self.participants = []
         self.seeding = seeding
@@ -35,11 +34,11 @@ class Competition(metaclass=abc.ABCMeta):
         self.cashprize = defaultdict(lambda: 0)
         if cashprize:
             self.cashprize.update(cashprize)
-        
+
         # result related variable
         self.played_matches = []
         self.__standing = {}
-        
+
         # control variable
         self.__started = False
         self.__finished = False
@@ -51,23 +50,23 @@ class Competition(metaclass=abc.ABCMeta):
 
     def started(self):
         return self.__started
-    
+
     def live(self):
         return self.__started and not self.__finished
-    
+
     def over(self):
         return self.__closed
-    
+
     def standing(self):
         return self.__standing
-    
+
     @typechecked
     def games(self, by_rounds=False):
         # ??? raise error/warnings if not finished
         return self.played_matches if by_rounds else uu.flatten(self.played_matches)
-    
+
     @typechecked
-    def top(self, place: Optional[int]=None) -> Union[Dict[int, List[Player]], List[Player]]:
+    def top(self, place: Optional[int] = None) -> Union[Dict[int, List[Player]], List[Player]]:
         # ??? raise error/warnings if not finshed
         if place:
             return [key for key, value in self.__standing.items() if value == place]
@@ -114,31 +113,32 @@ class Competition(metaclass=abc.ABCMeta):
         return played
 
     def edit(self, games: List[Duel]):
-            self.played_matches.append(games)
-            self._update()
-            return self._end_of_stage()
+        self.played_matches.append(games)
+        self._update()
+        return self._end_of_stage()
 
     def trophies(self):
         self.__standing = self._standing()
         for player in self.participants:
-            try: 
-                result = Achievement(self.__name, self.__standing[player], self.cashprize[self.__standing[player]])
+            try:
+                result = Achievement(
+                    self.__name, self.__standing[player], self.cashprize[self.__standing[player]])
                 player.collect(result)
             except AttributeError:
                 continue
-        self.__closed= True
+        self.__closed = True
 
     # --- subclass specificity --- #
     def _initialise(self) -> None:
         '''Function called once, after seedings computation but before any game is played.'''
-    
+
     def _update(self) -> None:
         '''This function is called at the end of every 'rounds', after the game have been stored, but before checking the competition end condition.'''
-    
+
     @abc.abstractmethod
     def _end_of_stage(self) -> bool:
         '''Test if the competition should stop.'''
-    
+
     @abc.abstractmethod
     def _standing(self) -> Dict[Player, int]:
         '''Function called once after every game is played. Builds the final standing of the event'''
@@ -146,5 +146,3 @@ class Competition(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def generate_games(self) -> List[Duel]:
         '''Function called every 'round' to generate games. Should return games WITHOUT scores assigned'''
-            
-    

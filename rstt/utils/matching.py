@@ -3,23 +3,29 @@ from typing import List, Tuple, Any
 # ----------------- #
 # --- Shuffling --- #
 # ----------------- #
+
+
 def riffle_shuffle(half1: List[Any], half2: List[Any]) -> List[Any]:
     return [half[i] for i in range(len(half1)) for half in [half1, half2]]
 
 # ----------------- #
 # --- Splitting --- #
 # ----------------- #
+
+
 def symetric_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
     h = len(elems)//2
     half1 = elems[:h]
     half2 = list(reversed(elems[-h:]))
     return half1, half2
 
+
 def middle_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
     h = len(elems)//2
     half1 = elems[:h]
     half2 = elems[-h:]
     return half1, half2
+
 
 def neighboor_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
     half1 = elems[::2]
@@ -29,12 +35,16 @@ def neighboor_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
 # ---------------- #
 # --- matching --- #
 # ---------------- #
+
+
 def symetric_match(elems: List[Any]) -> List[List[Any]]:
     return [[elems[i], elems[-i]] for i in range(len(elems)//2)]
+
 
 def parallel_match(elems: List[Any]) -> List[List[Any]]:
     h = len(elems)//2
     return [[elems[i], elems[h+i]] for i in range(h)]
+
 
 def neighboor_match(elems: List[Any]) -> List[List[Any]]:
     return [[elems[2*i], elems[2*i+1]] for i in range(len(elems)//2)]
@@ -42,15 +52,16 @@ def neighboor_match(elems: List[Any]) -> List[List[Any]]:
 # --------------- #
 # --- Common ---- #
 # --------------- #
+
+
 def ruban(players: List[Any]) -> List[List[Any]]:
     # QUEST: does it work with odd length of players input ?
     # QUEST: return List[List[List[Any]]] to match other matching func logic ?
-    
     '''
     implement 'clock-like' algorithm, source:
     https://en.wikipedia.org/wiki/File:Round-robin_tournament_10teams_en.png
     '''
-    
+
     # prevent side-effect due to .pop() usage
     players = [player for player in players]
 
@@ -58,14 +69,15 @@ def ruban(players: List[Any]) -> List[List[Any]]:
     rounds = []
 
     # algorithm variable
-    fix = players.pop(len(players)-1) # num10 in the ref .png
+    fix = players.pop(len(players)-1)  # num10 in the ref .png
 
     # control variables
     r = 1  # current round
-    nb = len(players)-1 if len(players) % 2 == 0 else len(players) # expected len(rounds) - total amount of rounds
-    
+    # expected len(rounds) - total amount of rounds
+    nb = len(players)-1 if len(players) % 2 == 0 else len(players)
+
     # build rounds one-by-one
-    while r <= nb:   
+    while r <= nb:
 
         # round[r-1]
         new_round = []
@@ -106,33 +118,35 @@ def ruban(players: List[Any]) -> List[List[Any]]:
 
 # NOTE: I do not know a algorithm to compute chord diagrams for an abritrary n=2*k (in reseaonable complexity)
 # But n=6 is a frequent needs in SwissBracket for 16 players variations so I hard coded the 15 solutions
+
+
 def chord_diagrams_n6(players: List[Any]) -> List[List[Any]]:
     '''
     source:
     https://en.wikipedia.org/wiki/Double_factorial
     https://en.wikipedia.org/wiki/Chord_diagram_(mathematics)
-    
+
     NOTE: I do not know a algorithm to compute it for an abritrary n=2*k (in reseaonable complexity)
     But n=6 is a frequent needs in SwissBracket for 16 players variations so I hard coded the 15 solutions
     '''
-    
+
     if len(players) != 6:
         msg = f'chord_diagrams_n6 function is implemented only for 6 participants, len(players) = {len(players)})'
         raise ValueError(msg)
-    
+
     matchings = [
         [players[0], players[5], players[1], players[4], players[2], players[3]],
         [players[0], players[5], players[1], players[5], players[2], players[4]],
         [players[0], players[4], players[1], players[5], players[2], players[3]],
         [players[0], players[2], players[1], players[4], players[3], players[5]],
         [players[0], players[3], players[1], players[4], players[2], players[5]],
-        
+
         [players[0], players[1], players[2], players[5], players[3], players[4]],
         [players[0], players[2], players[1], players[2], players[4], players[5]],
         [players[0], players[4], players[1], players[2], players[3], players[5]],
         [players[0], players[3], players[1], players[5], players[2], players[4]],
         [players[0], players[5], players[1], players[2], players[3], players[4]],
-        
+
         [players[0], players[3], players[1], players[2], players[4], players[5]],
         [players[0], players[2], players[1], players[5], players[3], players[4]],
         [players[0], players[1], players[2], players[4], players[3], players[5]],
@@ -141,16 +155,17 @@ def chord_diagrams_n6(players: List[Any]) -> List[List[Any]]:
     ]
     return matchings
 
+
 def swiss_bracket_n6(players: List[Any]) -> List[List[Any]]:
     '''
     Source : https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md
     Look for the 'Priority' table in section 'Swiss Bracket'
     '''
-    
+
     if len(players) != 6:
         msg = f'swiss_bracket_n6 function is implemented only for 6 participants, len(players) = {len(players)})'
         raise ValueError(msg)
-    
+
     matchings = [
         [players[0], players[5], players[1], players[4], players[2], players[3]],
         [players[0], players[5], players[1], players[3], players[2], players[4]],
@@ -171,4 +186,3 @@ def swiss_bracket_n6(players: List[Any]) -> List[List[Any]]:
         [players[0], players[1], players[2], players[3], players[4], players[5]],
     ]
     return matchings
-
