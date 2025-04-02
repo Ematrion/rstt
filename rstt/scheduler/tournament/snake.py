@@ -5,6 +5,23 @@ from . import Competition
 
 
 class Snake(Competition):
+    """The Snake Tournament
+
+    This format is not a standard one. It is a model I detail and justify the interest in my master thesis and should be the subject of a paper
+    in an hopefully near future.
+
+    It does have some ressamblances with the `Ladder tournament <https://en.wikipedia.org/wiki/Ladder_tournament>`_.
+    I am aware of two practical instances of uses:
+        - The bonus round in the fencing challenge of the `modern pentathlon <https://en.wikipedia.org/wiki/Modern_pentathlon>`_ at the Paris Olympics 2024.
+        - A cooking show with a `Hidden last chance <https://fr.wikipedia.org/wiki/Saison_14_de_Top_Chef>`_ secret tournament.
+
+    Quick Overview:
+        - For n participants it produces n-1 matches.
+        - Every participants plays at least one match.
+        - The final standing is an untied ranking.
+        - Matches are all 'a priori balanced'.
+    """
+
     def __init__(self, *args, **kwars):
         super().__init__(*args, **kwars)
         self.snake = []
@@ -27,20 +44,3 @@ class Snake(Competition):
 
     def generate_games(self) -> List[Duel]:
         return [Duel(self.snake.pop(0), self.snake.pop(0))]
-
-    '''
-    def edit(self, games: List[Duel]):
-        for game in games:
-            # winner can will play another game
-            self.snake.insert(0, game.winner())
-            # loser journey ends
-            self.standing[game.loser()] = len(self.snake) + 1
-
-        # check stop condition
-        if len(self.snake) == 1:
-            self.standing[self.snake[0]] = 1
-            finished = True
-        else:
-            finished = False
-
-        return finished'''

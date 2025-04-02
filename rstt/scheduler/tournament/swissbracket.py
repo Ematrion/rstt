@@ -31,11 +31,68 @@ class SwissBracket(Competition):
                  seeders: Optional[Dict[Tuple[int, int], Seeder]] = None,
                  generators: Optional[Dict[Tuple[int, int], Generator]] = None,
                  evaluators: Optional[Dict[Tuple[int, int], Evaluator]] = None,
-                 def_matching=DummyParam,
-                 def_seeder=DummyParam,
-                 def_generator=DummyParam,
-                 def_evaluator=DummyParam,
-                 cashprize: Dict[int, float] = {}):
+                 def_matching: Shuffler = DummyParam,
+                 def_seeder: Seeder = DummyParam,
+                 def_generator: Generator = DummyParam,
+                 def_evaluator: Evaluator = DummyParam,
+                 cashprize: Optional[Dict[int, float]] = None):
+        """The Swiss Bracket
+
+        The format is mention in the `esports variation <section>`_ of the Swiss Round wikipedia page and was originaly introduce for Counter-Strike event in 2016.
+        Hower both format differ drastically in many regards, one being their usage and output.
+            - In Swiss Round there is a single undefeated participant, thus is great to crown a winner among many participants.
+            - In Swiss Bracket, 16 teams are split into 8 qualified and 8 eliminated participants.
+
+        The name choice come from the `Valve rule book <https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md#swiss-bracket>`_ for Counter-Strike major competition, that specify a matching policy.
+
+        Parameters
+        ----------
+        Parameters
+        ----------
+        name : str
+            A unique name to identify the Event.
+        seeding : Ranking
+            A ranking used for `seeding <https://en.wikipedia.org/wiki/Seeding_(sports)>`_ purposes.
+        solver : Solver, optional
+            A Solver to generate match outcomes, by default BetterWin()
+        matchings : Optional[Dict[Tuple[int, int], Shuffler]], optional
+            A collection of matching strategy for rounds, by default None
+            Keys are tuple (number of win, number of lose) to indicate when the strategy is used.
+        seeders : Optional[Dict[Tuple[int, int], Seeder]], optional
+            A scollection of eeding strategy for rounds, by default None
+            Keys are tuple (number of win, number of lose) to indicate when the strategy is used.
+        generators : Optional[Dict[Tuple[int, int], Generator]], optional
+            A collection of generator for rounds, by default None
+            Keys are tuple (number of win, number of lose) to indicate when the generator is used.
+        evaluators : Optional[Dict[Tuple[int, int], Evaluator]], optional
+            A collection of evaluators for rounds, by default None
+            Keys are tuple (number of win, number of lose) to indicate when the strategy is used.
+        def_matching : Shuffler, optional
+            A default matching strategy for rounds where the matchings param does not provide one, by default DummyParam
+        def_seeder : Seeder, optional
+            A default seeding strategy for rounds where the seeders param does not provide one, by default DummyParam
+        def_generator : Generator, optional
+            A default generator for rounds where the generator param does not provide one, by default DummyParam
+        def_evaluator : Evaluator, optional
+            A default evaluator for rounds where the evaluators param does not provide one, by default DummyParam
+        cashprize : Optional[Dict[int, float]], optional
+            A 'prizepool' rewarding player with 'money' for their success (placement in the final standing) during the Event, by default None
+
+        .. note::
+            The design of the class alows extreme customization on the matching at any point of the competition.
+            If you do not provide a matching, seeders, genrators, evaluators and their associated default, the class uses a DummyParam for all. 
+
+            This approach works relatively well in standard cases.
+
+            The class seems to be 'Over-engineer' in that regards.
+            However, the format is relatively new AND there has been frequent discussion about issues related to matchings in it.
+
+            If you are interested in using the class to produce games automatically, you are good to go with the DummyParam.
+
+            If you are using the class, refer to the :module:`rstt.stypes` documentation to understand the parameters type and how it helps fine-tuning the tournament.
+
+            A matching workflow diagram will be added to the documentation of this class. 
+        """
         super().__init__(name, seeding, solver, cashprize)
 
         # general settings of the system

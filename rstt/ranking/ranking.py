@@ -1,3 +1,21 @@
+"""Ranking Module
+
+This module implements utility decorator and a general ranking class.
+
+
+Glossary
+--------
+
+
+    - Container Equivalence (Union == Intersection):
+    (key in self.datamodel.ratings) <=> (key in self.standing).
+    In the code we refer to 'equivalence'
+
+    - Rank Disambiguity (point '=' rating):
+    self.datamodel.ordinal(key) == self.standing.value(key) for all keys.
+    In the code we refer to 'disambiguity'
+"""
+
 from typeguard import typechecked
 from typing import Any, Union, List, Callable, Optional
 
@@ -7,6 +25,22 @@ from rstt.stypes import Inference, RatingSystem, Observer
 
 
 def set_equi(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Equivalence Set Decorator
+
+    Decorator for Ranking methods.
+    It enforces the equivalence property after the decorated methods execution
+
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        A method that could alter the equivalence property
+
+    Returns
+    -------
+    Callable[..., Any]
+        A function enforcing the equivalence property
+    """
+
     def wrapper_set(self, *args: Any, **kwargs: Any) -> Any:
         set_action = func(self, *args, **kwargs)
         if self._Ranking__maintain_equivalence:
@@ -16,6 +50,22 @@ def set_equi(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 def get_equi(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Equivalence Get Decorator
+
+    Decorator for Ranking methods.
+    It enforces the equivalence property before the decorated methods execution.
+
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        A method that needs 'a-priori' the equivalence property to be satisfied
+
+    Returns
+    -------
+    Callable[..., Any]
+        A function with the expected behaviour.
+    """
+
     def wrapper_get(self, *args: Any, **kwars: Any) -> Any:
         if self._Ranking__maintain_equivalence:
             self._Ranking__ContainerEquivalence()
@@ -24,6 +74,22 @@ def get_equi(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 def get_disamb(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Disambiguity Get Decorator
+
+    Decorator for ranking methods.
+    It enforces the disambuguity property before the decorated method execution.
+
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        A method that needs 'a-priori' the disambuguity property to be satisfied.
+
+    Returns
+    -------
+    Callable[..., Any]
+        A function with the expected behaviour.
+    """
+
     def wrapper_get(self, *args: Any, **kwars: Any) -> Any:
         if self._Ranking__maintain_disambiguity:
             self._Ranking__RankDisambiguity()
@@ -32,6 +98,22 @@ def get_disamb(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 def set_disamb(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Disambiguity Set Decorator
+
+    Decorator for ranking methods.
+    It enforces the disambuguity property after the decorated method execution.
+
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        A method that could alter the disambuguity property.
+
+    Returns
+    -------
+    Callable[..., Any]
+        A function enforcing the disambiguity property
+    """
+
     def wrapper_set(self, *args: Any, **kwargs: Any) -> Any:
         set_action = func(self, *args, **kwargs)
         if self._Ranking__maintain_disambiguity:
@@ -67,6 +149,7 @@ class Ranking():
     # ??? 
         - Can this state be reached from the intended Ranking usage ?
         How to detect it and what to do ?
+        => What is the ranking class responsability in this contexte?
 
     '''
     @typechecked
@@ -101,7 +184,7 @@ class Ranking():
     @set_equi
     @typechecked
     def add(self, keys: List[BasicPlayer]):
-        # turn maintainance for optimization
+        # turn off maintainance for optimization
         should_maintain = self.__maintain_equivalence
         self.__maintain_equivalence = False
 

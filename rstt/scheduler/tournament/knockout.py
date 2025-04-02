@@ -1,3 +1,9 @@
+"""Module for 'kock-out' Competition.
+
+Such tournament do have a strict elimination process and losing participants are quickly cut of the event.
+Standing is based on 'how far' the competitors go.
+"""
+
 from typing import List, Dict, Callable, Any
 from typeguard import typechecked
 
@@ -25,6 +31,21 @@ def balanced_tree(rounds):
 
 
 class SingleEliminationBracket(Competition):
+    """Single Elimination Bracket or tournament
+
+    One of the most famous and used competition model, specialy in internationl events, 
+    Participants are placed in a binary tree where the winner of a confrontation advance to the next stage and the loser is eliminated.
+
+    More detail on the `wikipedia <https://en.wikipedia.org/wiki/Single-elimination_tournament>`_ page.
+
+    .. note::
+        Currently the first round matching is the standard policy. for example with 8 participants:
+        Seed1 versus Seed8; Seed4 versus Seed5; Seed2 versus Seed7; Seed3 versus Seed6.
+
+        Future version will support custom first round matching.
+        In the mean time, to fine tune the first round, it is possible to reorder a ranking with a permutation using the :func:`rstt.ranking.ranking.Ranking.rerank` method.
+        This needs to be called on a ranking before passing it to a competition.
+    """
     @typechecked
     def __init__(self, name: str,
                  seeding: Ranking,
@@ -68,6 +89,11 @@ class SingleEliminationBracket(Competition):
 
 
 class DoubleEliminationBracket(Competition):
+    """Double Elimination Bracket
+
+    Variation of the Single Elimination Bracket where participants have a 2nd chance after losing before elimination.
+    More information `here <https://en.wikipedia.org/wiki/Double-elimination_tournament>`_.
+    """
     @typechecked
     def __init__(self, name: str,
                  seeding: Ranking,

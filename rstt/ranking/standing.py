@@ -378,15 +378,14 @@ class Standing:
             - 'always': An unsorted Standing will be updated at every opportunity.
             - None: the current strategy is maintained.
 
-        Warning
-        -------
-        This method should only be used to optimize code performance when needed and by user aware of the consequences.
-        Here are some advice and relevant implementation details. Use:
-            - protocol='get' when a portion of code is slow and performs a lot of 'set-operations'.
-            - protocol='set' when a portion of code is slow and performs a lot of 'get-operations'.
-            - protocol='always' anytime performances are not an issue.
-            - protocol='never' the standign stops ordering itself automaticaly.
-            - sorting=False when the order of the keys in the Standing do not matter.
+        .. warning::
+            This method should only be used to optimize code performance when needed and by user aware of the consequences.
+            Here are some advice and relevant implementation details. Use:
+                - protocol='get' when a portion of code is slow and performs a lot of 'set-operations'.
+                - protocol='set' when a portion of code is slow and performs a lot of 'get-operations'.
+                - protocol='always' anytime performances are not an issue.
+                - protocol='never' the standing stops ordering itself automaticaly.
+                - sorting=False when the order of the keys in the Standing do not matter.
         """
 
         self.__maintain = sorting

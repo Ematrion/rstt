@@ -1,3 +1,9 @@
+"""Module for Competiton that takes the form of 'groups'
+
+Such tournament do not have a direct elimination process, but allows participants to keep playing even after loses.
+Groups usually have tables that track points to determine each participant achievements.
+"""
+
 from typing import List, Dict
 from typeguard import typechecked
 
@@ -14,9 +20,21 @@ import math
 
 
 class RoundRobin(Competition):
+    """Round-Robin Tournament
+
+    Implements the famous tournament system. You find more detail on `wikipedia <https://en.wikipedia.org/wiki/Round-robin_tournament>`_
+    #/media/File:Round-robin_tournament_10teams_en.png>`_.
+    The matching technique used to generate matches is the algorithm illustrated `here <https://en.wikipedia.org/wiki/Round-robin_tournament.
+
+    A simpl specification of the tournament reads like this:
+        - a total of n x (n-1) matche is played in n-1 rounds.
+        - each rounds every participants play exactly one opponent.
+        - every players faces each others exactly once
+        - standing is based on the player's matches scores.
+    """
+
     def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin(),
                  cashprize: Dict[int, float] = {}):
-
         super().__init__(name, seeding, solver, cashprize)
 
         self.table = None
@@ -74,6 +92,21 @@ class RoundRobin(Competition):
 
 
 class SwissRound(RoundRobin):
+    """Swiss System
+
+    `Wikipedia <https://en.wikipedia.org/wiki/Swiss-system_tournament>`_ provides a good overview of the system.
+
+    It is a variation of the Round-Robin system, that fixes some issues:
+        - ~ n X log2(n) matches played, which for large n (participants) is significantly faster than round-robin.
+        - each rounds every participants play exactly one opponent with the same score. Which creates more interesting and balance game overall.
+        - every players should face at most once other players (not always possible).
+
+    .. warning:: 
+        - Undefined behaviour when the number of registered player is not a power of 2.
+        - The current matching strategy (greedy) has some issues and may lead to errors,
+        this has been observed for number of participants above 256.
+    """
+
     def _init_future_rounds(self):
         self.future_rounds = [[player for player in self.seeding]]
 

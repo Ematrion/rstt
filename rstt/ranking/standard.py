@@ -1,4 +1,3 @@
-from rstt.ranking import Standing
 from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import KeyModel, GaussianModel
 from rstt.ranking.rating import GlickoRating

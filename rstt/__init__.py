@@ -8,11 +8,10 @@ from .ranking import (
     BTRanking,
     BasicElo, BasicGlicko, BasicOS,
     WinRate, SuccessRanking
-    )
+)
 from .scheduler import (
     Competition,
     RoundRobin, SwissRound, RandomRound,
     SwissBracket,
     SingleEliminationBracket, DoubleEliminationBracket,
     Snake)
-
