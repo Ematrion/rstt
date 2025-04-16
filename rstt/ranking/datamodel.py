@@ -41,7 +41,7 @@ class keydefaultdict(defaultdict[SPlayer, Any]):
 class KeyModel:
     @typechecked
     def __init__(self, default: Optional[Any] = None, template: Optional[Callable] = None, factory: Optional[Callable] = None, *args, **kwargs):
-        """Basic Rating system
+        r"""Basic Rating system
 
         The KeyModel is a intuitive implementation of :class:`rstt.stypes.RatingSystem` that strores ratings of player in a defauldict.
         The default rating value can be specified in three different fashions.
@@ -57,8 +57,8 @@ class KeyModel:
             the KeyModel stores ratings in  a :class:`rstt.ranking.datamodel.keydefauldict`.
 
         .. note::
-            If you are using the 'template' you can additionaly specify *args and **kwargs to be passed to the template every time it is called to generate a new rating.
-            In the case of the 'factory', only **kwargs can be specified. And for the 'default', no additonal parameters are allowed.
+            If you are using the \'template\' you can additionaly specify \*args and \**kwargs to be passed to the template every time it is called to generate a new rating.
+            In the case of the \'factory\', only \**kwargs can be specified. And for the \'default\', no additonal parameters are allowed.
 
         Raises
         ------

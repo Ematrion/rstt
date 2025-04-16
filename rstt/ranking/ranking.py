@@ -6,22 +6,23 @@ This module implements utility decorator and a general ranking class.
 Glossary
 --------
 
+    1. Container Equivalence (Union = Intersection):
+    
+        - (key in self.datamodel.ratings) <=> (key in self.standing).
+        - In the code we refer to 'equivalence'
 
-    - Container Equivalence (Union == Intersection):
-    (key in self.datamodel.ratings) <=> (key in self.standing).
-    In the code we refer to 'equivalence'
-
-    - Rank Disambiguity (point '=' rating):
-    self.datamodel.ordinal(key) == self.standing.value(key) for all keys.
-    In the code we refer to 'disambiguity'
+    2. Rank Disambiguity (point '=' rating):
+    
+        - self.datamodel.ordinal(key) == self.standing.value(key) for all keys.
+        - In the code we refer to 'disambiguity'
+    
 """
 
 from typeguard import typechecked
-from typing import Any, Union, List, Callable, Optional
+from typing import Any, Union, List, Dict, Callable, Optional
 
-from rstt import BasicPlayer
 from rstt.ranking import Standing
-from rstt.stypes import Inference, RatingSystem, Observer
+from rstt.stypes import Inference, RatingSystem, Observer, SPlayer
 
 
 def set_equi(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -123,7 +124,7 @@ def set_disamb(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 class Ranking():
-    '''   
+    '''
     NOTE:
         - The Ranking class has two dict[Player, ...], (RatingSystem, Standing) - which induce redundancy and ambiguity.
         The 'Container Equivalence' and 'Rank Disambiguity' (SEE GLOSSARY) are two properties that needs to be enforced
@@ -146,23 +147,54 @@ class Ranking():
         This means that the players have the correct points but are not correctly ranked.
         It can happen when 'self.standing._keep_sorted_ == False' which is triggered by the user outside of the Ranking methods.
 
-    # ??? 
+    # ???
         - Can this state be reached from the intended Ranking usage ?
         How to detect it and what to do ?
         => What is the ranking class responsability in this contexte?
 
+
+    :meta private:
     '''
     @typechecked
     def __init__(self, name: str,
                  datamodel: RatingSystem,
                  backend: Inference,
                  handler: Observer,
-                 players: Optional[List[BasicPlayer]] = None):
+                 players: Optional[List[SPlayer]] = None):
+        """Ranking for players
+
+        The rstt package implements its own definition of a ranking.
+
+        Formally an rstt ranking consist of a
+
+            - A standing: An ordered sequence of players associated with an indication of their skills.
+            - A rating system - storing player's rating.
+            - A statistical inference system - set of equations.
+            - An update procedure
+
+        And two 'hidden' notions:
+
+            - Observables: set update 'triggers' justifying a change of ratings. (processed by the handler)
+            - An ordinal function converting rating into float values (provided by the rating system)
+
+        Parameters
+        ----------
+        name : str
+            A name to identify the ranking
+        datamodel : RatingSystem
+            A container storing rating of players and providing an orinal() funtion to convert rating into floating values.
+        backend : Inference
+            The 'math' behind the ranking system.
+        handler : Observer
+            A workflow handling the ranking update procedure
+        players : Optional[List[SPlayer]], optional
+            Players to register in the ranking, by default None
+        """
 
         # name/identifier - usefull for plot
         self.name = name
 
-        # fundamental notion of the Ranking Class
+        # fundamental notions of the Ranking Class
         self.standing = Standing()
         self.backend = backend
         self.datamodel = datamodel
@@ -183,7 +215,17 @@ class Ranking():
     @set_disamb
     @set_equi
     @typechecked
-    def add(self, keys: List[BasicPlayer]):
+    def add(self, keys: List[SPlayer]):
+        """Add players to the ranking
+
+        Each Player receive a default rating by the datamodel.
+        It is possible to manipulate it using the set_rating() method.
+
+        Parameters
+        ----------
+        keys : List[SPlayer]
+            Players to be ranked.
+        """
         # turn off maintainance for optimization
         should_maintain = self.__maintain_equivalence
         self.__maintain_equivalence = False
@@ -195,7 +237,7 @@ class Ranking():
         # restaure Ranking status
         self.__maintain_equivalence = should_maintain
 
-    def __add(self, key: BasicPlayer):
+    def __add(self, key: SPlayer):
         if key in self:
             msg = f'Can not add a key already present in the Ranking, {key}'
             raise ValueError(msg)
@@ -206,16 +248,17 @@ class Ranking():
         self.__equivalence = False
 
     # --- magic methods --- #
-    def __getitem__(self, *args, **kwargs) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
+    def __getitem__(self, *args, **kwargs) -> Union[SPlayer, List[SPlayer], int, List[int]]:
         ''' get item based on a rank or a key
 
         NOBUG:
             - sorting is handled by the Standing itself
-            - so is typechecked
+            - so is typechecking
         '''
+
         return self.standing.__getitem__(*args, **kwargs)
 
-    def __delitem__(self, key: BasicPlayer):
+    def __delitem__(self, key: SPlayer):
         ''' delete element from the Ranking
 
         REQ:
@@ -226,14 +269,14 @@ class Ranking():
 
         # ???:
             - could del succeed on standing but fail on RatingSystem.
-            This would otentialy lead to an invalid ranking state because __delitem__ is not decorated.
+            This would potentialy lead to an invalid ranking state because __delitem__ is not decorated.
             A ranking invalid state can exactly be the reason why this scenario happens.
             What is the best approach to this situation ?
         '''
         del self.standing[key]
         del self.datamodel[key]
 
-    def __contains__(self, key: BasicPlayer):
+    def __contains__(self, key: SPlayer):
         '''
         NOTE:
             - it does match standing behavior as specified but
@@ -249,13 +292,43 @@ class Ranking():
         return self.standing.__iter__()
 
     # --- getter --- #
-    def rank(self, player: BasicPlayer) -> int:
+    def rank(self, player: SPlayer) -> int:
+        """Getter for player Rank
+
+        Equivalent to ranking.standing[player].
+
+
+        Parameters
+        ----------
+        player : SPlayer
+            A player to get his rank.
+
+        Returns
+        -------
+        int
+            The rank of the player
+        """
         return self[player]
 
-    def ranks(self, players: List[BasicPlayer]) -> List[int]:
+    def ranks(self, players: List[SPlayer]) -> List[int]:
+        """Getter for players Rank
+
+        Equivalent to ranking.standing[players].
+
+
+        Parameters
+        ----------
+        players : SPlayer
+            Player to get their ranks.
+
+        Returns
+        -------
+        List[int]
+            The corresponding ranks of the players
+        """
         return [self.rank(player) for player in players]
 
-    def rating(self, player: BasicPlayer) -> Any:
+    def rating(self, player: SPlayer) -> Any:
         """Get method for rating
 
         Rating object is the internal model associated to a key.
@@ -286,12 +359,12 @@ class Ranking():
 
         Returns
         -------
-        list[_type_]
+        list[Any]
             A list of all rating object present in the Ranking, in order of the Standing.
         """
         return [self.rating(player) for player in self]
 
-    def players(self) -> List[BasicPlayer]:
+    def players(self) -> List[SPlayer]:
         """Get method of all keys
 
         Alias for Ranking.standing.keys()
@@ -303,7 +376,7 @@ class Ranking():
         """
         return self.standing.keys()
 
-    def point(self, player: BasicPlayer) -> float:
+    def point(self, player: SPlayer) -> float:
         """Get the point associated to a key
 
         Alias for Ranking.standing.value(player)
@@ -327,7 +400,20 @@ class Ranking():
         """
         return self.standing.values()
 
-    def status(self):
+    def status(self) -> Dict[str, Union[bool, str]]:
+        """Get ranking's control variables
+
+        This method can be usefull for debugging purposes.
+        However, there should be no reason to use it unless a user intentionnaly manipulate the ranking internal mechanism.
+
+
+        Returns
+        -------
+        Dict
+            name of control variables with their current values.
+
+        :meta private:
+        """
         return {'equivalence': self.__equivalence,
                 'disambiguity': self.__disambiguity,
                 'maintain_equivalence': self.__maintain_equivalence,
@@ -338,7 +424,7 @@ class Ranking():
     # --- setter --- #
     @set_disamb
     @set_equi
-    def set_rating(self, key: BasicPlayer, rating: Any):
+    def set_rating(self, key: SPlayer, rating: Any):
         """A method to assign a rating to a Player
 
 
@@ -362,20 +448,24 @@ class Ranking():
     @get_disamb
     @get_equi
     def plot(self):
+        """Plot method
+
+        Display the ranking to the standard output
+        """
         self.standing.plot(standing_name=self.name)
 
     @set_disamb
     @set_equi
     def update(self, *args, **kwargs):
-        """Update the Ranking
+        """Update method
 
+        Core functionality of the ranking class allowing player's rating to change and ranks to change.
+        It accept aribitrary parameters.
 
-        Parameters
-        ----------
-        observations : _type_
-            _description_
+        .. nwarning::
+            This method in itself does not do anything. It is a wrapper ensuring any update do not alterate the internal state of the ranking.
+            In no cases should this be overriden. Instead refer to :func:`rstt.ranking.ranking.Ranking.forward`
         """
-
         self.forward(*args, **kwargs)
 
         # NOTE: How do we know if the ranking state changed ?
@@ -384,26 +474,65 @@ class Ranking():
         self.__equivalence = False
 
     def forward(self, *args, **kwargs):
-        '''
-        '''
+        """Internal 'update' function
+
+        This method calls the handler :func:`rstt.stypes.handle_observations` with the parameters of the update function.
+
+        .. note::
+            FOR RANKING DESIGNER ONLY
+            method designed for devellopers who wants to modify the ranking.update function's behavivous.
+            In most cases, it is sufficient to write an apropriate observer as the ranking.handler.
+
+            However, sometimes it is relevant to do some ranking preprocessing before any rating updates.
+            This would not always be possible to do inside the handle_observations method as the observer do not have access to all ranking attributes.
+        """
         self.handler.handle_observations(infer=self.backend,
                                          datamodel=self.datamodel,
                                          *args, **kwargs)
 
+    @set_equi
+    @set_disamb
     @get_disamb
     @get_equi
+    @typechecked
     def rerank(self, permutation: List[int], name: str = None, direct: bool = True):
-        # TODO: write doc
+        """Reorder the ranking.
+
+        Inplace modification of the ranking state by reordering the players while maintaining a coherent state.
+        This means that each player will be re assigned a new rating corresponding to the desired permuatation
+
+        Parameters
+        ----------
+        permutation : List[int]
+            A permutation of the ranking indices.
+        name : str, optional
+            A name, by default None
+        direct : bool, optional
+            Wether to apply the permutation directly, or its inverse, by default True
+
+        Raises
+        ------
+        ValueError
+            When the permutation is not a permutation over the ranking indices.
+        """
+
         # check permutation validity
+        if len(self) != len(permutation):
+            # NOTE: without this check, the code will raise an IndexError and could be harder for the user to understand what went wrong.
+            msg = f"permutation must be a list of len {len(self)}"
+            raise ValueError
         if not (set(permutation) == set(list(range(len(self))))):
-            # TODO: write good msg error
-            msg = ''
+            msg = f"permutation must contain each value from 0 to {len(self)-1} exactly once"
             raise ValueError(msg)
 
-        # TODO: deal with direct=False
+        # rename the ranking:
+        if name is not None:
+            self.name = name
 
         pairs = []
         for current_rank, future_rank in enumerate(permutation):
+            if not direct:
+                current_rank, future_rank = future_rank, current_rank
             player = self[current_rank]
             ratings = self.datamodel.get(self[future_rank])
             pairs.append((player, ratings))
@@ -412,7 +541,26 @@ class Ranking():
 
     @get_disamb
     @get_equi
-    def fit(self, players: List[BasicPlayer], name: str = ''):
+    def fit(self, players: List[SPlayer], name: str = '') -> Standing:
+        """_summary_
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        players : List[SPlayer]
+            _description_
+        name : str, optional
+            _description_, by default ''
+
+        Returns
+        -------
+        Standing
+            _description_
+
+        # * WIP
+        :meta private:
+        """
         seeding = Standing()
         points = []
         for player in players:
@@ -425,9 +573,8 @@ class Ranking():
 
     # --- internal mechanism --- #
     def __ContainerEquivalence(self):
-        ''' property checker
+        ''' property checker'''
 
-        '''
         # get keys
         standing_keys = set(self.standing.keys())
         RatingSystem_keys = set(self.datamodel.keys())
@@ -451,6 +598,7 @@ class Ranking():
             raise RuntimeError(msg)
 
     def __RankDisambiguity(self):
+        ''' property checker'''
         for player in self.standing:
             # TODO: performance check (a) assign only if needed (b) assign always
             # ??? (a / b) as user options ?

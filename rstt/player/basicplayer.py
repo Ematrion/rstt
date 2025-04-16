@@ -7,7 +7,8 @@ import names
 
 class BasicPlayer():
     @typechecked
-    def __init__(self, name: Optional[str] = None, level: Optional[float] = None) -> None:
+    def __init__(self, name: Optional[str] = None,
+                 level: Optional[float] = None) -> None:
         """Basic Player
 
         BasicPlayer have a level and a name, that is it. The bare minimum for simulation to run.

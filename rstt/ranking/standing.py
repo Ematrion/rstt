@@ -1,9 +1,14 @@
+"""Standing Ranking
+
+Standing is a sorted container class implementing a triplet relationship between player, rank and points.
+"""
+
 from typing import Union, List, Dict, Tuple, Callable, Any, Optional
 
 from typeguard import typechecked
 import numpy as np
 
-from rstt import BasicPlayer
+from rstt.stypes import SPlayer
 import rstt.utils.utils as uu
 
 
@@ -14,12 +19,24 @@ ALWAYS = 'always'
 
 
 def get_sort(func: Callable[..., Any]) -> Callable[..., Any]:
-    """Sorting decorator
+    """Sorting Get Decorator
 
-    This function sort the Standing before its access.
+    Decorator for Standing methods.
+    It ensures that contained element (Players) are sorted in descending order of their associated values.
+
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        A standing that needs 'a-priori0 correct ordering of the standing.
+
+    Returns
+    -------
+    Callable[..., Any]
+        A function with the expected behaviour.
     """
 
     def wrapper_get(self: Any, *args, **kwars) -> Any:
+        """:meta private:"""
         if self._Standing__protocol in [GET_SORT, ALWAYS]:
             self._Standing__sort()
         return func(self, *args, **kwars)
@@ -27,24 +44,34 @@ def get_sort(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 def set_sort(func: Callable[..., Any]) -> Callable[..., Any]:
-    """Sorting decorator
+    """Sorting Set Decorator
 
-    This function sort the Standing after modification.
+    Decorator for Standing methods.
+    It ensures that contained element (Players) are sorted in descending order of their associated values.
 
-    FIXME:
-        - 'lazy' sorting. Some set/edit operations are performing iteratively modifications.
-        The sorting should only be called after the last operation, when the 'user call' is done.
-        Example: add() and __add()
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        A standing method that can alter the sorting order
 
+    Returns
+    -------
+    Callable[..., Any]
+        A function that enforces the correct standing ordering.
     """
 
+    # FIXME:
+    #   - 'lazy' sorting. Some set/edit operations are performing iteratively modifications.
+    #   The sorting should only be called after the last operation, when the 'user call' is done.
+    #   Example: add() and __add()
+
     def wrapper_set(self: Any, *args, **kwargs) -> Any:
+        """:meta private:"""
         set_action = func(self, *args, **kwargs)
         if self._Standing__protocol in [SET_SORT, ALWAYS]:
             self._Standing__sort()
         return set_action
     return wrapper_set
-
 
 # TODO: ADD
 # def not_sorted_error(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -57,7 +84,7 @@ def set_sort(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 class Standing:
-    ''' NOTE:
+    '''NOTE:
         1. Implementation choice
             - Standing is an hybrid of container/iterable. It belongs to the Collections categorie as a list and dictionary.
             - It is a list, a defaultdict (key, value ) and a 'symetrical dictionary' (key, index) <-> (index, key)
@@ -71,6 +98,7 @@ class Standing:
             The dictionary-like interface needed more work arround.
 
         TODO:
+
         1. KEY type
             * Generalize Standing based on a key_type
             * Typehint should support the key_type in the method signature
@@ -134,7 +162,9 @@ class Standing:
             * extremly used in __{set/del/get}item__ methods
             * is it necessary, is it the best practice ?
 
-            The reason is the list & dict behaviour implement different interfaces based on types      
+            The reason is the list & dict behaviour implement different interfaces based on types    
+
+        :meta private:  
         '''
 
     def __init__(self, default: float = 0.0,
@@ -142,12 +172,13 @@ class Standing:
                  upper: float = np.iinfo(np.int32).max,
                  step: float = 1.0,
                  protocol: str = SET_SORT):
-        """A Standing object simulate a value-based ordered dictionary.
+        """A Standing object emulate a value-based ordered dictionary.
 
-        The Standing also act as a list and the following relationship exist:
-        * Index -> Key 
-        * Key -> Value.
-        This means that the class implementation works similary to <List> and <Dict>.
+        The Standing also act as a <list> and a <dict> and the following relationship exist:
+            - Index -> Key 
+            - Key -> Index
+
+        Keys oredring is descedning and based on the associated value of the key, i.e Standing.point(key).
 
         The key ordering is maintain by internal mechanism as long as the Standing is manipulate with
         the provided methods and functionnalities.
@@ -155,15 +186,14 @@ class Standing:
         Examples
         --------
 
-        Notes
-        -----
-        Ordering is computationaly demanding, which means that repeated operations on a large Standing could result
-        in performances issues. It is possible to turn off the ordering features.
-        This break the whole point of the class. Do it only if needed and if you know what your are doing
+        .. note::
+            Ordering is computationaly demanding, which means that repeated operations on a large Standing could result
+            in performances issues. It is possible to turn off the ordering features.
+            This break the whole point of the class. Do it only if needed and if you know what your are doing
 
-        In its current form Key are intended to be of Type <Player> and Value of type <float>.
-        This may change in the future to support a more general case such as:
-        Key of type <Hasable> -> Value of type <Comarapble>.
+            In its current form Key are intended to be of Type <Player> and Value of type <float>.
+            This may change in the future to support a more general case such as:
+            Key of type <Hasable> -> Value of type <Comarapble>.
 
         Parameters
         ----------
@@ -196,7 +226,7 @@ class Standing:
     def __sort(self):
         ''' Sorting method
 
-        Called by decorators when needed and sort self.ranks [(key, value)] based on values
+        Sort self.ranks [(key, value)] based on values
         NOTE: (conceptual)
             - __sort is never called 'as-it', _Standing__sort is called by get/set_sort decorator
         '''
@@ -209,16 +239,21 @@ class Standing:
     # --- general purpose methords --- #
     @get_sort
     def plot(self, standing_name: Optional[str] = "Standing"):
-        """ Plot method
+        """Plot method
 
         Print the Standing in a text form as Index-Key-Value.
-        """
+
+        Parameters
+        ----------
+        standing_name : Optional[str], optional
+            A name has standing header, by default "Standing"
+    """
         print(f"----------- {standing_name} -----------")
         for i, (k, v) in enumerate(self.ranks):
             print("{:>5} {:>20} {:>10}".format('%d.' % i, '%s' % k, '%d' % v))
 
     @typechecked
-    def fit(self, keys: List[BasicPlayer]):
+    def fit(self, keys: List[SPlayer]):
         """Create a new Standing instance containing only the given Keys
 
         The Keys will have the same value as in the current Standing if present
@@ -244,20 +279,20 @@ class Standing:
                 new_standing.__add(key, self.__default)
         return new_standing
 
-    @set_sort  # FIXME: does not make any sense. No set operation on the standing instance
+    @set_sort  # ??? does not make any sense. No set operation on the standing instance. get_sort?
     @typechecked
     def rerank(self, permutation: List[int], inverse: bool = False):
         """Create a new Standing with a different ordering of its keys.
 
         Create a new Standing where key have different value associated. 
-        Key at index 'i' will have the value  of the Key' at index permutation[i].
+        Key at index 'i' will have the value of the Key at index permutation[i].
 
         Parameters
         ----------
         permutation : List[int]
             a permutation
         inverse : bool, optional
-            wether permutation should be interpreted directly,
+            Wether permutation should be interpreted directly,
             or as its inverse funtion. If inverse is True then Key at index permutation[i] 
             will have the value of Key at index i , by default False.
 
@@ -289,28 +324,22 @@ class Standing:
     # --- getter --- #
     @get_sort
     @typechecked
-    def percentile(self, elem: Dict[Tuple[int, int], float]):
-        """Output the percentile of the input
+    def percentile(self, key: SPlayer) -> float:
+        """Getter funtion for the percentile of a player
 
-        If provided a value, 
+        Informatin about the relative position of a player in the standing
 
         Parameters
         ----------
-        elem : Union[Player, float]
-            Either a value of a key of the standing.
-            If a value is provided it can be aribitrary, if it is a key it needs to be one present in the standing
+        key : SPlayer
+            A player to get his relative postiion
 
         Returns
         -------
         float
-            the percentile associated to the elem in the Standing
+            The percentile of the player as his relative position in the ranking
         """
-        if isinstance(elem, BasicPlayer):
-            value = self.value(elem)
-        else:
-            value = elem
-
-        return 1.0 - len([v for v in self.values() if v > value])/len(self.values())
+        return (self[key]+1)/len(self) * 100.00
 
     @get_sort
     def ties(self) -> bool:
@@ -333,8 +362,8 @@ class Standing:
 
     # TODO: define clearly output format
     @get_sort
-    def tied_items(self) -> Dict[float, List[BasicPlayer]]:
-        """Method to find tied items in the Standing
+    def tied_items(self) -> Dict[float, List[SPlayer]]:
+        """Getter method for tied items in the Standing
 
         Returns
         -------
@@ -360,7 +389,7 @@ class Standing:
     # TODO: investigate redundancy between sorting=False and protocol='never'
     # TODO: define protocol type (enum ?)
     def set_sorting(self, sorting: bool = None, protocol: str = None):
-        """"Set the ordering properties of the Standing
+        """Set the ordering properties of the Standing
 
         Control the internal mechanism. How/When the Standing handle the data and the sorting calls. 
 
@@ -368,19 +397,24 @@ class Standing:
         ----------
         sorting : bool, optional
             Define wether the Standing should be sorted or not, by default None.
+
             - True: the Standing will sorts itself automaticly upon future method calls.
             - False: the Standing will not sorts itself.
             - None: the current behaviour is maintained.
+
         protocol : str, optional
             Define which sorting stategy is used, by default None
+
             - 'get': An unsorted Standing will be 'updated' upon a query on its state (keys(), values(), plot(), ...).
             - 'set': An unsorted Standing will be 'updated' upon a modification of its state (add(), insert(), ...)
             - 'always': An unsorted Standing will be updated at every opportunity.
             - None: the current strategy is maintained.
 
+
         .. warning::
             This method should only be used to optimize code performance when needed and by user aware of the consequences.
-            Here are some advice and relevant implementation details. Use:
+            Here some advice:
+
                 - protocol='get' when a portion of code is slow and performs a lot of 'set-operations'.
                 - protocol='set' when a portion of code is slow and performs a lot of 'get-operations'.
                 - protocol='always' anytime performances are not an issue.
@@ -393,7 +427,7 @@ class Standing:
 
     @typechecked
     @set_sort
-    def insert(self, index: int, key: BasicPlayer):
+    def insert(self, index: int, key: SPlayer):
         """List like insertion
 
         insert a key at a given position in the list.
@@ -410,10 +444,10 @@ class Standing:
 
     # TODO: support other signature such as list of tuples and dictionaries - typecheck
     @set_sort
-    def add(self, keys: List[BasicPlayer], values: List[float] = []):
+    def add(self, keys: List[SPlayer], values: Optional[List[float]] = None):
         """Add key-value pairs to the Standing
 
-        Built-in method to add items to the Standing.
+        Method to add items to the Standing.
         The values are optional as Standing has a default value specified.
 
         Note
@@ -426,17 +460,21 @@ class Standing:
         keys : List[Player]
             Element to insert in the Standing
         values : List[float], optional
-            Associated values of the keys, if len(values) < len(keys) the method will add as many items (key, value)
-            to the standing before using the Standing default value for the remaining keys, by default []
-
-        FIXME: 
-            - turning off sorting seems unecessary since __add() is not a @set_sort decorated method
-            - test performances & requirements without it
+            Associated values of the keys, by default None.
+            If len(values) < len(keys) the method will add as many items (key, value)
+            to the standing before using the Standing default value for the remaining keys, 
         """
+
+        # FIXME:
+        #    - turning off sorting seems unecessary since __add() is not a @set_sort decorated method
+        #    - test performances & requirements without it
 
         # turn off sorting for optimisation
         should_sort = self.__maintain
         self.__maintain = False
+
+        if values is None:
+            values = []
 
         # perform iteratively addition
         for i, key in enumerate(keys):
@@ -450,7 +488,7 @@ class Standing:
 
     # --- Containers standard methods --- #
     @get_sort
-    def keys(self) -> List[BasicPlayer]:
+    def keys(self) -> List[SPlayer]:
         """Get method for keys
 
         Similar to dict.keys() but it returns a list, not a view.
@@ -478,7 +516,7 @@ class Standing:
     @get_sort
     @typechecked
     # !!! value() is a user level method. yet it is used in many places and triggers a lot of unecessary get_sort
-    def value(self, key: Union[BasicPlayer, int]) -> float:
+    def value(self, key: Union[SPlayer, int]) -> float:
         """Get value for a single key
 
         Return the value associated to the key in the Standing.
@@ -496,12 +534,12 @@ class Standing:
         """
         if isinstance(key, int):
             return self.ranks[key][1]
-        elif isinstance(key, BasicPlayer):
+        elif isinstance(key, SPlayer):
             return self.ranks[self.index(key)][1]
 
     @get_sort
     @typechecked
-    def items(self) -> List[Tuple[BasicPlayer, float]]:
+    def items(self) -> List[Tuple[SPlayer, float]]:
         """Get method for key value pairs
 
         Similar to dict.items(). It returns a list of tuples (key, value).
@@ -515,7 +553,7 @@ class Standing:
 
     @get_sort
     @typechecked
-    def index(self, key: BasicPlayer) -> int:
+    def index(self, key: SPlayer) -> int:
         """Get index for key
 
         Similar to list.index(). Standing implements an 'Ordinal Ranking' upon the set of keys based on associtaed values.
@@ -534,12 +572,12 @@ class Standing:
 
     @get_sort
     @typechecked
-    def pop(self, key: Union[int, List[int], BasicPlayer, List[BasicPlayer]]) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
+    def pop(self, key: Union[int, List[int], SPlayer, List[SPlayer]]) -> Union[SPlayer, List[SPlayer], int, List[int]]:
         """Get and remove method for element.
 
         Similar list.pop() and dict.pop() with some notable distinction. It deletes the corresponding items but:
-        - If key refers to index(es)then it returns the keys present at those ranks.
-        - If key refers to Player(s) then it and returns the corresponding index(es)/rank(s).
+        - If key(s) are index(es)then it returns the keys present at those ranks.
+        - If key(s) are to Player(s) then it and returns the corresponding index(es)/rank(s).
 
         Parameters
         ----------
@@ -557,7 +595,7 @@ class Standing:
 
     @get_sort
     @typechecked
-    def remove(self, key: Union[int, List[int], BasicPlayer, List[BasicPlayer]]) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
+    def remove(self, key: Union[int, List[int], SPlayer, List[SPlayer]]) -> Union[SPlayer, List[SPlayer], int, List[int]]:
         """Remove item method
 
         Works as Standing.pop() but without return values.
@@ -570,7 +608,7 @@ class Standing:
         self.__delitem__(key)
 
     # --- internal mechanism --- #
-    def __add(self, key: BasicPlayer, value: float = None):
+    def __add(self, key: SPlayer, value: float = None):
         '''
         method responsible of the inclusion of new item inside the Standing
 
@@ -614,7 +652,7 @@ class Standing:
             for i in sorted(index, reverse=True):
                 del self.ranks[i]
 
-    def __delitem_key(self, key: Union[BasicPlayer, List[BasicPlayer]]):
+    def __delitem_key(self, key: Union[SPlayer, List[SPlayer]]):
         '''
         Method responsible to delete items based on keys
 
@@ -625,14 +663,14 @@ class Standing:
             - no typechecking because it is called internaly
             - Is not sorting dependant.
         '''
-        if isinstance(key, BasicPlayer):
+        if isinstance(key, SPlayer):
             self.__delitem_index(self.index(key))
         else:
             for k in key:
                 # QUEST: use self.__delitem_key(k) ?
                 self.__delitem_index(self.index(k))
 
-    def __setitem_key_value(self, key: BasicPlayer, value: float):
+    def __setitem_key_value(self, key: SPlayer, value: float):
         '''
         Method responsible to set an item value based on the key
 
@@ -649,7 +687,7 @@ class Standing:
         else:
             self.__change_key_value(key, value)
 
-    def __setitem_index_key(self, index: int, key: BasicPlayer):
+    def __setitem_index_key(self, index: int, key: SPlayer):
         '''
         Method responsible to set an item value based on the key
 
@@ -675,7 +713,7 @@ class Standing:
             point = (self.ranks[index-1][1] + self.ranks[index][1]) / 2
         self.__add(key, point)
 
-    def __change_key_value(self, key: BasicPlayer, value: float):
+    def __change_key_value(self, key: SPlayer, value: float):
         '''Method responsible to change the value of a key.
 
         This Method assign to an already present key a new value in adict-like fashion
@@ -698,8 +736,8 @@ class Standing:
     # --- magic methods --- #
     @get_sort
     @typechecked
-    def __getitem__(self, key: Union[int, slice, List[int], BasicPlayer, List[BasicPlayer]]
-                    ) -> Union[BasicPlayer, List[BasicPlayer], int, List[int]]:
+    def __getitem__(self, key: Union[int, slice, List[int], SPlayer, List[SPlayer]]
+                    ) -> Union[SPlayer, List[SPlayer], int, List[int]]:
         '''
         Method responsible to get an item
 
@@ -728,11 +766,11 @@ class Standing:
         '''
         if isinstance(key, slice):
             return [player[0] for player in self.ranks][key]
-        elif isinstance(key, BasicPlayer):
+        elif isinstance(key, SPlayer):
             return self.index(key)
         elif isinstance(key, int):
             return self.ranks[key][0]
-        elif isinstance(key, list) and isinstance(key[0], BasicPlayer):
+        elif isinstance(key, list) and isinstance(key[0], SPlayer):
             return [self.index(player) for player in key]
         elif isinstance(key, list) and isinstance(key[0], int):
             players = [player[0] for player in self.ranks]
@@ -740,7 +778,7 @@ class Standing:
 
     @set_sort
     @typechecked
-    def __setitem__(self, key: Union[int, BasicPlayer], value: Union[BasicPlayer, float]):
+    def __setitem__(self, key: Union[int, SPlayer], value: Union[SPlayer, float]):
         '''
         Method responsible set an item in the Standing
 
@@ -768,15 +806,15 @@ class Standing:
             at least raise a warning
 
         '''
-        if isinstance(key, int) and isinstance(value, BasicPlayer):
+        if isinstance(key, int) and isinstance(value, SPlayer):
             self.__setitem_index_key(key, value)
-        elif isinstance(key, BasicPlayer) and isinstance(value, float):
+        elif isinstance(key, SPlayer) and isinstance(value, float):
             self.__setitem_key_value(key, value)
-        elif isinstance(key, BasicPlayer) and isinstance(value, int):
+        elif isinstance(key, SPlayer) and isinstance(value, int):
             self.__setitem_index_key(value, key)
 
     @typechecked
-    def __delitem__(self, elem: Union[slice, int, List[int], BasicPlayer, List[BasicPlayer]]):
+    def __delitem__(self, elem: Union[slice, int, List[int], SPlayer, List[SPlayer]]):
         '''
         Method responsible to delete item
 
@@ -794,13 +832,13 @@ class Standing:
             - When keep_sorting is false it should raise a warning at least.
         '''
 
-        if isinstance(elem, BasicPlayer) or (isinstance(elem, list) and isinstance(elem[0], BasicPlayer)):
+        if isinstance(elem, SPlayer) or (isinstance(elem, list) and isinstance(elem[0], SPlayer)):
             self.__delitem_key(elem)
         else:
             self.__delitem_index(elem)
 
     @typechecked
-    def __contains__(self, key: BasicPlayer):
+    def __contains__(self, key: SPlayer):
         return key in [item[0] for item in self.ranks]
 
     def __len__(self):
