@@ -94,7 +94,7 @@ class KeyModel:
             Hopefull future version will fix this issue.
         """
         # TODO: test rating type before assignement and thorw TypeError
-        # !!! the problem is how the type is defined? built-in, class, protocol 'attribute protocol' ? isinstance does not work for all case.
+        # !!! the problem is how the type is defined? built-in, class, protocol 'attribute protocol' ? isinstance does not work for all cases.
         self.__ratings[key] = rating
 
     # --- getter --- #

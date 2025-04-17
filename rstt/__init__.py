@@ -14,4 +14,5 @@ from .scheduler import (
     RoundRobin, SwissRound, RandomRound,
     SwissBracket,
     SingleEliminationBracket, DoubleEliminationBracket,
-    Snake)
+    Snake
+)

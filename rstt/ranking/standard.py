@@ -1,3 +1,7 @@
+"""Classic Ranking System Module
+
+The module provides implementation of well know ranking methods.
+"""
 from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import KeyModel, GaussianModel
 from rstt.ranking.rating import GlickoRating
@@ -56,7 +60,7 @@ class WinRate(Ranking):  # !!! need Player (with history) but ranking is not gen
         WinRate uses:
 
             1. :class:`rstt.ranking.datamodel.KeyModel` as datamodel
-            2. :class:`rstt.ranking.inferer.PlayerWinPr`as backend
+            2. :class:`rstt.ranking.inferer.PlayerWinPr` as backend
             3. :class:`rstt.ranking.observer.KeyChecker` as handler
 
 
@@ -87,7 +91,7 @@ class SuccessRanking(Ranking):
         SuccessRanking uses:
 
             1. :class:`rstt.ranking.datamodel.KeyModel` as datamodel
-            2. :class:`rstt.ranking.inferer.EventStanding`as backend
+            2. :class:`rstt.ranking.inferer.EventStanding` as backend
             3. :class:`rstt.ranking.observer.KeyChecker` as handler
 
         Parameters
@@ -116,7 +120,7 @@ class SuccessRanking(Ranking):
         self.backend.add_event(*args, **kwargs)
 
     def remove_event(self, *args, **kwargs):
-        """Wrapper of :func:`rstt.ranking.inferer.EventStanding.remove_event"""
+        """Wrapper of :func:`rstt.ranking.inferer.EventStanding.remove_event`"""
         self.backend.remove_event(*args, **kwargs)
 
     def forward(self, event=None, points=None, *args, **kwargs):
@@ -140,7 +144,7 @@ class BasicElo(Ranking):
         BasicElo uses:
 
             1. :class:`rstt.ranking.datamodel.KeyModel` as datamodel
-            2. :class:`rstt.ranking.inferer.Elo`as backend
+            2. :class:`rstt.ranking.inferer.Elo` as backend
             3. :class:`rstt.ranking.observer.GameByGame` as handler
 
         .. note::
@@ -166,13 +170,11 @@ class BasicElo(Ranking):
                          handler=GameByGame(),
                          players=players)
 
-    '''
-    def predict(self, game):
-        _, teams_as_ratings, _, _ = self.handler.match_formating(datamodel=self.datamodel, game=game)
-        r1 = teams_as_ratings[0][0]
-        r2 = teams_as_ratings[1][0]
-        return self.backend.expectedScore(rating1=r1, rating2=r2)
-    '''
+    # def predict(self, game):
+    #    _, teams_as_ratings, _, _ = self.handler.match_formating(datamodel=self.datamodel, game=game)
+    #    r1 = teams_as_ratings[0][0]
+    #    r2 = teams_as_ratings[1][0]
+    #    return self.backend.expectedScore(rating1=r1, rating2=r2)
 
 
 class BasicGlicko(Ranking):
@@ -184,7 +186,7 @@ class BasicGlicko(Ranking):
         BasicGlicko uses:
 
             1. :class:`rstt.ranking.datamodel.GaussianModel` as datamodel
-            2. :class:`rstt.ranking.inferer.Glicko`as backend
+            2. :class:`rstt.ranking.inferer.Glicko` as backend
             3. :class:`rstt.ranking.observer.BatchGame` as handler
 
         Parameters
@@ -221,13 +223,11 @@ class BasicGlicko(Ranking):
         self.handler.handle_observations(
             infer=self.backend, datamodel=self.datamodel, *args, **kwargs)
 
-    '''    
-    def predict(self, game):
-        _, teams_as_ratings, _, _ = GameByGame().match_formating(datamodel=self.datamodel, game=game)
-        r1 = teams_as_ratings[0][0]
-        r2 = teams_as_ratings[1][0]
-        return self.backend.expectedScore(rating1=r1, rating2=r2)
-    '''
+    # def predict(self, game):
+    #    _, teams_as_ratings, _, _ = GameByGame().match_formating(datamodel=self.datamodel, game=game)
+    #    r1 = teams_as_ratings[0][0]
+    #    r2 = teams_as_ratings[1][0]
+    #    return self.backend.expectedScore(rating1=r1, rating2=r2)
 
 
 class BasicOS(Ranking):
@@ -278,8 +278,6 @@ class BasicOS(Ranking):
             datamodel=self.datamodel, game=game)
         return self.backend.predict_draw(teams_as_ratings)
 
-    '''
-    def predict(self, game) -> float:
-        _, teams_as_ratings, _, _ = self.handler.match_formating(datamodel=self.datamodel, game=game)
-        return self.backend.predict_win(teams_as_ratings)[0]
-    '''
+    # def predict(self, game) -> float:
+    #    _, teams_as_ratings, _, _ = self.handler.match_formating(datamodel=self.datamodel, game=game)
+    #    return self.backend.predict_win(teams_as_ratings)[0]
