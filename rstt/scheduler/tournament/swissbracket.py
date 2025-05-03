@@ -2,9 +2,9 @@ from typing import Union, List, Dict, Tuple, Optional, Any, Iterable
 from typing import Protocol, runtime_checkable
 from typeguard import typechecked
 
-from rstt import Player, Duel, BetterWin
+from rstt import Duel, BetterWin
 from rstt.ranking.ranking import Ranking
-from rstt.stypes import Solver, Shuffler, Seeder, Generator, Evaluator
+from rstt.stypes import SPlayer, Solver, Shuffler, Seeder, Generator, Evaluator
 from . import Competition
 
 from rstt.utils import utils as uu, matching as um, competition as uc
@@ -14,13 +14,13 @@ class DummyParam(Shuffler, Seeder, Evaluator):
     def rearange(status: List[int]) -> List[int]:
         return status
 
-    def seed(players: List[Player], *args,  **kwargs) -> List[Player]:
+    def seed(players: List[SPlayer], *args,  **kwargs) -> List[SPlayer]:
         return players
 
-    def generate(status: Union[List[int], List[Player]]) -> Union[List[int], List[Player]]:
+    def generate(status: Union[List[int], List[SPlayer]]) -> Union[List[int], List[SPlayer]]:
         return um.ruban(status)
 
-    def eval(options: List[List[Player]], *args,  **kwargs) -> List[List[Player]]:
+    def eval(options: List[List[SPlayer]], *args,  **kwargs) -> List[List[SPlayer]]:
         return options
 
 
@@ -43,7 +43,8 @@ class SwissBracket(Competition):
             - In Swiss Round there is a single undefeated participant, thus is great to crown a winner among many participants.
             - In Swiss Bracket, 16 teams are split into 8 qualified and 8 eliminated participants.
 
-        The name choice come from the `Valve rule book <https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md#swiss-bracket>`_ for Counter-Strike major competition, that specify a matching policy.
+        #swiss-bracket>`_ for Counter-Strike major competition, that specify a matching policy.
+        The name choice come from the `Valve rule book <https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md
 
         Parameters
         ----------
@@ -80,7 +81,7 @@ class SwissBracket(Competition):
 
         .. note::
             The design of the class alows extreme customization on the matching at any point of the competition.
-            If you do not provide a matching, seeders, genrators, evaluators and their associated default, the class uses a DummyParam for all. 
+            If you do not provide a matching, seeders, genrators, evaluators and their associated default, the class uses a DummyParam for all.
 
             This approach works relatively well in standard cases.
 
@@ -91,7 +92,7 @@ class SwissBracket(Competition):
 
             If you are using the class, refer to the :module:`rstt.stypes` documentation to understand the parameters type and how it helps fine-tuning the tournament.
 
-            A matching workflow diagram will be added to the documentation of this class. 
+            A matching workflow diagram will be added to the documentation of this class.
         """
         super().__init__(name, seeding, solver, cashprize)
 
@@ -136,7 +137,7 @@ class SwissBracket(Competition):
     def _end_of_stage(self) -> bool:
         return self.current_round == self.max_round
 
-    def _standing(self) -> Dict[Player, int]:
+    def _standing(self) -> Dict[SPlayer, int]:
         standing = {}
         top8 = [(self.max_wins, i) for i in range(self.max_loses)]
         bottom8 = [(i, self.max_loses) for i in range(self.max_wins-1, -1, -1)]
@@ -157,7 +158,7 @@ class SwissBracket(Competition):
 
     # --- round mechanism --- #
     @typechecked
-    def score(self, player: Player) -> Tuple[int, int]:
+    def score(self, player: SPlayer) -> Tuple[int, int]:
         wins = len([game for game in self.games() if game.winner() == player])
         loses = len([game for game in self.games() if game.loser() == player])
         return (wins, loses)
@@ -168,7 +169,7 @@ class SwissBracket(Competition):
                 if i < self.max_loses and self.current_round-i < self.max_wins]
 
     @typechecked
-    def draws(self, group: List[Player]) -> List[List[Duel]]:
+    def draws(self, group: List[SPlayer]) -> List[List[Duel]]:
         scores = [self.score(player) for player in group]
         # !!! debugging - SwissBracket will change to support different amount of players
         assert len(set(scores)) == 1

@@ -92,3 +92,24 @@ def test_rerank_direct_and_indirect_random(elo, random_perm):
     elo.rerank(permutation=random_perm, direct=False)
     for p in elo:
         assert elo[p] == reference[p]
+
+
+def test_fit_unseeded_not_added(elo):
+    unseeded = Player.create(nb=5)
+    seeding = elo.fit(unseeded)
+    for p in unseeded:
+        assert p not in elo
+
+
+def test_fit_seed_unseeded(elo):
+    unseeded = Player.create(nb=5)
+    seeding = elo.fit(unseeded)
+    for p in unseeded:
+        assert p in seeding
+
+
+def test_fit_some_present(elo, players):
+    unseeded = Player.create(nb=5)
+    seeding = elo.fit(unseeded+players)
+    for p in unseeded + players:
+        assert p in seeding

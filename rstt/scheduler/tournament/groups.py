@@ -4,14 +4,12 @@ Such tournament do not have a direct elimination process, but allows participant
 Groups usually have tables that track points to determine each participant achievements.
 """
 
-from typing import List, Dict
-from typeguard import typechecked
+from typing import Dict
 
-from rstt import Duel, BetterWin
+from rstt import BetterWin
 from . import Competition
 from rstt.ranking.ranking import Ranking
 from rstt.stypes import Solver
-from rstt.solver.solvers import WIN, LOSE, DRAW
 
 from rstt.utils import utils as uu, matching as um, competition as uc
 
@@ -115,6 +113,7 @@ class SwissRound(RoundRobin):
         return len(self.played_matches) == int(math.log(len(self.participants), 2))
 
     def _update(self):
+        super()._update()
         # !!! not how _end_of_stage() is meant to be used.
         if not self._end_of_stage():
             self.make_groups()

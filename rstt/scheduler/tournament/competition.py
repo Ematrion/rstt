@@ -236,7 +236,7 @@ class Competition(metaclass=abc.ABCMeta):
         while not self.__finished:
             current_round = self.generate_games()
             results = self.play_games(current_round)
-            self.__finished = self.edit(results)
+            self.edit(results)
 
     def play_games(self, games: List[Duel]) -> List[Duel]:
         """Assign scores to generated matches
@@ -259,7 +259,7 @@ class Competition(metaclass=abc.ABCMeta):
             played.append(game)
         return played
 
-    def edit(self, games: List[Duel]) -> bool:
+    def edit(self, games: List[Duel]):
         """Handles competition state after each round
 
         Do not use if you simply want to run the competition.
@@ -276,7 +276,7 @@ class Competition(metaclass=abc.ABCMeta):
         """
         self.played_matches.append(games)
         self._update()
-        return self._end_of_stage()
+        self.__finished = self._end_of_stage()
 
     def trophies(self):
         """Closure ceremony

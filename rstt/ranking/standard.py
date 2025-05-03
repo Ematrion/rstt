@@ -109,8 +109,8 @@ class SuccessRanking(Ranking):
         """
         super().__init__(name=name,
                          datamodel=KeyModel(template=int),
-                         backend=EventStanding(
-                             buffer=buffer, nb=nb, default=default),
+                         backend=EventStanding(buffer=buffer,
+                                               nb=nb, default=default),
                          handler=KeyChecker(),
                          players=players)
 

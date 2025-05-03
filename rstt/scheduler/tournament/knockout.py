@@ -10,8 +10,8 @@ from typeguard import typechecked
 
 from . import Competition
 from rstt.ranking.ranking import Ranking
-from rstt import Player, BetterWin
-from rstt.stypes import Solver
+from rstt import BetterWin
+from rstt.stypes import Solver, SPlayer
 
 from rstt.utils import utils as uu, matching as um, competition as uc
 
@@ -75,7 +75,7 @@ class SingleEliminationBracket(Competition):
         next = [game.winner() for game in self.played_matches[-1]]
         self.players_left = next
 
-    def _standing(self) -> Dict[Player, int]:
+    def _standing(self) -> Dict[SPlayer, int]:
         standing = {}
         top = len(self.participants)
         for round in self.played_matches:
@@ -126,7 +126,7 @@ class DoubleEliminationBracket(Competition):
         self.lower.insert(0, [game.winner()
                           for game in self.played_matches[-1]])
 
-    def _standing(self) -> Dict[uc.Player, int]:
+    def _standing(self) -> Dict[SPlayer, int]:
         standing = {}
         top = len(self.participants)
         for round in self.played_matches:

@@ -1,6 +1,7 @@
 from typing import List, Dict
 
-from rstt import Duel, Player
+from rstt import Duel
+from rstt.stypes import SPlayer
 from . import Competition
 
 
@@ -36,7 +37,7 @@ class Snake(Competition):
     def _end_of_stage(self) -> bool:
         return len(self.snake) == 1
 
-    def _standing(self) -> Dict[Player, int]:
+    def _standing(self) -> Dict[SPlayer, int]:
         standing = {games[0].loser(): len(self.participants)-r
                     for r, games in enumerate(self.played_matches)}
         standing[self.played_matches[-1][0].winner()] = 1

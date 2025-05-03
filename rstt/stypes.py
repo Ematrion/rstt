@@ -259,6 +259,24 @@ class RatingSystem(Protocol):
             A single floating value. :class:`rstt.ranking.ranking.Ranking` assumes that a higher returned value means 'better'.
         """
 
+    def keys(self):
+        """Dict like keys method
+
+        Returns
+        -------
+        view object
+            view on the RatingSystem entries
+        """
+
+    def __delitem__(self, key: SPlayer):
+        """delitem magic method
+
+        Parameters
+        ----------
+        key : SPlayer
+            a player to remove from the RatingSystem
+        """
+
 
 @runtime_checkable
 class Observer(Protocol):

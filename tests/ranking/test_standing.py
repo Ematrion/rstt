@@ -7,6 +7,7 @@ from rstt.ranking import Standing, BTRanking
 from collections import namedtuple
 
 # TODO: add test for decorator, and decorated methods (sorting done properly)
+# FIXME: use fixture
 
 # default params
 pop = [Player(name=f"player_{i}", level=1500) for i in range(3)]
@@ -151,3 +152,48 @@ def test_percentile():
     gt = BTRanking(players=players)
     for i in range(0, 100):
         assert stand.percentile(gt[i]) == (i+1)/100 * 100.00
+
+
+def test_fit_new_standing():
+    ref = standing
+    seeding = standing.fit(pop)
+    assert seeding is not ref
+
+
+def test_fit_maintain_standing():
+    ref = standing
+    seeding = standing.fit(pop)
+    for p in standing:
+        assert ref[p] == seeding[p]
+
+
+def test_fit_unseeded_not_added():
+    ref = standing
+    unseeded = Player.create(nb=5)
+    seeding = ref.fit(unseeded)
+    for p in unseeded:
+        assert not p in ref
+
+
+def test_fit_seed_unseeded():
+    ref = standing
+    unseeded = Player.create(nb=5)
+    seeding = ref.fit(unseeded)
+    for p in unseeded:
+        assert p in seeding
+
+
+def test_fit_some_present():
+    ref = standing
+    unseeded = Player.create(nb=5)
+    seeding = ref.fit(unseeded+pop)
+    for p in unseeded + pop:
+        assert p in seeding
+
+
+def test_fit_unseeded_value():
+    ref = standing
+    unseeded = Player.create(nb=5)
+    seeding = ref.fit(unseeded)
+    for p in unseeded:
+        assert seeding.value(p) == ref._Standing__default

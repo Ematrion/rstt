@@ -510,37 +510,18 @@ class Ranking():
 
     @get_disamb
     @get_equi
-    def fit(self, players: List[SPlayer], name: str = '') -> Standing:
-        """_summary_
-
-        _extended_summary_
-
-        Parameters
-        ----------
-        players : List[SPlayer]
-            _description_
-        name : str, optional
-            _description_, by default ''
-
-        Returns
-        -------
-        Standing
-            _description_
-
-        # * WIP
-        :meta private:
-        """
-        seeding = Standing()
-        points = []
-        for player in players:
-            if player in self:
-                points.append(self.point(player))
-            else:
-                points.append(self.standing._default_)
+    def fit(self, players: List[SPlayer]) -> Standing:
+        seeding = Standing(default=self.standing._Standing__default,  # ??? lower instead of default
+                           lower=self.standing._Standing__min,
+                           upper=self.standing._Standing__max,
+                           protocol=self.standing._Standing__protocol)  # Optimize
+        points = [self.point(
+            player) if player in self else None for player in players]
         seeding.add(players, points)
         return seeding
 
     # --- internal mechanism --- #
+
     def __ContainerEquivalence(self):
         ''' property checker'''
 

@@ -92,7 +92,7 @@ class Standing:
         """A Standing object emulate a value-based ordered dictionary.
 
         The Standing also act as a <list> and a <dict> and the following relationship exist:
-            - Index -> Key 
+            - Index -> Key
             - Key -> Index
 
         Keys oredring is descedning and based on the associated value of the key, i.e Standing.point(key).
@@ -174,7 +174,7 @@ class Standing:
         """Create a new Standing instance containing only the given Keys
 
         The Keys will have the same value as in the current Standing if present
-        otherwise the default value will be assigned. 
+        otherwise the default value will be assigned.
 
         Parameters
         ----------
@@ -185,23 +185,17 @@ class Standing:
         -------
         Standing
         """
-        new_standing = Standing(
-            self.__default, self.__min, self.__max, self.__step)
-
-        # add key with appropriate value
-        for key in keys:
-            try:
-                new_standing.__add(key, self.value(key))
-            except IndexError:
-                new_standing.__add(key, self.__default)
-        return new_standing
+        seeding = Standing(self.__default, self.__min, self.__max, self.__step)
+        points = [self.value(key) if key in self else None for key in keys]
+        seeding.add(keys, points)
+        return seeding
 
     @set_sort  # ??? does not make any sense. No set operation on the standing instance. get_sort?
     @typechecked
     def rerank(self, permutation: List[int], inverse: bool = False):
         """Create a new Standing with a different ordering of its keys.
 
-        Create a new Standing where key have different value associated. 
+        Create a new Standing where key have different value associated.
         Key at index 'i' will have the value of the Key at index permutation[i].
 
         Parameters
@@ -210,7 +204,7 @@ class Standing:
             a permutation
         inverse : bool, optional
             Wether permutation should be interpreted directly,
-            or as its inverse funtion. If inverse is True then Key at index permutation[i] 
+            or as its inverse funtion. If inverse is True then Key at index permutation[i]
             will have the value of Key at index i , by default False.
 
         Returns

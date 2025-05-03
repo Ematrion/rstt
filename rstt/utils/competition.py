@@ -1,13 +1,14 @@
 from typing import List
 from typeguard import typechecked
 
-from rstt import Player, Duel
+from rstt import Duel
+from rstt.stypes import SPlayer
 
 import warnings
 
 
 @typechecked
-def playersToDuel(players: List[Player]) -> List[Duel]:
+def playersToDuel(players: List[SPlayer]) -> List[Duel]:
     return [Duel(players[2*i], players[2*i+1]) for i in range(len(players)//2)]
 
 
