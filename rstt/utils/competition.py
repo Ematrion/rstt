@@ -25,6 +25,7 @@ def new_matchup(game: Duel, games: List[Duel], symetric: bool = True) -> bool:
 
 @typechecked
 def find_valid_draw(draws: List[List[Duel]], games: List[Duel], symetric: bool = True) -> List[Duel]:
+    # !!! symetric -> valid_draw(...) -> new_matchup(...)
     # avoid side-effect (usage of .pop)
     draws = [option for option in draws]
 

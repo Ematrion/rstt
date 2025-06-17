@@ -23,6 +23,30 @@ import rstt.utils.utils as uu
 # QUEST: Do Observer realy need to be typechecked ?
 
 
+def convert_observations(accpeted: list[str], target: str, incompatibility: list[tuple[str]], **kwargs):
+    ''' 
+    TODO: Implement
+    General method that convert user input - ranking.update(observations) - into suited data
+    Should also check the call validity (in terms of keyword used)
+
+        accepted: list of arg keyword for which the observer provide user support
+        target: the observation format for which the observer is actually implemented
+        incompatibility: keyword that should not be called together
+        kwargs: parameters of the ranking.update call, i.e. param to check validity and convert
+
+    REQ:
+        - general purpose method where **kwargs are parameters from the handle_observations call
+        - accepted: list of arg keyword for which the observer provide user support
+        - target: the observation format for which the observer is actually implemented
+
+    QUEST:
+        ??? is it always possible to output one 'target'
+
+    '''
+    target_value = None
+    return target_value
+
+
 @typechecked
 def assign_ratings(datamodel: RatingSystem, ratings: Dict[SPlayer, Any]):
     """Push updated ratings in the RatingSystem
@@ -238,10 +262,13 @@ class BatchGame:
 
     @typechecked
     def player_score(self, player: SPlayer, game: SMatch):
-        """Exctact player score in a gievn macth
+        """Exctract player score in a gievn macth
 
         :meta private:
         """
+
+        # ??? why not use game.score(player) ->check glicko restricition on score value ?
+
         if game.winner() == player:
             return 1.0
         elif game.loser() == player:
@@ -262,7 +289,7 @@ class BatchGame:
 
     @typechecked
     def involved_keys(self, games: List[SMatch]) -> List[SPlayer]:
-        """Find all opponents of a gien player in the batch
+        """Find all opponents of a given player in the batch
 
         :meta private:
         """

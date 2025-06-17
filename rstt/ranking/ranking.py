@@ -531,7 +531,7 @@ class Ranking():
 
         if standing_keys == RatingSystem_keys:
             self.__equivalence = True
-        elif standing_keys <= RatingSystem_keys:  # a <= b means 'a.issubset(b)
+        elif standing_keys <= RatingSystem_keys:  # a <= b means a.issubset(b)
             # a - b means a.difference(b)
             not_ranked_players = list(RatingSystem_keys - standing_keys)
             new_points = []

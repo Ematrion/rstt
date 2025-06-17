@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = 'RSTT'
 copyright = '2025, David Bucher'
 author = 'David Bucher'
-release = '0.6.0'
+release = '0.6.3'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -30,7 +30,6 @@ exclude_patterns = ['_build',
                     '.DS_Store',]
 
 autoclass_content = 'both'
-
 
 
 # -- Options for HTML output -------------------------------------------------
