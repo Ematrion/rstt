@@ -6,9 +6,10 @@ Inferer are protocol providing a rate() method for ranking to update ratings.
 from typing import List, Dict, Tuple, Union, Optional, Any
 from typeguard import typechecked
 
-import rstt.config as cfg
 from rstt.player import Player
+import rstt.config as cfg
 from rstt.stypes import SPlayer, Event
+import rstt.utils.functions as uf
 
 import numpy as np
 import math
@@ -200,7 +201,7 @@ class EventStanding:
 # --- Game Score Based --- #
 # ------------------------ #
 class Elo:
-    def __init__(self, k: float = 20.0, lc: float = 400.0):
+    def __init__(self, k: float = 20.0, lc: float = 400.0, base: float = 10.0):
         """Eo Inferer
 
         Simple implementation based on `wikipedia <https://en.wikipedia.org/wiki/Elo_rating_system#Theory>`_
@@ -212,12 +213,13 @@ class Elo:
         lc : float, optional
             The constant dividing the ratings difference in the expected score formula, by default 400.0.
         """
+        self.base = base
         self.lc = lc
         self.K = k
-        # TODO self.distribution = dist & change expectedScore
+        # QUEST: should the base implementation support distribution function as parameters
 
     @typechecked
-    def rate(self, groups: List[List[float]], scores: List[float], *args, **kwars) -> List[List[float]]:
+    def rate(self, ratings_groups: List[List[float]], scores: List[float], *args, **kwars) -> List[List[float]]:
         """Rate method for elo
 
         Parameters
@@ -232,17 +234,50 @@ class Elo:
         List[List[float]]
             updated ratings in the formats [[new_elo1][new_elo2]]
         """
-        # NOTE: groups: [[winner_elo][loser_elo]], scores [[1.0][0.0]]
-        # FIXME: Current implementation does not seem to support a BatchGame observer
-        # TODO: add errors for bad params
+        # TODO: update doc
+        # TODO: Backward compatibility + warnings
 
-        # unpack args
-        r1, r2 = groups[0][0], groups[1][0]
-        s1, s2 = scores
-        # cumpute new ratings
-        new_r1 = self.update_rating(r1, r2, s1)
-        new_r2 = self.update_rating(r2, r1, s2)
-        return [[new_r1], [new_r2]]
+        '''
+        !!! NOBUG:
+            Take great care when reading the code, both calls are valid:
+            - updating ratings based on one game score:
+                elo.rate(ratings_groups=[[1500],[1600]], scores=[0.0, 11.0])
+            - updating one player rating based on one game score:
+                elo.rate(rating_groups=[[1500], [1600]], scores=[0.0])
+                
+            This can be confusing as hell, however the requierements are:
+            - support 1 versus 1 games update game by game
+            - support 1 versus 1 games update in on computation
+            - match input/output sysntax and type of others rating systems.
+        '''
+
+        # Deal with bad function calls
+        if len(ratings_groups) != 2:
+            msg = f"Expect two ratings groups, got {len(ratings_groups)}"
+            raise ValueError(msg)
+        if len(ratings_groups[0]) != 1:
+            msg = f"Expect only one rating in the first ratings group, got {len(ratings_groups[0])}"
+            raise ValueError(msg)
+        if len(ratings_groups[1]) == 1 and len(scores) not in [1, 2]:
+            msg = f"For 1-versus-1 update, Elo Expect \'scores\' of len 2, received {len(scores)}"
+            raise ValueError(msg)
+        if len(ratings_groups[1]) != 1 and len(ratings_groups[1]) != len(scores):
+            msg = f"Incompatible args call, 2nd ratings group must be of length equal to the scores, received {len(ratings_groups[1])} and {len(scores)}"
+            raise ValueError(msg)
+
+        if len(ratings_groups[0]) == len(ratings_groups[1]) == 1 and len(scores) == 2:
+            # one 1-versus-1 case
+            [[r1], [r2]] = ratings_groups
+            [s1, s2] = scores
+            new_rating1 = self.post_rating(
+                prior_rating=r1, ratings_opponents=[r2], scores=[s1])
+            new_rating2 = self.post_rating(
+                prior_rating=r2, ratings_opponents=[r1], scores=[s2])
+            return [[new_rating1], [new_rating2]]
+        else:
+            # many 1-versus-1 case
+            [[r1], rs] = ratings_groups
+            return [[self.post_rating(prior_rating=r1, ratings_opponents=rs, scores=scores)]]
 
     @typechecked
     def expectedScore(self, rating1: float, rating2: float) -> float:
@@ -260,8 +295,7 @@ class Elo:
         float
             expected result of the player with rating1 against the player with rating2
         """
-        # TODO: 'DRY' -> use uf.logistic_elo
-        return 1.0 / (1.0 + math.pow(10, (rating2-rating1)/self.lc))
+        return uf.logistic_elo(base=self.base, diff=rating2-rating1, constant=self.lc)
 
     def update_rating(self, rating1: float, rating2: float, score: float):
         """Rating update
@@ -280,8 +314,18 @@ class Elo:
         float
             the 'updated rating1'
         """
+        msg = 'update_rating removed in version 1.0.0, instead use \'post_rating(prior_rating=[\'rating1\'], opponents_ratings=[\'rating2\'], scores=\'score\')\''
+        warnings.warn(msg, DeprecationWarning)
+
+        ''' 
+        # previous implementation
         expected_result = self.expectedScore(rating1, rating2)
         return rating1 + (self.K * (score-expected_result))
+        '''
+        return self.post_rating(prior_rating=rating1, ratings_opponents=[rating2], scores=score)
+
+    def post_rating(self, prior_rating: float, ratings_opponents: list[float], scores: list[float]):
+        return prior_rating + self.K * (sum(scores) - sum([self.expectedScore(prior_rating, rating2) for rating2 in ratings_opponents]))
 
 
 class Glicko:
@@ -500,7 +544,7 @@ class Glicko:
         return rating
 
     # FIXME: Does not support GameByGame observer
-    def rate(self, rating, ratings: List[Any], scores: List[float], *args, **kwars):
+    def rate(self, rating, ratings_opponents: List[Any], scores: List[float], *args, **kwars):
         """Glicko rate method
 
         End to end method to compute a new glicko rating based on a collection of results
@@ -521,5 +565,5 @@ class Glicko:
         """
 
         # formating
-        games = [(r, s) for r, s in zip(ratings, scores)]
+        games = [(r, s) for r, s in zip(ratings_opponents, scores)]
         return self.newRating(rating, games)
