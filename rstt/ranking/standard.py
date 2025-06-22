@@ -6,7 +6,7 @@ from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import KeyModel, GaussianModel
 from rstt.ranking.rating import GlickoRating
 from rstt.ranking.inferer import Glicko, Elo, PlayerLevel, PlayerWinPRC, EventStanding
-from rstt.ranking.observer.observer import GameByGame, BatchGame, KeyChecker
+from rstt.ranking.observer import GameByGame, BatchGame, KeyChecker
 
 
 # ------------------------- #

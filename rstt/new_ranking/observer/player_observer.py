@@ -1,7 +1,9 @@
-from rstt.stypes import Inference, RatingSystem
+from rstt.stypes import Event
 from .obs import ObsTemplate
-from rstt.utils.observer import *
+from rstt.new_ranking.observer.utils import *
 
+from typeguard import typechecked
+from typing import Optional
 
 # -------------------#
 # ---- convertor --- #

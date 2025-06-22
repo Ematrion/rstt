@@ -2,7 +2,9 @@ import inspect
 from rstt.stypes import SPlayer, SMatch
 
 # --- Observation's Data --- #
+PLAYER = 'player'
 PLAYERS = 'players'
+TEAM = 'team'
 TEAMS = 'teams'
 RATINGS_GROUPS = 'ratings_groups'
 RATINGS_OPPONENTS = 'ratings_opponents'

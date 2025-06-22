@@ -1,7 +1,7 @@
 import pytest
 
 from rstt import Player, Duel, RoundRobin, LogSolver, BTRanking
-from rstt.ranking.observer.game_observer import GameByGame
+from rstt.ranking.observer import GameByGame
 from rstt.ranking.inferer import Elo, Glicko
 
 

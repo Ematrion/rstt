@@ -1,6 +1,5 @@
-from rstt.utils import observer as uo
+from rstt.new_ranking.observer import utils as uo
 from rstt.stypes import Inference, Observer, RatingSystem
-from rstt.stypes import SPlayer
 
 
 class ObsTemplate(Observer):

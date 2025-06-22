@@ -1,8 +1,8 @@
 from rstt import Duel
 
-from rstt.stypes import Inference, RatingSystem, SPlayer, SMatch, Event
+from rstt.stypes import SPlayer, SMatch, Event
 from .obs import ObsTemplate
-from rstt.utils.observer import *
+from rstt.new_ranking.observer.utils import *
 
 from typing import Optional
 from typeguard import typechecked
@@ -39,7 +39,7 @@ def to_list_of_games(game: Optional[SMatch] = None,
     TODO:
         - one general extractor
             def extract(key_args = list[str])
-        - funcs extracting only key_arg
+        - bunch of funcs extracting exactly one key_arg
     
     QUEST:
         - How to specifiy the data_point nature ? 
@@ -64,30 +64,36 @@ def duel_data(duel: Duel) -> dict[str, any]:
 
 
 # @typechecked
-def players_encounters(duels: list[Duel]) -> list[dict[str, any]]:
+def players_records(duels: list[Duel]) -> list[dict[str, any]]:
     # returned value
-    data = {}
-    # data_points are player 'performance summary'
-    return [{TEAMS: [[player], [duel.opponent(player) for duel in duels if player in duel]],
-             SCORES: [duel.score(player) for duel in duels if player in duel]} for player in active_players(duels)]
+    datas = []
+    for player in active_players(duels):
+        # game relevant to the player
+        targets = [duel for duel in duels if player in duel]
+
+        # data_points as player 'performance summary'
+        data_point = {}
+        data_point[TEAMS] = [[player], [
+            duel.opponent(player) for duel in targets]]
+        data_point[SCORES] = [duel.score(player) for duel in targets]
+
+        datas.append(data_point)
+    return datas
 
 # -------------------#
 # ------ query ----- #
 # ------------------ #
 
 
-# @typechecked
 def get_ratings_groups_of_teams_from_datamodel(prior: dict[SPlayer, any], data: dict[str, any]) -> None:
     # inplace data editing
     data[RATINGS_GROUPS] = [
         [prior[player] for player in team]
         for team in data[TEAMS]]
 
-    # --------------------- #
-    # -- output_formater -- #
-    # --------------------- #
-
-    # @typechecked
+# --------------------- #
+# -- output_formater -- #
+# --------------------- #
 
 
 def new_ratings_groups_to_ratings_dict(data: dict[str, any], output: list[list[any]]):
@@ -126,7 +132,7 @@ class BatchGame(ObsTemplate):
     def __init__(self):
         super().__init__()
         self.convertor = to_list_of_games
-        self.extractor = players_encounters
+        self.extractor = players_records
         self.query = get_ratings_groups_of_teams_from_datamodel
         self.output_formater = new_ratings_groups_to_ratings_dict
         self.push = push_new_ratings
