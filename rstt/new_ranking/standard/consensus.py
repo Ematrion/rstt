@@ -1,9 +1,9 @@
-from new_ranking import Ranking, Standing
-from new_ranking.observer import ObsTemplate
-from new_ranking.observer.game_observer import push_new_ratings
-from new_ranking.observer.utils import *
+from rstt import Ranking, Standing
+from rstt.new_ranking.observer import ObsTemplate
+from rstt.new_ranking.observer.game_observer import push_new_ratings
+from rstt.new_ranking.observer.utils import *
 from rstt.ranking import KeyModel
-from rstt.stypes import SPlayer, Event, Achievement
+from rstt.stypes import SPlayer
 
 from typeguard import typechecked
 from typing import Optional
@@ -12,8 +12,12 @@ import numpy as np
 
 
 @typechecked
-def to_list_of_players(self, player: SPlayer, players: list[SPlayer], team: SPlayer, teams: list[SPlayer],
-                       standing: Standing, ranking: Ranking) -> list[SPlayer]:
+def to_list_of_players(player: Optional[SPlayer] = None,
+                       players: Optional[list[SPlayer]] = None,
+                       team: Optional[SPlayer] = None,
+                       teams: Optional[list[SPlayer]] = None,
+                       standing: Optional[Standing] = None,
+                       ranking: Optional[Ranking] = None) -> list[SPlayer]:
     observations = []
     if player:
         observations.append(player)
@@ -81,7 +85,7 @@ class PlayerWinPRC:
         self.scope = scope
 
     @typechecked
-    def rate(self, player: SPlayer, *args, **kwargs) -> dict[SPlayer, float]:
+    def rate(self, player: SPlayer, *args, **kwargs) -> float:
         """Win rate inference
 
         Parameters
@@ -121,46 +125,6 @@ class WinRate(Ranking):
                          handler=KeyChecker(),
                          players=players)
 
-
-class EventSocring():
-    def __init__(self, window_range: int = 1, tops: int = 1) -> None:
-        self.dataset = EventDataSet(window_range=window_range)
-        self.tops = tops
-        self.relevance: dict[str, dict[int, float]]
-
-    def rate(self, player: SPlayer) -> list[Achievement]:
-        # TODO: implement  Competition.achievement(player: SPlayer)
-        # + Update stypes.Event protocol
-        return [event.achievement(player) for event in self.dataset.window()
-                if player in event.participants()]
-
-
-class EventDataSet():
-    def __init__(self, window_range: int = 1):
-        self.events = []
-        self.window_range = window_range
-
-    def add(self, event: Event):
-        if event.name() in [ev.name() for ev in self.events]:
-            msg = f"Event {event.name()} already in the dataset"
-            raise ValueError(msg)
-        else:
-            self.events.append(event)
-
-    def window(self, window: Optional[int] = None):
-        nb = window if window else self.window_range
-        return self.events[-nb:]
-
-
-class EventSummary(Ranking):
-    def __init__(self, name: str,
-                 window_range: int = 1, tops: int = 1,
-                 players: list[SPlayer] | None = None):
-        super().__init__(name=name,
-                         datamodel=KeyModel(template=int),
-                         backend=EventSocring(
-                             window_range=window_range, tops=tops),
-                         handler=KeyChecker(),
-                         players=players)
-
-        self.events = EventDataSet(window_range=window_range)
+    def forward(self, *args, **kwargs):
+        self.handler.handle_observations(
+            datamodel=self.datamodel, infer=self.backend, ranking=self)

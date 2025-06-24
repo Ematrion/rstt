@@ -236,7 +236,7 @@ class KeyModel:
                 raise ValueError(msg)
             ratings = self.__factory_ratings(factory, **kwargs)
         else:
-            msg = "Exactly one parameter among 'default', 'template' and 'template' should be passed."
+            msg = "Exactly one parameter among 'default', 'template' and 'factory' should be passed."
             raise ValueError(msg)
         return ratings
 

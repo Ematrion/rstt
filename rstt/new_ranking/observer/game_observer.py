@@ -1,6 +1,6 @@
 from rstt import Duel
 
-from rstt.stypes import SPlayer, SMatch, Event
+from rstt.stypes import SPlayer, SMatch, Event, RatingSystem
 from .obs import ObsTemplate
 from rstt.new_ranking.observer.utils import *
 
@@ -54,6 +54,7 @@ def to_list_of_games(game: Optional[SMatch] = None,
 
 
 def duel_data(duel: Duel) -> dict[str, any]:
+    # ??? match: Smatch - does it change anything
     # returned value
     data = {}
     # data_points are game summary
@@ -85,11 +86,10 @@ def players_records(duels: list[Duel]) -> list[dict[str, any]]:
 # ------------------ #
 
 
-def get_ratings_groups_of_teams_from_datamodel(prior: dict[SPlayer, any], data: dict[str, any]) -> None:
+def get_ratings_groups_of_teams_from_datamodel(prior: RatingSystem, data: dict[str, any]) -> None:
     # inplace data editing
-    data[RATINGS_GROUPS] = [
-        [prior[player] for player in team]
-        for team in data[TEAMS]]
+    data[RATINGS_GROUPS] = [[prior.get(player) for player in team]
+                            for team in data[TEAMS]]
 
 # --------------------- #
 # -- output_formater -- #
@@ -109,9 +109,9 @@ def new_ratings_groups_to_ratings_dict(data: dict[str, any], output: list[list[a
 # ------------------ #
 
 # @typechecked
-def push_new_ratings(data: dict[str, any], posteriori: dict[SPlayer, any]):
+def push_new_ratings(data: dict[str, any], posteriori: RatingSystem):
     for player, rating in data[NEW_RATINGS].items():
-        posteriori[player] = rating
+        posteriori.set(player, rating)
 
 
 class GameByGame(ObsTemplate):

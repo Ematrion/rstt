@@ -1,18 +1,30 @@
 from rstt.new_ranking.observer import utils as uo
+from rstt.ranking import KeyModel
 from rstt.stypes import Inference, Observer, RatingSystem
 
 
 class ObsTemplate(Observer):
     def __init__(self):
-        self.prior = None
-        self.posteriori = None
+        self.prior: RatingSystem = None
+        self.posteriori: RatingSystem = None
 
-        self.convertor: callable = None
-        self.extractor: callable = None
-        self.query: callable = None
-        self.output_formater: callable = None
-        self.push: callable = None
+    # --- Observer 'Parameters' --- #
+    def convertor(self, *args, **kwargs):
+        raise NotImplementedError
 
+    def extractor(self, observations: any) -> list[any]:
+        raise NotImplementedError
+
+    def query(self, prior: RatingSystem, data: any):
+        raise NotImplementedError
+
+    def output_formater(self, data: any, output: any):
+        raise NotImplementedError
+
+    def push(self, data: any, posteriori: RatingSystem):
+        raise NotImplementedError
+
+    # --- Observer Main Function --- #
     def handle_observations(self, infer: Inference, datamodel: RatingSystem, *args, **kwargs) -> None:
         # observer initialization
         self._handling_start(datamodel)
@@ -35,13 +47,12 @@ class ObsTemplate(Observer):
         # terminate the process
         self._handling_end(datamodel)
 
+    # --- internal mechanism --- #
     def _set_prior(self, datamodel: RatingSystem) -> None:
-        # !!! bug when player not pre-register in datamodel
-        self.prior = {player: datamodel.get(
-            player) for player in datamodel.keys()}
+        self.prior = KeyModel(factory=lambda x: datamodel.get(x))
 
     def _set_posteriori(self, datamodel: RatingSystem) -> None:
-        self.posteriori = {}
+        self.posteriori = KeyModel(factory=lambda x: self.prior.get(x))
 
     def _handling_start(self, datamodel: RatingSystem):
         self._set_prior(datamodel)

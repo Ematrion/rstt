@@ -1,16 +1,47 @@
-from rstt.new_ranking import Ranking, GameByGame
+from rstt import Ranking
+from rstt.new_ranking import GameByGame, ObsTemplate
 from rstt.new_ranking.observer.utils import *
+from rstt.new_ranking.observer.game_observer import *
 from rstt.ranking import GaussianModel
 from rstt.stypes import SPlayer, SMatch
+
+
+class OSGBG(ObsTemplate):
+    def __init__(self):
+        # NOBUG: do not call super().__init__()
+        # openskill.model.rate as a 'teams' parameter for the 'rating_groups'
+        # HACK: switch args roles at the right moment
+        # TODO: make the rate input a tunable user choice (ranks / scores)
+
+        self.convertor = to_list_of_games
+        self.push = push_new_ratings
+
+    def extractor(self, matches: list[SMatch]):
+        data = []
+        for match in matches:
+            # !!! future bug: duel_data expect a Duel but is not (yet) typechecked
+            data_point = duel_data(match)
+            data_point[PLAYERS] = data_point[TEAMS]
+            data_point[RANKS] = None
+            data.append(data_point)
+        return data
+
+    def query(self, prior: dict[SPlayer, any], data: dict[str, any]):
+        get_ratings_groups_of_teams_from_datamodel(prior, data)
+        data[TEAMS] = data[RATINGS_GROUPS]
+
+    def output_formater(self, data: dict[str, any], output: list[list[any]]):
+        data[TEAMS] = data[PLAYERS]
+        new_ratings_groups_to_ratings_dict(data, output)
 
 
 class BasicOS(Ranking):
     def __init__(self, name: str, model=None, players: list[SPlayer] | None = None):
         super().__init__(name=name,
                          datamodel=GaussianModel(
-                             factory=lambda x: model.rating(name=name.x)),
+                             factory=lambda x: model.rating(name=x.name())),
                          backend=model,
-                         handler=GameByGame,
+                         handler=OSGBG(),
                          players=players)
 
     def quality(self, game: SMatch) -> float:

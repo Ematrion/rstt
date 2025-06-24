@@ -1,4 +1,5 @@
-from rstt.new_ranking import Ranking, GameByGame
+from rstt.ranking import Ranking
+from rstt.new_ranking import GameByGame
 from rstt.ranking import KeyModel
 from rstt.stypes import SPlayer
 import rstt.utils.functions as uf

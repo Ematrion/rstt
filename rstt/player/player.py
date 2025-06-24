@@ -3,7 +3,7 @@ from typeguard import typechecked
 
 from rstt.player.basicplayer import BasicPlayer
 from rstt.game import Match
-from rstt.stypes import Achievement
+from rstt.stypes import SMatch, Achievement
 
 
 class Player(BasicPlayer):
@@ -24,8 +24,8 @@ class Player(BasicPlayer):
             with default parameters :class:`rstt.config.PLAYER_DIST_ARGS`
         """
         super().__init__(name=name, level=level)
-        self.__achievements = []
-        self.__games = []
+        self.__achievements: list[Achievement] = []
+        self.__games: list[SMatch] = []
 
     # --- getter --- #
     def achievements(self) -> List[Achievement]:
