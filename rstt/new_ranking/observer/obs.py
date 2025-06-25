@@ -49,10 +49,10 @@ class ObsTemplate(Observer):
 
     # --- internal mechanism --- #
     def _set_prior(self, datamodel: RatingSystem) -> None:
-        self.prior = KeyModel(factory=lambda x: datamodel.get(x))
+        self.prior = datamodel
 
     def _set_posteriori(self, datamodel: RatingSystem) -> None:
-        self.posteriori = KeyModel(factory=lambda x: self.prior.get(x))
+        self.posteriori = KeyModel(default=0)
 
     def _handling_start(self, datamodel: RatingSystem):
         self._set_prior(datamodel)

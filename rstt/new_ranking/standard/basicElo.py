@@ -103,7 +103,7 @@ class Elo:
         float
             expected result of the player with rating1 against the player with rating2
         """
-        return uf.logistic_elo(base=self.base, diff=rating2-rating1, constant=self.lc)
+        return uf.logistic_elo(base=self.base, diff=rating1-rating2, constant=self.lc)
 
     def update_rating(self, rating1: float, rating2: float, score: float):
         """Rating update
