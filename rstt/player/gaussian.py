@@ -36,6 +36,6 @@ class GaussianPlayer(PlayerTVS):
         self.__sigma = sigma if sigma is not None else cfg.GAUSSIAN_PLAYER_SIGMA_DIST(
             **cfg.GAUSSIAN_PLAYER_SIGMA_ARGS)
 
-    def update_level(self, *args, **kwars) -> None:
+    def _update_level(self, *args, **kwars) -> None:
         self._PlayerTVS__current_level = random.gauss(
             self._BasicPlayer__level, self.__sigma)

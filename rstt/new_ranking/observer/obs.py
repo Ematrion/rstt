@@ -9,7 +9,7 @@ class ObsTemplate(Observer):
         self.posteriori: RatingSystem = None
 
     # --- Observer 'Parameters' --- #
-    def convertor(self, *args, **kwargs):
+    def convertor(self, *args, **kwargs) -> any:
         raise NotImplementedError
 
     def extractor(self, observations: any) -> list[any]:
