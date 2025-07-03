@@ -4,7 +4,7 @@ Such tournament do have a strict elimination process and losing participants are
 Standing is based on 'how far' the competitors go.
 """
 
-from typing import List, Dict, Callable, Any
+from typing import Callable
 from typeguard import typechecked
 
 
@@ -50,7 +50,7 @@ class SingleEliminationBracket(Competition):
     def __init__(self, name: str,
                  seeding: Ranking,
                  solver: Solver = BetterWin(),
-                 cashprize: Dict[int, float] = {}):
+                 cashprize: dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
 
     # --- override --- #
@@ -75,7 +75,7 @@ class SingleEliminationBracket(Competition):
         next = [game.winner() for game in self.played_matches[-1]]
         self.players_left = next
 
-    def _standing(self) -> Dict[SPlayer, int]:
+    def _standing(self) -> dict[SPlayer, int]:
         standing = {}
         top = len(self.participants)
         for round in self.played_matches:
@@ -98,10 +98,10 @@ class DoubleEliminationBracket(Competition):
     def __init__(self, name: str,
                  seeding: Ranking,
                  solver: Solver = BetterWin(),
-                 lower_policy: Callable[[List[Any]], List[Any]] = lambda x: x,
+                 lower_policy: Callable[[list[any]], list[any]] = lambda x: x,
                  injector_policy: Callable[[
-                     List[Any], List[Any]], List[Any]] = um.riffle_shuffle,
-                 cashprize: Dict[int, float] = {}):
+                     list[any], list[any]], list[any]] = um.riffle_shuffle,
+                 cashprize: dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
 
         self.upper = SingleEliminationBracket(name+'_UpperBracket',
@@ -126,7 +126,7 @@ class DoubleEliminationBracket(Competition):
         self.lower.insert(0, [game.winner()
                           for game in self.played_matches[-1]])
 
-    def _standing(self) -> Dict[SPlayer, int]:
+    def _standing(self) -> dict[SPlayer, int]:
         standing = {}
         top = len(self.participants)
         for round in self.played_matches:

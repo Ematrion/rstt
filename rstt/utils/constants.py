@@ -1,3 +1,14 @@
+'''
+Outdated file from an outdated project architecture
+But ... constant still used 
+
+TODO: move to rstt.config.py
++ doc
++ suited refactoring in ranking.standard and ranking.rating
+
+'''
+
+
 # elo
 DEFAULT_ELO = 1500.0
 

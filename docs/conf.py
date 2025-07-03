@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = 'RSTT'
 copyright = '2025, David Bucher'
 author = 'David Bucher'
-release = '0.6.3'
+release = '0.6.4'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

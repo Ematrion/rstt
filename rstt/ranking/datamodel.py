@@ -223,7 +223,7 @@ class KeyModel:
         TODO:
             - check functool.partial to improve code quaity and readabiltiy.
         '''
-        if default and not template and not factory:
+        if default != None and not template and not factory:
             if args or kwargs:
                 msg = "Can not pass additional argument when using the 'default' parameter."
                 raise ValueError(msg)
@@ -236,7 +236,7 @@ class KeyModel:
                 raise ValueError(msg)
             ratings = self.__factory_ratings(factory, **kwargs)
         else:
-            msg = "Exactly one parameter among 'default', 'template' and 'template' should be passed."
+            msg = "Exactly one parameter among 'default', 'template' and 'factory' should be passed."
             raise ValueError(msg)
         return ratings
 
