@@ -4,7 +4,7 @@ from rstt import SingleEliminationBracket as SEB, DoubleEliminationBracket as DE
 from rstt import RoundRobin, SwissBracket, SwissRound, Snake
 from rstt import Player, BetterWin, BTRanking
 
-from rstt.new_ranking.standard.successRanking import EventScoring
+from rstt.ranking.inferer import EventScoring
 
 import itertools
 

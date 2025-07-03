@@ -1,7 +1,3 @@
-from rstt.ranking import Ranking
-from rstt.new_ranking import GameByGame
-from rstt.ranking import KeyModel
-from rstt.stypes import SPlayer
 import rstt.utils.functions as uf
 
 from typeguard import typechecked
@@ -134,16 +130,3 @@ class Elo:
 
     def post_rating(self, prior_rating: float, ratings_opponents: list[float], scores: list[float]):
         return prior_rating + self.K * (sum(scores) - sum([self.expectedScore(prior_rating, rating2) for rating2 in ratings_opponents]))
-
-
-class BasicElo(Ranking):
-    def __init__(self, name: str, default: float = 1500,
-                 k: float = 20.0,
-                 lc: float = 400.0,
-                 base: float = 10.0,
-                 players: list[SPlayer] | None = None):
-        super().__init__(name=name,
-                         datamodel=KeyModel(default=default),
-                         backend=Elo(k=k, lc=lc, base=base),
-                         handler=GameByGame(),
-                         players=players)

@@ -1,5 +1,5 @@
 from .obs import ObsTemplate
-from rstt.new_ranking.observer.utils import *
+from .utils import *
 
 
 class PlayerChecker(ObsTemplate):

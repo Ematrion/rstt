@@ -6,9 +6,16 @@ from . import rating
 from .standing import Standing
 from .ranking import Ranking
 
-from .observer import GameByGame, BatchGame, KeyChecker
-from .inferer import Elo, Glicko, PlayerLevel, PlayerWinPRC, EventStanding
 from .datamodel import KeyModel, GaussianModel
+
+from .observer import (
+    GameByGame, BatchGame,
+    PlayerChecker, NoHandling
+)
+from .inferer import (
+    Elo, Glicko,
+    PlayerLevel, PlayerWinPRC, EventScoring
+)
 
 from .standard import (
     BTRanking, WinRate, SuccessRanking,

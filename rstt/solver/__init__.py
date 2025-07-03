@@ -12,4 +12,4 @@ Solver are responsible to produce a :class:`rstt.stypes.Score` and assign it to 
 """
 
 
-from .solvers import BetterWin, BradleyTerry, LogSolver, CoinFlip
+from .solvers import BetterWin, BradleyTerry, LogSolver, CoinFlip, WIN, LOSE

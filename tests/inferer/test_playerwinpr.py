@@ -4,7 +4,7 @@ import rstt.config as cfg
 from rstt import Player, BetterWin, Duel
 
 # from rstt.ranking.inferer import PlayerWinPRC
-from rstt.new_ranking.standard.consensus import PlayerWinPRC
+from rstt.ranking.inferer import PlayerWinPRC
 
 
 @pytest.fixture

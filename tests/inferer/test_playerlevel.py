@@ -3,7 +3,7 @@ import pytest
 from rstt import BasicPlayer, GaussianPlayer
 
 # from rstt.ranking.inferer import PlayerLevel
-from rstt.new_ranking.standard.consensus import PlayerLevel
+from rstt.ranking.inferer import PlayerLevel
 
 
 '''

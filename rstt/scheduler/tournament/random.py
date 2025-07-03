@@ -1,5 +1,3 @@
-from typing import Dict
-
 from .groups import RoundRobin
 from rstt.ranking.ranking import Ranking
 from rstt import BetterWin
@@ -9,7 +7,7 @@ import random
 
 
 class RandomRound(RoundRobin):
-    def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin(), cashprize: Dict[int, float] = {}, rounds: int = 1, amount: int = 1):
+    def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin(), cashprize: dict[int, float] = {}, rounds: int = 1, amount: int = 1):
         """Random tournament
 
         Class to generate a bunch of arbitrary matches. 

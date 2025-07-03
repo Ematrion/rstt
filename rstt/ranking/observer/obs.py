@@ -1,6 +1,6 @@
-from rstt.new_ranking.observer import utils as uo
-from rstt.ranking import KeyModel
 from rstt.stypes import Inference, Observer, RatingSystem
+from ..datamodel import KeyModel
+from . import utils as uo
 
 
 class ObsTemplate(Observer):

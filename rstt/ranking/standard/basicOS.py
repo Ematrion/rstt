@@ -1,9 +1,9 @@
-from rstt import Ranking
-from rstt.new_ranking import GameByGame, ObsTemplate
-from rstt.new_ranking.observer.utils import *
-from rstt.new_ranking.observer.game_observer import *
-from rstt.ranking import GaussianModel
 from rstt.stypes import SPlayer, SMatch
+from rstt.ranking import Ranking
+from rstt.ranking.observer import ObsTemplate
+from rstt.ranking.observer.utils import *
+from rstt.ranking.observer.game_observer import *
+from rstt.ranking.datamodel import GaussianModel
 
 
 class OSGBG(ObsTemplate):

@@ -1,5 +1,8 @@
-from rstt import Duel, Ranking, Standing
 from rstt.stypes import SPlayer, SMatch, Event, RatingSystem
+from rstt import Duel
+# from rstt.ranking.ranking import Ranking
+# from rstt.ranking.standing import Standing
+
 
 from typeguard import typechecked
 from typing import Optional
@@ -47,8 +50,9 @@ def to_list_of_players(player: Optional[SPlayer] = None,
                        players: Optional[list[SPlayer]] = None,
                        team: Optional[SPlayer] = None,
                        teams: Optional[list[SPlayer]] = None,
-                       standing: Optional[Standing] = None,
-                       ranking: Optional[Ranking] = None) -> list[SPlayer]:
+                       # standing: Optional[Standing] = None,
+                       # ranking: Optional[Ranking] = None
+                       ) -> list[SPlayer]:
     observations = []
     if player:
         observations.append(player)
@@ -58,10 +62,10 @@ def to_list_of_players(player: Optional[SPlayer] = None,
         observations.append(team)
     if teams:
         observations += teams
-    if standing:
-        observations += standing.keys()
-    if ranking:
-        observations += ranking.players()
+    # if standing:
+    #    observations += standing.keys()
+    # if ranking:
+    #    observations += ranking.players()
     # NOBUG: user responsability to not pass a given player multiple time (or allow it)
     return observations
 

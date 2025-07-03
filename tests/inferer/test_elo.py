@@ -2,13 +2,12 @@ import pytest
 
 
 # from rstt.ranking.inferer import Elo
-from rstt.new_ranking.standard.basicElo import Elo
+from rstt.ranking.inferer import Elo
 
 
 '''
 Test based on:
 https://www.geeksforgeeks.org/dsa/elo-rating-algorithm/
-
 
 '''
 

@@ -21,13 +21,16 @@ RATINGS = [GlickoRating(), GlickoRating(MU, SIGMA), DUMMY_NAME]
 def dummy():
     return BasicPlayer(DUMMY_NAME, DUMMY_LEVEL)
 
+
 @pytest.fixture
 def rating_km():
     return KeyModel(default=GlickoRating())
 
+
 @pytest.fixture
 def template_km():
     return KeyModel(template=GlickoRating, mu=MU, sigma=SIGMA)
+
 
 @pytest.fixture
 def factory_km():
@@ -38,15 +41,18 @@ def factory_km():
 @pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])
 def test_set(km, value, dummy):
     km.set(dummy, value)
-    assert km.get(dummy) == value 
+    assert km.get(dummy) == value
+
 
 @pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])
 def test_get(km, value, dummy):
     assert km.get(dummy) == value
 
-@pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])    
+
+@pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])
 def test_rtypes(km, value):
     assert km.rtype() == type(value)
+
 
 '''@pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])    
 def test_default(km, value):
