@@ -28,7 +28,7 @@ class Elo:
 
         Parameters
         ----------
-        groups : List[List[float]]
+        ratings_groups : List[List[float]]
             Elo ratings formated by teams, for example [[elo_player1], [elo_player2]].
         scores : List[float]
             corresponding scores of the ratings, for example [[1.0],[0.0]] assuming player1 won the duel.
@@ -38,16 +38,16 @@ class Elo:
         List[List[float]]
             updated ratings in the formats [[new_elo1][new_elo2]]
         """
-        # TODO: update doc
-        # TODO: Backward compatibility + warnings
 
         '''
         !!! NOBUG:
             Take great care when reading the code, both calls are valid:
             - updating ratings based on one game score:
-                elo.rate(ratings_groups=[[1500],[1600]], scores=[0.0, 11.0])
+                elo.rate(ratings_groups=[[1500],[1600]], scores=[0.0, 1.0])
+                -> output two ratings
             - updating one player rating based on one game score:
-                elo.rate(rating_groups=[[1500], [1600]], scores=[0.0])
+                elo.rate(ratings_groups=[[1500], [1600]], scores=[0.0])
+                -> output one rating
                 
             This can be confusing as hell, however the requierements are:
             - support 1 versus 1 games update game by game
@@ -104,29 +104,30 @@ class Elo:
     def update_rating(self, rating1: float, rating2: float, score: float):
         """Rating update
 
+        .. deprecated:: 1.1
+                Use the post_rating method instead
+        """
+        msg = 'update_rating removed in version 1.0.0, instead use \'post_rating(prior_rating=[\'rating1\'], opponents_ratings=[\'rating2\'], scores=\'score\')\''
+        warnings.warn(msg, DeprecationWarning)
+        return self.post_rating(prior_rating=rating1, ratings_opponents=[rating2], scores=score)
+
+    def post_rating(self, prior_rating: float, ratings_opponents: list[float], scores: list[float]):
+        """post_rating
+
+        Update the rating of a player given a list of opponent's ratings and corresponding scores against.
+
         Parameters
         ----------
-        rating1 : float
-            a rating
-        rating2 : float
-            another rating
-        score : float
-            the score associated to rating1
+        prior_rating : float
+            a rating to update
+        ratings_opponents : list[float]
+            opponent's ratings
+        scores : list[float]
+            scores associated to the prior_rating
 
         Returns
         -------
         float
-            the 'updated rating1'
+            post rating
         """
-        msg = 'update_rating removed in version 1.0.0, instead use \'post_rating(prior_rating=[\'rating1\'], opponents_ratings=[\'rating2\'], scores=\'score\')\''
-        warnings.warn(msg, DeprecationWarning)
-
-        ''' 
-        # previous implementation
-        expected_result = self.expectedScore(rating1, rating2)
-        return rating1 + (self.K * (score-expected_result))
-        '''
-        return self.post_rating(prior_rating=rating1, ratings_opponents=[rating2], scores=score)
-
-    def post_rating(self, prior_rating: float, ratings_opponents: list[float], scores: list[float]):
         return prior_rating + self.K * (sum(scores) - sum([self.expectedScore(prior_rating, rating2) for rating2 in ratings_opponents]))
