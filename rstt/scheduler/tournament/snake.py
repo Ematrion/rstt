@@ -38,7 +38,7 @@ class Snake(Competition):
         return len(self.snake) == 1
 
     def _standing(self) -> Dict[SPlayer, int]:
-        standing = {games[0].loser(): len(self.participants)-r
+        standing = {games[0].loser(): len(self.participants())-r
                     for r, games in enumerate(self.played_matches)}
         standing[self.played_matches[-1][0].winner()] = 1
         return standing

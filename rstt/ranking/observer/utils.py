@@ -50,6 +50,8 @@ def to_list_of_players(player: Optional[SPlayer] = None,
                        players: Optional[list[SPlayer]] = None,
                        team: Optional[SPlayer] = None,
                        teams: Optional[list[SPlayer]] = None,
+                       event: Optional[Event] = None,
+                       events: Optional[list[Event]] = None
                        # standing: Optional[Standing] = None,
                        # ranking: Optional[Ranking] = None
                        ) -> list[SPlayer]:
@@ -62,6 +64,11 @@ def to_list_of_players(player: Optional[SPlayer] = None,
         observations.append(team)
     if teams:
         observations += teams
+    if event:
+        observations += event.participants()
+    if events:
+        for ev in events:
+            observations += ev.participants()
     # if standing:
     #    observations += standing.keys()
     # if ranking:

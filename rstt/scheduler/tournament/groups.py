@@ -76,11 +76,11 @@ class RoundRobin(Competition):
     # --- init stuff --- #
     def _init_table(self):
         self.table = np.zeros(
-            shape=(len(self.participants), len(self.participants)))
+            shape=(len(self.participants()), len(self.participants())))
 
     def _init_future_rounds(self):
         self.future_rounds = um.ruban(
-            [p for p in self.seeding if p in self.participants])
+            [p for p in self.seeding if p in self.participants()])
 
     # --- round mechanisme --- #
     def next_round(self):
@@ -110,7 +110,7 @@ class SwissRound(RoundRobin):
 
     # --- Override --- #
     def _end_of_stage(self):
-        return len(self.played_matches) == int(math.log(len(self.participants), 2))
+        return len(self.played_matches) == int(math.log(len(self.participants()), 2))
 
     def _update(self):
         super()._update()

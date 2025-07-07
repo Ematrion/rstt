@@ -117,8 +117,8 @@ class SwissBracket(Competition):
     # --- Override ---#
     def _initialise(self):
         # !!! Currently hardcoded setting for 16 participants
-        msg = f"Currently SwissBracket is implemented only for 16 players, received {len(self.participants)}"
-        assert len(self.participants) == 16, msg
+        msg = f"Currently SwissBracket is implemented only for 16 players, received {len(self.participants())}"
+        assert len(self.participants()) == 16, msg
 
         self.__init_settings()
         self.__init_params()

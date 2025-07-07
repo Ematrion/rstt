@@ -58,10 +58,10 @@ class SingleEliminationBracket(Competition):
         msg = (f'{type(self)} '
                'needs a power of two as number of participants '
                '(2,4,8,16,...)'
-               f', given {len(self.participants)}')
-        assert uu.power_of_two(len(self.participants)), msg
+               f', given {len(self.participants())}')
+        assert uu.power_of_two(len(self.participants())), msg
 
-        nb_rounds = int(math.log(len(self.participants), 2))
+        nb_rounds = int(math.log(len(self.participants()), 2))
         self.players_left = self.seeding[[
             i-1 for i in balanced_tree(nb_rounds)]]
 
@@ -77,11 +77,11 @@ class SingleEliminationBracket(Competition):
 
     def _standing(self) -> dict[SPlayer, int]:
         standing = {}
-        top = len(self.participants)
+        top = len(self.participants())
         for round in self.played_matches:
             for game in round:
                 standing[game.loser()] = top
-            top = len(self.participants) - len(standing)
+            top = len(self.participants()) - len(standing)
 
         # winner
         standing[self.played_matches[-1][0].winner()] = 1
@@ -113,7 +113,7 @@ class DoubleEliminationBracket(Competition):
     # --- override --- #
     def _initialise(self):
         # NOBUG: do notrun(). Not 'event' in itself -> no upper.trophies() called
-        self.upper.registration(self.participants)
+        self.upper.registration(self.participants())
         self.upper.start()
         self.upper.play()
 
@@ -128,11 +128,11 @@ class DoubleEliminationBracket(Competition):
 
     def _standing(self) -> dict[SPlayer, int]:
         standing = {}
-        top = len(self.participants)
+        top = len(self.participants())
         for round in self.played_matches:
             for game in round:
                 standing[game.loser()] = top
-            top = len(self.participants) - len(standing)
+            top = len(self.participants()) - len(standing)
         # winner
         standing[self.played_matches[-1][0].winner()] = 1
         return standing

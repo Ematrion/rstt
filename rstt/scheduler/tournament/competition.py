@@ -10,6 +10,9 @@ import rstt.utils.utils as uu
 from collections import defaultdict
 
 
+import warnings
+
+
 class Competition(metaclass=abc.ABCMeta):
     '''
         NOTE: In the future the competition class could evolve.
@@ -23,7 +26,7 @@ class Competition(metaclass=abc.ABCMeta):
     def __init__(self, name: str,
                  seeding: Ranking,
                  solver: Solver = BetterWin(),
-                 cashprize: Optional[Dict[int, float]] = None):
+                 cashprize: Optional[dict[int, float]] = None):
         """Tournament General Template & Workflow.
 
         Abstract class handling specificity related to Competition.
@@ -44,11 +47,15 @@ class Competition(metaclass=abc.ABCMeta):
             A Solver to generate match outcomes, by default BetterWin()
         cashprize : Optional[Dict[int, float]], optional
             A 'prizepool' rewarding player with 'money' for their success (placement in the final standing) during the Event, by default None
+
+        .. attention:: 0.6.5 [attribute changes]
+            the 'participants' attribute has been encapsulated, use the corresponding get method to access it.
+            Reminder that to 'set' participants you can use the registration method.
         """
 
         # 'settings'
         self.__name = name
-        self.participants = []
+        self._participants = []
         self.seeding = seeding
         self.solver = solver
         self.cashprize = defaultdict(lambda: 0)
@@ -64,9 +71,14 @@ class Competition(metaclass=abc.ABCMeta):
         self.__finished = False
         self.__closed = False
 
+        # version 0.6.5 to remove in remove in 0.7
+        msg = "Pseudo-encapsulation of participants: '\n'Competition.participants attribute has been moved to ._participants. Competitors.participants() is now a getter method"
+        warnings.warn(msg, DeprecationWarning)
+
     # --- getter --- #
+
     def name(self) -> str:
-        """Getter for the name of the Cmpetition
+        """Getter for the name of the Competition
 
         Returns
         -------
@@ -74,6 +86,16 @@ class Competition(metaclass=abc.ABCMeta):
             the name of the competition (used as identifier in the package)
         """
         return self.__name
+
+    def participants(self) -> list[SPlayer]:
+        """Getter for SPlayer taking part in the Competition
+
+        Returns
+        -------
+        list[SPlayer]
+            competitors playing game(s).
+        """
+        return self._participants
 
     def started(self) -> bool:
         """Indicate if the competition started
@@ -184,9 +206,9 @@ class Competition(metaclass=abc.ABCMeta):
             Playrs taking part in the event's matches.
         """
         if not self.__started:
-            playerset = set(self.participants)
+            playerset = set(self._participants)
             playerset.update(players)
-            self.participants = list(playerset)
+            self._participants = list(playerset)
 
     def run(self):
         """Automated Competition execution
@@ -216,7 +238,7 @@ class Competition(metaclass=abc.ABCMeta):
         Do not use if you simply want to run the competition
         """
         if not self.__started:
-            self.seeding = self.seeding.fit(self.participants)
+            self.seeding = self.seeding.fit(self._participants)
             self._initialise()
             self.__started = True
 
@@ -286,7 +308,7 @@ class Competition(metaclass=abc.ABCMeta):
         Do not use if you simply want to run the competition.
         """
         self.__standing = self._standing()
-        for player in self.participants:
+        for player in self._participants:
             try:
                 result = Achievement(
                     self.__name, self.__standing[player], self.cashprize[self.__standing[player]])

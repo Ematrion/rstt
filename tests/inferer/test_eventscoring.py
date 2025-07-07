@@ -88,7 +88,7 @@ def major_event(important_event):
 def test_rate_not_tracked_event(seb, deb, rr, sr, snake):
     inferer = EventScoring()
     for event in [seb, deb, rr, sr, snake]:
-        for p in event.participants:
+        for p in event.participants():
             r = inferer.rate(p)
             assert r == pytest.approx(0.0, 0.0001)
 
@@ -97,7 +97,7 @@ def test_rate_higher_place_higher_rating(seb, deb, rr, sr, snake):
     inferer = EventScoring()
     for event in [seb, deb, rr, sr, snake]:
         inferer.add_event(event)
-        for p1, p2 in itertools.combinations(event.participants, 2):
+        for p1, p2 in itertools.combinations(event.participants(), 2):
             r1 = inferer.rate(p1)
             r2 = inferer.rate(p2)
             s1 = event.standing()[p1]
@@ -120,7 +120,7 @@ def test_rate_event_relevance(rr, minor_event, important_event, major_event):
     for inferer, relevance in zip(inferers, relevances):
         inferer.add_event(rr, relevance)
 
-    for player in rr.participants:
+    for player in rr.participants():
         rating_minor = minor.rate(player)
         rating_important = important.rate(player)
         rating_major = major.rate(player)

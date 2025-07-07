@@ -14,7 +14,7 @@ For example: :class:`rstt.stypes.SPlayer` should only be used for typehint in fu
 
 
 from dataclasses import dataclass
-from typing import List, Dict, Union,  Any, Iterable, Protocol, runtime_checkable
+from typing import Union, Any, Iterable, Protocol, runtime_checkable
 
 
 # TODO: work on Scheduler typing and similarities/differences between 'Tournament' & 'MatchMaking'
@@ -51,7 +51,7 @@ class SMatch(Protocol):
 
     """
 
-    def players(self) -> List[SPlayer]:
+    def players(self) -> list[SPlayer]:
         """getter for match participants
 
         Returns
@@ -91,7 +91,7 @@ class Event(Protocol):
             The name of the event
         """
 
-    def games(self, by_rounds: bool) -> Union[List[SMatch], List[List[SMatch]]]:
+    def games(self, by_rounds: bool) -> Union[list[SMatch], list[list[SMatch]]]:
         """getter for SMatch
 
         Parameters
@@ -105,7 +105,7 @@ class Event(Protocol):
             All SMatch played during the event.
         """
 
-    def standing(self) -> Dict[SPlayer, int]:
+    def standing(self) -> dict[SPlayer, int]:
         """getter for the event standing
 
         A standing represent the result of the event (and not a given SMatch). The place 1 indicates the winner of the event.
@@ -114,6 +114,15 @@ class Event(Protocol):
         -------
         Dict[SPlayer, int]
             A dictionary indicating the final placement of all SPlayer that participated in the Event.
+        """
+
+    def participants(self) -> list[SPlayer]:
+        """getter for the involved competitiors
+
+        Returns
+        -------
+        list[SPlayer]
+            A list of SPlayer taking part in the compeittion, i.e. playing games. 
         """
 
 
@@ -328,7 +337,7 @@ class Observer(Protocol):
 # ---------------------------- #
 @runtime_checkable
 class Shuffler(Protocol):
-    def rearange(status: List[int]) -> List[int]:
+    def rearange(status: list[int]) -> list[int]:
         """Reorder elements in a 'meaningfull' fashion
 
         Parameters
@@ -345,7 +354,7 @@ class Shuffler(Protocol):
 
 @runtime_checkable
 class Seeder(Protocol):
-    def seed(players: List[SPlayer], initial_seeds: Iterable, results: Any, **kwargs) -> List[SPlayer]:
+    def seed(players: list[SPlayer], initial_seeds: Iterable, results: Any, **kwargs) -> list[SPlayer]:
         """Reorder players in a 'meaningfull' fashion
 
         Parameters
@@ -366,7 +375,7 @@ class Seeder(Protocol):
 
 @runtime_checkable
 class Generator(Protocol):
-    def generate(status: Union[List[int], List[SPlayer]]) -> Union[List[int], List[SPlayer]]:
+    def generate(status: Union[list[int], list[SPlayer]]) -> Union[list[int], list[SPlayer]]:
         """Generate different ordering version of a given List
 
 
@@ -390,7 +399,7 @@ class Generator(Protocol):
 
 @runtime_checkable
 class Evaluator(Protocol):
-    def eval(options: List[List[SPlayer]], initial_seeds: Iterable, results: Any, **kwargs) -> List[List[SPlayer]]:
+    def eval(options: list[list[SPlayer]], initial_seeds: Iterable, results: Any, **kwargs) -> list[list[SPlayer]]:
         """reorder options based on criteria
 
         The options can be evaluated based on an history of Game(s), or Player(s) appreciation.

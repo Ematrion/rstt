@@ -43,7 +43,7 @@ class RandomRound(RoundRobin):
 
     def _init_future_rounds(self):
         # !!! Bugs when self.nb_duel is to high. When should the error be raised, and how/where should it be documented.
-        participants = [p for p in self.participants]
+        participants = [p for p in self.participants()]
         for _ in range(self.nb_rounds):
             random.shuffle(participants)
             new_round = participants[:self.nb_duel*2]
