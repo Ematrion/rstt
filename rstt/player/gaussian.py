@@ -28,7 +28,7 @@ class GaussianPlayer(PlayerTVS):
         -------
         The figure below shows a population of 10 players generated with .create() without specifics params.
 
-        .. image:: img/playertvs/ExponentialPlayer.pdf
+        .. image:: img/playertvs/GaussianPlayer.pdf
             :width: 800
         """
 
