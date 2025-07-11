@@ -23,6 +23,13 @@ class GaussianPlayer(PlayerTVS):
         sigma : float, optional
             The player's level standard deviation. By default None, in this case a random value is generated
             using a random distribution :class:`rstt.config.GAUSSIAN_PLAYER_SIGMA_DIST with default parameters :class:`rstt.config.GAUSSIAN_PLAYER_SIGMA_ARGS`
+
+        Example
+        -------
+        The figure below shows a population of 10 players generated with .create() without specifics params.
+
+        .. image:: img/playertvs/ExponentialPlayer.pdf
+            :width: 800
         """
 
         # Genereate if needed a mu value

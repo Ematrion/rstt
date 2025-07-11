@@ -1,3 +1,8 @@
+""" Solver Module
+
+Solver provide a solve(match: SMatch) method to assign a Score to the match. Typicaly a WIN/LOSE/DRAW in case of 'versus' matches
+"""
+
 
 from typing import List, Optional, Callable
 from typeguard import typechecked
@@ -156,7 +161,7 @@ class LogSolver(ScoreProb):
         The LogSolver implements a standard reparametrization of the Bradley-Terry model that matches Elo rating system.
         In practice it is a ScoreProb with a probability function illustrated on `wismuth <https://wismuth.com/elo/calculator.html>`_.
         FOr a player A with level a, and a Player B with level b, it is defined by the logistic function:
-            P(A wins against B) = 1/(1+base^( (b-a) / lc))
+        P(A wins against B) = 1/(1+base^( (b-a) / lc))
 
         Parameters
         ----------

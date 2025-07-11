@@ -1,3 +1,6 @@
+"""Player based Observers
+"""
+
 from .obs import ObsTemplate
 from .utils import *
 
@@ -16,7 +19,7 @@ class PlayerChecker(ObsTemplate):
             The output of the inferer.rate defines the post ratings,
             which can introduce inconsistency in rating type for the datamodel.
 
-        Observations (.handle_observations() valide parameters)
+        Observations
         ------------
         player : SMatch, optional
             a game justifying a ranking update, by default None
@@ -47,16 +50,3 @@ class PlayerChecker(ObsTemplate):
         self.query = no_query
         self.output_formater = new_player_rating
         self.push = push_new_ratings
-
-
-class NoHandling(ObsTemplate):
-    def __init__(self):
-        """
-        :exclude-members:
-        """
-        super().__init__()
-        self.extractor = no_extraction
-        self.convertor = no_convertion
-        self.query = no_query
-        self.output_formater = no_formating
-        self.push = no_push

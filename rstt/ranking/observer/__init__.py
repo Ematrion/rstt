@@ -14,6 +14,6 @@ This method is responsible:
 
 """
 
-from .obs import ObsTemplate
-from .game_observer import GameByGame, BatchGame
-from .player_observer import PlayerChecker, NoHandling
+from .obs import ObsTemplate, NoHandling
+from .gameObserver import GameByGame, BatchGame
+from .playerObserver import PlayerChecker

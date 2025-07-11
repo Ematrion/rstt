@@ -1,3 +1,6 @@
+"""Game based Observers
+"""
+
 from .obs import ObsTemplate
 from .utils import *
 
@@ -9,7 +12,7 @@ class GameByGame(ObsTemplate):
         Implementing an iterative approach where each observations triggers the entire updating workflows.
         In particular, new ratings are stored inbetween of each iterations, and the prior ones are lost.
 
-        Observations (.handle_observations() valide parameters)
+        Observations
         ------------
         game : SMatch, optional
             a game justifying a ranking update, by default None
@@ -54,7 +57,7 @@ class BatchGame(ObsTemplate):
         In this workflows, ratings are stored after all matches have been processed. Every computation is performed using the prior ratings
         (i.e the one stored in the datamodel before the method call)
 
-        Observations (.handle_observations() valide parameters)
+        Observations
         ------------
         game : SMatch, optional
             a game justifying a ranking update, by default None

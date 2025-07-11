@@ -38,16 +38,13 @@ class SwissBracket(Competition):
                  cashprize: Optional[Dict[int, float]] = None):
         """The Swiss Bracket
 
-        The format is mention in the `esports variation <section>`_ of the Swiss Round wikipedia page and was originaly introduce for Counter-Strike event in 2016.
+        The format is mention in the `esports variation <https://en.wikipedia.org/wiki/Swiss-system_tournament#Esports>`_ of the Swiss Round wikipedia page and was originaly introduce for Counter-Strike event in 2016.
         Hower both format differ drastically in many regards, one being their usage and output.
-            - In Swiss Round there is a single undefeated participant, thus is great to crown a winner among many participants.
-            - In Swiss Bracket, 16 teams are split into 8 qualified and 8 eliminated participants.
+            * In Swiss Round there is a single undefeated participant, thus is great to crown a winner among many participants.
+            * In Swiss Bracket, 16 teams are split into 8 qualified and 8 eliminated participants.
 
-        #swiss-bracket>`_ for Counter-Strike major competition, that specify a matching policy.
-        The name choice come from the `Valve rule book <https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md
+        The name choice come from the `Valve rule book <https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md#swiss-bracket>`_ for Counter-Strike major competition, that specify a matching policy.
 
-        Parameters
-        ----------
         Parameters
         ----------
         name : str
@@ -83,16 +80,7 @@ class SwissBracket(Competition):
             The design of the class alows extreme customization on the matching at any point of the competition.
             If you do not provide a matching, seeders, genrators, evaluators and their associated default, the class uses a DummyParam for all.
 
-            This approach works relatively well in standard cases.
-
-            The class seems to be 'Over-engineer' in that regards.
-            However, the format is relatively new AND there has been frequent discussion about issues related to matchings in it.
-
-            If you are interested in using the class to produce games automatically, you are good to go with the DummyParam.
-
-            If you are using the class, refer to the :module:`rstt.stypes` documentation to understand the parameters type and how it helps fine-tuning the tournament.
-
-            A matching workflow diagram will be added to the documentation of this class.
+            Refer to the :class:`rstt.stypes` documentation for the parameters type and impact on the tournament games.
         """
         super().__init__(name, seeding, solver, cashprize)
 

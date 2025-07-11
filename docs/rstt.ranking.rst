@@ -1,6 +1,16 @@
 rstt.ranking package
 ====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   rstt.ranking.observer
+   rstt.ranking.inferer
+   rstt.ranking.standard
+
 Submodules
 ----------
 
@@ -8,22 +18,6 @@ rstt.ranking.datamodel module
 -----------------------------
 
 .. automodule:: rstt.ranking.datamodel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-rstt.ranking.inferer module
----------------------------
-
-.. automodule:: rstt.ranking.inferer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-rstt.ranking.observer module
-----------------------------
-
-.. automodule:: rstt.ranking.observer
    :members:
    :undoc-members:
    :show-inheritance:
@@ -40,14 +34,6 @@ rstt.ranking.rating module
 --------------------------
 
 .. automodule:: rstt.ranking.rating
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-rstt.ranking.standard module
-----------------------------
-
-.. automodule:: rstt.ranking.standard
    :members:
    :undoc-members:
    :show-inheritance:

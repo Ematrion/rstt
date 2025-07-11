@@ -1,6 +1,6 @@
 """Package for automated matches generation procedure
 
-We consider scheduler in competition as a very large notion including tournaments and live-matchmaking.
+RSTT consider scheduler in competition as a large notion covering both sport tournaments and live-matchmaking.
 """
 
 from .tournament import Competition

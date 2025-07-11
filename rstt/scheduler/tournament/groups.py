@@ -20,9 +20,8 @@ import math
 class RoundRobin(Competition):
     """Round-Robin Tournament
 
-    Implements the famous tournament system. You find more detail on `wikipedia <https://en.wikipedia.org/wiki/Round-robin_tournament>`_
-    #/media/File:Round-robin_tournament_10teams_en.png>`_.
-    The matching technique used to generate matches is the algorithm illustrated `here <https://en.wikipedia.org/wiki/Round-robin_tournament.
+    Implements the famous tournament system. The matching technique used to generate matches is
+    the 'circle' algorithm illustrated `here <https://en.wikipedia.org/wiki/Round-robin_tournament#/media/File:Round-robin_tournament_10teams_en.png>`_.
 
     A simpl specification of the tournament reads like this:
         - a total of n x (n-1) matche is played in n-1 rounds.
@@ -90,9 +89,9 @@ class RoundRobin(Competition):
 
 
 class SwissRound(RoundRobin):
-    """Swiss System
+    """Swiss Round
 
-    `Wikipedia <https://en.wikipedia.org/wiki/Swiss-system_tournament>`_ provides a good overview of the system.
+    Also known as `Swiss System <https://en.wikipedia.org/wiki/Swiss-system_tournament>`_.
 
     It is a variation of the Round-Robin system, that fixes some issues:
         - ~ n X log2(n) matches played, which for large n (participants) is significantly faster than round-robin.
@@ -101,8 +100,8 @@ class SwissRound(RoundRobin):
 
     .. warning:: 
         - Undefined behaviour when the number of registered player is not a power of 2.
-        - The current matching strategy (greedy) has some issues and may lead to errors,
-        this has been observed for number of participants above 256.
+        - The current matching strategy (greedy) has some issues and may lead to errors, this has been observed for number of participants above 256.
+
     """
 
     def _init_future_rounds(self):

@@ -1,10 +1,10 @@
 """Subpackage for tournaments
 
-RSTT notion of tournament is similar to what `wikipedia <https://en.wikipedia.org/wiki/Tournament>`_ describes:
+RSTT notion of `tournament <https://en.wikipedia.org/wiki/Tournament>`_ is intuitif and consensual:
 
-    - A competition involving at least three competitors
-    - One or more competitions held at a single venue and concentrated into a relatively short time interval
-    - Tournament winner determined based on the combined results.
+    - A competition is held in a short amount of time, involving a defined numbers of competitors
+    - Consist of games involving the competitors
+    - Tournament's winner determined based on the games results.
     
 The abstract class :class:`rstt.scheduler.tournament.competition.Competition` is a general template for tournaments.
     

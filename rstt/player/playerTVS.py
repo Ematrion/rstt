@@ -1,4 +1,4 @@
-from typing import List, Optional, Callable
+from typing import List, Optional
 from typeguard import typechecked
 
 import abc
@@ -133,7 +133,10 @@ class PlayerTVS(Player, metaclass=abc.ABCMeta):
 
 class ExponentialPlayer(PlayerTVS):
     @typechecked
-    def __init__(self, name: Optional[str] = None, start: Optional[float] = None, final: Optional[float] = None, tau: Optional[float] = None):
+    def __init__(self, name: Optional[str] = None,
+                 start: Optional[float] = None,
+                 final: Optional[float] = None,
+                 tau: Optional[float] = None):
         """Player with a level that tends to a final value.
 
         The transition to the final level is controlled by an exponential decay function.
@@ -148,20 +151,33 @@ class ExponentialPlayer(PlayerTVS):
             The final level of the player. By default None, in this case a level is randomly generated.
         tau : float, optional
             Controls how fast (number of level update) the player's level gets close to its final level.
+
+        Example
+        -------
+        The figure below shows a population of 10 players generated with .create() without specifics params.
+
+        .. image:: img/playertvs/ExponentialPlayer.pdf
+            :width: 800
+
         """
-        level = level if level is not None else cfg.EXPONENTIAL_START_DIST(
+
+        start = start if start is not None else cfg.EXPONENTIAL_START_DIST(
             **cfg.EXPONENTIAL_START_ARGS)
-        super().__init__(name=name, level=level)
+        super().__init__(name=name, level=start)
+
         self.__final = final if final is not None else self.original_level(
         ) + cfg.EXPONENTIAL_DIFF_DIST(**cfg.EXPONENTIAL_DIFF_ARGS)
-        self.__time = 0
-        self._relax = uf.exponential_decay
 
         # parameters of the relaxation
-        self.__tau = tau
+        self.__tau = tau if tau else cfg.EXPONENTIAL_TAU_DIST(
+            **cfg.EXPONENTIAL_TAU_ARGS)
+        # relaxation
+        self._relax = uf.exponential_decay
+
+        self.__time = 0
 
     def _update_level(self, *args, **kwars) -> float:
-        self._time += 1
+        self.__time += 1
         self._PlayerTVS__current_level = self.__final - \
             (self.__final - self._PlayerTVS__current_level) * \
             self._relax(time=self.__time, tau=self.__tau)
@@ -169,7 +185,11 @@ class ExponentialPlayer(PlayerTVS):
 
 class LogisticPlayer(PlayerTVS):
     @typechecked
-    def __init__(self, name: Optional[str] = None, start: Optional[float] = None, final: Optional[float] = None, center_x: float = 100, r: float = 0.5):
+    def __init__(self, name: Optional[str] = None,
+                 start: Optional[float] = None,
+                 final: Optional[float] = None,
+                 center_x: Optional[float] = None,
+                 r: Optional[float] = None):
         """Player with a level that tends to a final value.
 
         The transition to the final level is controlled by a logistic function.
@@ -186,19 +206,28 @@ class LogisticPlayer(PlayerTVS):
             Number of level update for the player to reach the level:=(final-start)/2, by default 100.
         r : float, optional
             Controls the sharpness of the level transition, by default 0.5.
+
+        Example
+        -------
+        The figure below shows a population of 10 players generated with .create() without specifics params.
+
+        .. image:: img/playertvs/LogisticPlayer.pdf
+            :width: 800
         """
 
-        level = level if level is not None else cfg.LOGISTIC_START_DIST(
+        start = start if start is not None else cfg.LOGISTIC_START_DIST(
             **cfg.LOGISTIC_START_ARGS)
-        super().__init__(name=name, level=level)
+        super().__init__(name=name, level=start)
         self.__final = final if final is not None else self.original_level(
         ) + cfg.LOGISTIC_DIFF_DIST(**cfg.LOGISTIC_DIFF_ARGS)
         self.__time = 0
         self._relax = uf.verhulst
 
         # parameters of the relaxation
-        self.__tau = uf.a_from_logistic_center(center_x, r)
-        self.__r = r
+        center_x = center_x if center_x else cfg.LOGISTIC_CENTER_DIST(
+            **cfg.LOGISTIC_CENTER_ARGS)
+        self.__r = r if r else cfg.LOGISTIC_R_DIST(**cfg.LOGISTIC_R_ARGS)
+        self.__tau = uf.a_from_logistic_center(center_x, self.__r)
 
     def _update_level(self, *args, **kwars) -> float:
         self.__time += 1
@@ -208,7 +237,10 @@ class LogisticPlayer(PlayerTVS):
 
 class CyclePlayer(PlayerTVS):
     @typechecked
-    def __init__(self, name: Optional[str] = None, level: Optional[float] = None, sigma: float = 1.0, tau: int = 100):
+    def __init__(self, name: Optional[str] = None,
+                 level: Optional[float] = None,
+                 sigma: Optional[float] = None,
+                 tau: Optional[int] = None):
         """Cycle Player
 
         Implement the 'Cycle Model' descirbed by
@@ -229,11 +261,21 @@ class CyclePlayer(PlayerTVS):
             The standard deviation of the level, by default 1.0
         tau : int, optional
             The number of update needed for a level to decrease from its maximal value to its mean level, by default 100
+
+        Example
+        -------
+        The figure below shows a population of 10 players generated with .create() without specifics params.
+
+        .. image:: img/playertvs/CyclePlayer.pdf
+            :width: 800
         """
         super().__init__(name, level)
         self.__time = 0
-        self.__sigma = sigma  # controls the 'variance'
-        self.__tau = tau  # controls the cycle duration
+        # controls the 'variance'
+        self.__sigma = sigma if sigma else cfg.CYCLE_SIGMA_DIST(
+            **cfg.CYCLE_SIGMA_ARGS)
+        # controls the cycle duration
+        self.__tau = tau if tau else cfg.CYCLE_TAU_DIST(**cfg.CYCLE_TAU_ARGS)
 
     def _update_level(self, *args, **kwars):
         X0 = self._BasicPlayer__level
@@ -245,7 +287,10 @@ class CyclePlayer(PlayerTVS):
 
 class JumpPlayer(PlayerTVS):
     @typechecked
-    def __init__(self, name: Optional[str] = None, level: Optional[float] = None, sigma: float = 50, tau: int = 400):
+    def __init__(self, name: Optional[str] = None,
+                 level: Optional[float] = None,
+                 sigma: Optional[float] = None,
+                 tau: Optional[int] = None):
         """Jump Player
 
         Implement a 'Jump Model' adapted from
@@ -269,11 +314,19 @@ class JumpPlayer(PlayerTVS):
             Remark that the mean level changes is 0, as a consequences the player's level as equal chances to increase or decrease.
         tau : int, optional
             Parameter of the geometric distribution, by default 400.
-            This will tune the tendancy that a player has to stay at a level before the level is updated. 
+            This will tune the tendancy that a player has to stay at a level before the level is updated.
+
+        Example
+        -------
+        The figure below shows a population of 10 players generated with .create() without specifics params.
+
+        .. image:: img/playertvs/JumpPlayer.pdf
+            :width: 800
         """
         super().__init__(name, level)
-        self.__sigma = sigma
-        self.__tau = tau
+        self.__sigma = sigma if sigma else cfg.JUMP_SIGMA_DIST(
+            **cfg.JUMP_SIGMA_ARGS)
+        self.__tau = tau if tau else cfg.JUMP_TAU_DIST(**cfg.JUMP_TAU_ARGS)
         self.__timer = np.random.geometric(1/self.__tau)
 
     def _update_level(self, *args, **kwars):

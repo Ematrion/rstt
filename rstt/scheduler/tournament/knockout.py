@@ -36,7 +36,7 @@ class SingleEliminationBracket(Competition):
     One of the most famous and used competition model, specialy in internationl events, 
     Participants are placed in a binary tree where the winner of a confrontation advance to the next stage and the loser is eliminated.
 
-    More detail on the `wikipedia <https://en.wikipedia.org/wiki/Single-elimination_tournament>`_ page.
+    More detail on the `single-elimination-bracket <https://en.wikipedia.org/wiki/Single-elimination_tournament>`_  wikipedia page.
 
     .. note::
         Currently the first round matching is the standard policy. for example with 8 participants:
@@ -91,8 +91,7 @@ class SingleEliminationBracket(Competition):
 class DoubleEliminationBracket(Competition):
     """Double Elimination Bracket
 
-    Variation of the Single Elimination Bracket where participants have a 2nd chance after losing before elimination.
-    More information `here <https://en.wikipedia.org/wiki/Double-elimination_tournament>`_.
+    `Variation <https://en.wikipedia.org/wiki/Double-elimination_tournament>`_ of the Single Elimination Bracket where participants have a 2nd chance after losing before elimination.
     """
     @typechecked
     def __init__(self, name: str,

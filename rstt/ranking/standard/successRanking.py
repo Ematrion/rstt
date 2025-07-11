@@ -23,6 +23,29 @@ class SuccessRanking(Ranking):
                  buffer: int | None = None, nb: int | None = None,
                  players: list[SPlayer] | None = None,
                  default: dict[int, float] | None = None):
+        """Merit Based Ranking
+
+        Usefull to implement Ranking system like the one in  `tennis <https://en.wikipedia.org/wiki/ATP_rankings>`_ for example.
+
+        Attributes
+        ----------
+        datamodel: :class:`rstt.ranking.datamodel.KeyModel` (int as rating)
+        backend: :class:`rstt.ranking.inferer.EventScoring`
+        handler: :class:`rstt.ranking.observer.PlayerChecker`
+
+        Parameters
+        ----------
+        name : str, optional
+            A name to identify the ranking, by default ''
+        buffer : int
+            Backend parameter. The number of event to consider for the rating, starting from the last.
+        nb : int
+            Backend parameter. The actual number of event in the buffer to use for the ratings computation.
+        default : Optional[Dict[int, float]], optional
+            Backend Parameter. Mapping placement in event to points for the rating, by default None
+        players : Optional[List[SPlayer]], optional
+            Players to register in the ranking, by default None
+        """
 
         if buffer or nb:
             window_range = buffer, tops = nb

@@ -4,7 +4,7 @@ from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import GaussianModel
 from rstt.ranking.inferer import Glicko
 from rstt.ranking.observer import BatchGame
-from rstt.ranking.observer.game_observer import new_ratings_groups_to_ratings_dict
+from rstt.ranking.observer.gameObserver import new_ratings_groups_to_ratings_dict
 from rstt.ranking.observer.utils import *
 
 import math
@@ -23,6 +23,37 @@ class BasicGlicko(Ranking):
                  c: float = 63.2, q: float = math.log(10, math.e)/400,
                  lc: int = 400,
                  players: list[SPlayer] | None = None):
+        """Simple Glicko system
+
+        Implement A glicko rating system as originaly `proposed <https://www.glicko.net/glicko/glicko.pdf>`_.
+
+        .. note::
+            As recommanded in the source paper, the update() method starts by adjusting each players rating before
+            processing any game data (sort of a rating decay)
+
+
+        Attributes
+        ----------
+        datamodel: :class:`rstt.ranking.datamodel.GaussianModel` (:class:`rstt.ranking.rating.GlickoRating as rating)
+        backend: :class:`rstt.ranking.inferer.Glicko` as backend
+        handler :class:`rstt.ranking.observer.BatchGame` as handler
+
+
+        Parameters
+        ----------
+        name : str, optional
+            A name to identify the ranking, by default ''
+        handler : _type_, optional
+            Backend as parameter, by default BatchGame()
+            The original recommendation is to update the ranking by grouping matches within rating period.
+            Which is what the BatchGame Observer do, (each update call represent one period). To match other glicko, use A GameByGame observer
+        mu : float, optional
+            Datamodel parameter, the default mu of the rating, by default 1500.0
+        sigma : float, optional
+           Datamodel parameter, the default sigma of the rating, by default 350.0
+        players : Optional[List[SPlayer]], optional
+            Players to register in the ranking, by default None
+        """
         super().__init__(name=name,
                          datamodel=GaussianModel(
                              default=GlickoRating(mu, sigma)),

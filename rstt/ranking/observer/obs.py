@@ -63,3 +63,16 @@ class ObsTemplate(Observer):
             datamodel.set(key=player, rating=post_rating)
         self.prior = None
         self.posteriori = None
+
+
+class NoHandling(ObsTemplate):
+    def __init__(self):
+        """
+        :exclude-members:
+        """
+        super().__init__()
+        self.extractor = uo.no_extraction
+        self.convertor = uo.no_convertion
+        self.query = uo.no_query
+        self.output_formater = uo.no_formating
+        self.push = uo.no_push
