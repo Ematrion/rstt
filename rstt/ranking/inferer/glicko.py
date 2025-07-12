@@ -221,7 +221,6 @@ class Glicko:
 
         return rating
 
-    # FIXME: Does not support GameByGame observer
     def rate(self, rating, ratings_opponents: list[any], scores: list[float], *args, **kwars):
         """Glicko rate method
 

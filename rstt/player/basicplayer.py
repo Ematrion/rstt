@@ -86,7 +86,15 @@ class BasicPlayer():
         """
         name_gen = names.get_full_name if name_gen is None else name_gen
         name_params = {} if name_params is None else name_params
-        return [cls(name=name_gen(**name_params)) for i in range(nb)]
+        # BUG: When PlayerTVS have their own
+        level_dist = level_dist if level_dist else cfg.PLAYER_DIST
+        level_params = level_params if level_params else cfg.PLAYER_DIST_ARGS
+
+        # !!! hack due to several PlayerTVS not having level args (Gauss/Exp/Log-Player, which have a start/mu instead)
+        if cls.__name__ == 'BasicPlayer':
+            return [cls(name=name_gen(**name_params), level=level_dist(**level_params)) for i in range(nb)]
+        else:
+            return [cls(name=name_gen(**name_params)) for i in range(nb)]
 
     @classmethod
     @typechecked
@@ -112,7 +120,7 @@ class BasicPlayer():
         Returns
         -------
         List[BasicPlayer]
-            A list of seeded player in desceding order of level. 
+            A list of seeded player in desceding order of level.
         """
         end = start + (nb * inc)
         levels = list(range(start, end, inc))
