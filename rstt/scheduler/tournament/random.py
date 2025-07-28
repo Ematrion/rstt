@@ -13,9 +13,9 @@ class RandomRound(RoundRobin):
         Class to generate a bunch of arbitrary matches. 
 
         This is not a real 'competition' as it is not intended to determine a winner. 
-        But the class works as a competition and thus produces a final standing the same way a RoundRobin does, by summing matches scores.
-        It is however 'fair' in the sense that there is no guarantee that participants play the same amount of games.
-        Technicaly it is even possible some registered participant do not even play a single match.
+        But the class works as a competition and thus produces a final standing the same way a RoundRobin does - by summing matches scores.
+        It is however 'unfair' in the sense that there is no guarantee that participants play the same amount of games.
+        It is even possible some registered participant do not play a single match.
 
         Parameters
         ----------

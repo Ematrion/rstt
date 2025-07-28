@@ -19,7 +19,7 @@ class BasicElo(Ranking):
         Attributes
         ----------
         datamodel: :class:`rstt.ranking.datamodel.KeyModel` (float as rating type)
-        backend: :class:`rstt.ranking.inferer.Elo`
+        backend: :class:`rstt.ranking.inferer.elo.Elo`
         handler: :class:`rstt.ranking.observer.GameByGame`
 
 

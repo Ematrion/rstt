@@ -1,31 +1,31 @@
-from typing import List, Tuple, Any
+from typing import Any
 
 
 # ----------------- #
 # --- Shuffling --- #
 # ----------------- #
-def riffle_shuffle(half1: List[Any], half2: List[Any]) -> List[Any]:
+def riffle_shuffle(half1: list[Any], half2: list[Any]) -> list[Any]:
     return [half[i] for i in range(len(half1)) for half in [half1, half2]]
 
 
 # ----------------- #
 # --- Splitting --- #
 # ----------------- #
-def symetric_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
+def symetric_split(elems: list[Any]) -> tuple[list[Any], list[Any]]:
     h = len(elems)//2
     half1 = elems[:h]
     half2 = list(reversed(elems[-h:]))
     return half1, half2
 
 
-def middle_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
+def middle_split(elems: list[Any]) -> tuple[list[Any], list[Any]]:
     h = len(elems)//2
     half1 = elems[:h]
     half2 = elems[-h:]
     return half1, half2
 
 
-def neighboor_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
+def neighboor_split(elems: list[Any]) -> tuple[list[Any], list[Any]]:
     half1 = elems[::2]
     half2 = elems[1::2]
     return half1, half2
@@ -34,30 +34,30 @@ def neighboor_split(elems: List[Any]) -> Tuple[List[Any], List[Any]]:
 # ---------------- #
 # --- matching --- #
 # ---------------- #
-def symetric_match(elems: List[Any]) -> List[List[Any]]:
+def symetric_match(elems: list[Any]) -> list[list[Any]]:
     return [[elems[i], elems[-i]] for i in range(len(elems)//2)]
 
 
-def parallel_match(elems: List[Any]) -> List[List[Any]]:
+def parallel_match(elems: list[Any]) -> list[list[Any]]:
     h = len(elems)//2
     return [[elems[i], elems[h+i]] for i in range(h)]
 
 
-def neighboor_match(elems: List[Any]) -> List[List[Any]]:
+def neighboor_match(elems: list[Any]) -> list[list[Any]]:
     return [[elems[2*i], elems[2*i+1]] for i in range(len(elems)//2)]
 
 
 # --------------- #
 # --- Common ---- #
 # --------------- #
-def ruban(players: List[Any]) -> List[List[Any]]:
+def ruban(players: list[Any]) -> list[list[Any]]:
     if len(players) % 2 == 0:
         return _ruban_even(players)
     else:
         return _ruban_odd(players)
 
 
-def _ruban_even(players: List[Any]) -> List[List[Any]]:
+def _ruban_even(players: list[Any]) -> list[list[Any]]:
     # QUEST: does it work with odd length of players input ?
     # QUEST: return List[List[List[Any]]] to match other matching func logic ?
     '''
@@ -120,7 +120,7 @@ def _ruban_even(players: List[Any]) -> List[List[Any]]:
     return rounds
 
 
-def _ruban_odd(players: List[Any]) -> List[List[Any]]:
+def _ruban_odd(players: list[Any]) -> list[list[Any]]:
     # each player get a BYE round
     BYE = None
     # avoid side- effect
@@ -136,7 +136,7 @@ def _ruban_odd(players: List[Any]) -> List[List[Any]]:
     return rounds
 
 
-def chord_diagrams_n6(players: List[Any]) -> List[List[Any]]:
+def chord_diagrams_n6(players: list[Any]) -> list[list[Any]]:
     '''
     source:
     https://en.wikipedia.org/wiki/Double_factorial
@@ -172,7 +172,7 @@ def chord_diagrams_n6(players: List[Any]) -> List[List[Any]]:
     return matchings
 
 
-def swiss_bracket_n6(players: List[Any]) -> List[List[Any]]:
+def swiss_bracket_n6(players: list[Any]) -> list[list[Any]]:
     '''
     Source : https://github.com/ValveSoftware/counter-strike_rules_and_regs/blob/main/major-supplemental-rulebook.md
     Look for the 'Priority' table in section 'Swiss Bracket'

@@ -375,7 +375,7 @@ class Seeder(Protocol):
 
 @runtime_checkable
 class Generator(Protocol):
-    def generate(status: Union[list[int], list[SPlayer]]) -> Union[list[int], list[SPlayer]]:
+    def generate(status: Union[list[int], list[SPlayer]]) -> Union[list[list[int]], list[list[SPlayer]]]:
         """Generate different ordering version of a given List
 
 
@@ -391,7 +391,7 @@ class Generator(Protocol):
 
         Returns
         -------
-        Union[List[int], List[Player]]
+        Union[list[list[int]], list[list[SPlayer]]]
             the options, A list of different 'option' which are reordering of the given 'status'
             Idealy the first option is a direct, and 'obvious' transformation of status
         """
