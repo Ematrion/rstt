@@ -18,4 +18,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: snok/install-poetry@v1
       - run: poetry install --no-interaction --no-root --with dev
-      - run: poetry run pytest
+      - name:  run pytest # there seems to be issues with windows shell and the way snok install poetry
+        run: poetry run pytest
+        shell: bash {0}
