@@ -16,5 +16,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ouhammmourachid/poetry-install@v2.0.0
+          cache: 'poetry'
+      - run: |
+          python -m pip install --upgrade pip
+          pip install pipx
+          pipx ensurepath
+          pipx install poetry
+      - run: poetry install --no-interaction --no-root
       - run: python -m pytest
