@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-        os: [ubuntu-22.04, macos-latest, windows-latest]
+        os: [ubuntu-22.04, macos-latest] # there seems to be issues with windows shell and the way snok install poetry
     
     runs-on: ${{matrix.os}}
     steps:
@@ -18,6 +18,4 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: snok/install-poetry@v1
       - run: poetry install --no-interaction --no-root --with dev
-      - name:  run pytest # there seems to be issues with windows shell and the way snok install poetry
-        run: poetry run pytest
-        shell: bash {0}
+      - run: poetry run pytest
