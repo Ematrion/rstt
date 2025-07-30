@@ -23,4 +23,4 @@ jobs:
           pipx ensurepath
           pipx install poetry
       - run: poetry install --no-interaction --no-root
-      - run: python -m pytest
+      - run: poetry run pytest
