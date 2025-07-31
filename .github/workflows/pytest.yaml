@@ -20,7 +20,7 @@ jobs:
       - run: poetry install --no-interaction --no-root --with dev
       - run: poetry run pytest --cov --cov-branch --cov-report=xml
       - name: Upload to Codecov
-        if: ${{ matrix.os == 'ubuntu-latest' &&  matrix.python-version == '3.10'}}
+        if: ${{ matrix.os == 'ubuntu-22.04' &&  matrix.python-version == '3.10'}}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
