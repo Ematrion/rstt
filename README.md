@@ -88,13 +88,13 @@ The following papers can be good read to start a journey in the field:
 
 The tutorials contains a collections of topic to about RSTT usages.
 
-(1) [The basics](tutorials/1_Basics/1_Basics.ipynb)
+1) [The basics](tutorials/1_Basics/1_Basics.ipynb)
+2) [Integreation](). You can use use extermaly defined rating system in RSTT. We provide an example for with [openskill](https://github.com/vivekjoshy/openskill.py). It can easly be extended to [trueskill](https://trueskill.org).
 
 Soon Available:
-(2) Simulation based research should not be code dependant, rather model dependant.
+3) Simulation based research should not be code dependant, rather model dependant.
 We propose as [tutrial](tutorials/2_Research/2_Research_reproduction.ipynb) a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4).
-(3) [Integreation](). You can use use extermaly defined rating system in RSTT. We provide an example for with [openskill](https://github.com/vivekjoshy/openskill.py). It can easly be extended to [trueskill](https://trueskill.org).
-(4) [Modeling](). You can extend and developp your own model and integrate them well into simulation.  We model a professional video game ecosystem from ranking specfifcation to leagues structures with international events.
+4) [Modeling](). You can extend and developp your own model and integrate them well into simulation.  We model a professional video game ecosystem from ranking specfifcation to leagues structures with international events.
 
 
 ### Package Concept
