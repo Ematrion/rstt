@@ -18,7 +18,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: snok/install-poetry@v1
       - run: poetry install --no-interaction --no-root --with dev
-      - run: poetry run pytest
+      - run: poetry run pytest --cov --cov-branch --cov-report=xml
       - name: Coverage
         if: ${{ matrix.os == 'ubuntu-latest' &&  matrix.python-version == '3.10'}}
         uses: codecov/codecov-action@v3

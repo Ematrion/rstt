@@ -89,11 +89,11 @@ The following papers can be good read to start a journey in the field:
 The tutorials contains a collections of topic to about RSTT usages.
 
 1) [The basics](tutorials/1_Basics/1_Basics.ipynb)
-2) [Integreation](). You can use use extermaly defined rating system in RSTT. We provide an example for with [openskill](https://github.com/vivekjoshy/openskill.py). It can easly be extended to [trueskill](https://trueskill.org).
+2) [Integreation](tutorials/2_Intergration/2_Integration.ipynb). You can use use extermaly defined rating system in RSTT. We provide an example for with [openskill](https://github.com/vivekjoshy/openskill.py). It can easly be extended to [trueskill](https://trueskill.org).
 
 Soon Available:
 3) Simulation based research should not be code dependant, rather model dependant.
-We propose as [tutrial](tutorials/2_Research/2_Research_reproduction.ipynb) a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4).
+We propose as [tutrial]() a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4).
 4) [Modeling](). You can extend and developp your own model and integrate them well into simulation.  We model a professional video game ecosystem from ranking specfifcation to leagues structures with international events.
 
 
@@ -123,19 +123,23 @@ If you use RSTT, consider linking back to this repo!
 <a id="1">[1]</a> 
 Anu Maria. (1997).
 Introduction to modeling and simulation.
-In Proceedings of the 29th conference on Winter simulation (WSC '97). IEEE Computer Society, USA, 7–13. https://doi.org/10.1145/268437.268440
+In Proceedings of the 29th conference on Winter simulation (WSC '97). IEEE Computer Society, USA, 7–13.
+https://doi.org/10.1145/268437.268440
 
 <a id="2">[2]</a> 
 Aldous, D. (2017).
 Elo ratings and the sports model: A neglected topic in applied probability?
 Statistical Science, 32(4):616–629, 2017.
+https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf
 
 <a id="3">[3]</a>
 Tang, S., Wang, Y., & Jin, C. (2025).
 Is Elo Rating Reliable? A Study Under Model Misspecification.
 arXiv preprint arXiv:2502.10985.
+https://arxiv.org/pdf/2502.10985
 
 <a id="4">[4]</a>
 Adrien Krifa, Florian Spinelli, Stéphane Junca.
 On the convergence of the Elo rating system for a Bernoulli model and round-robin tournaments.
 [Research Report] Université Côte D’Azur. 2021. ⟨hal-03286065⟩.
+https://hal.science/hal-03286065/document
