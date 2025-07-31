@@ -1,7 +1,7 @@
 <div align="center">
 <h1>RSTT</h1>
 
-[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![PyPI - Types](https://img.shields.io/pypi/types/RSTT)](https://pypi.org/project/rstt/) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![Awpy Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/CzjPzdzY) 
+[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![PyPI - Types](https://img.shields.io/pypi/types/RSTT)](https://pypi.org/project/rstt/) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest)[![codecov](https://codecov.io/github/Ematrion/rstt/graph/badge.svg?token=GY15EY4OTZ)](https://codecov.io/github/Ematrion/rstt) [![RSTT Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/CzjPzdzY) 
 </div>
 
 **Simulation Framework for Tournament and Ranking in Competition**
