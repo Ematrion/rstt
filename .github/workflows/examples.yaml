@@ -21,4 +21,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: snok/install-poetry@v1
       - run: poetry install --no-interaction --no-root 
-      - run: poetry run python3 ${{matrix.scripts}}
+      - name: Run all example scripts
+        run: |
+          for script in examples/*.py; do
+            echo "Running $script with Python ${{ matrix.python-version }} on ${{ matrix.os }}"
+            poetry run python3 "$script"
+          done
