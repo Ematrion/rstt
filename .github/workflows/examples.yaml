@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: snok/install-poetry@v1
-      - run: poetry install --no-interaction --no-root 
+      - run: poetry install --no-interaction
       - name: Run all example scripts
         run: |
           for script in examples/*.py; do
