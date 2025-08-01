@@ -1,19 +1,19 @@
 <div align="center">
 <h1>RSTT</h1>
 
-[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![PyPI - Types](https://img.shields.io/pypi/types/RSTT)](https://pypi.org/project/rstt/) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest)[![codecov](https://codecov.io/github/Ematrion/rstt/graph/badge.svg?token=GY15EY4OTZ)](https://codecov.io/github/Ematrion/rstt) [![RSTT Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/CzjPzdzY) 
+[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![PyPI - Types](https://img.shields.io/pypi/types/RSTT)](https://pypi.org/project/rstt/) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![codecov](https://codecov.io/github/Ematrion/rstt/graph/badge.svg?token=GY15EY4OTZ)](https://codecov.io/github/Ematrion/rstt) [![RSTT Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/m8gN4UgHZ3) 
 </div>
 
 **Simulation Framework for Tournament and Ranking in Competition**
 
 
-- :warning: ALPHA version. Package still under construction. Do not hesitate to suggest features addition
+- :warning: ALPHA version. Package still under construction. Feature suggestions are welcomed.
 - :bulb: Design for simulation based research
 - :minidisc: Production of large synthetic dataset
 - :computer: Automated simulation workflow
-- :page_with_curl: Document your model by referercing class sources
+- :page_with_curl: Document model by referercing class sources
 - :chart_with_upwards_trend: Enhance Analysis by comparing trained models to simulation models. 
-- :wrench: Design and integrate your own custom components
+- :wrench: Design and integrate custom components
 - :question: Support and advise on [Discord](https://discord.gg/CzjPzdzY) 
 
 
@@ -77,10 +77,10 @@ truth.plot()
 RSTT is meant for science and simulation based research in the context of competition.
 Whenever possible code is based on peer reviewed publication and cite the sources.
 
-The following papers can be good read to start a journey in the field:
+The following papers are great start for journey in the field:
 
 - [Anu Maria](https://dl.acm.org/doi/pdf/10.1145/268437.268440) [[1]](#1), covers steps to follow and pitfalls to avoid in simulation based research.
-- [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) presents base models in the context of sport competition and introduce research questiions. Several classes and features of RSTT are implemetion from this paper.
+- [D. Aldous](https://www.stat.berkeley.edu/~aldous/Papers/me-Elo-SS.pdf) [[2]](#2) presents base models in the context of sport competition and introduce research questions. Several features of RSTT are based on it.
 - [S. Tang & Cie](https://arxiv.org/pdf/2502.10985) [[3]](#3) Is a recent example of reseach. It uses synthetic dataset to provide insight about observations in real game data set.
 
 
@@ -88,33 +88,33 @@ The following papers can be good read to start a journey in the field:
 
 The tutorials contains a collections of topic to about RSTT usages.
 
-1) [The basics](tutorials/1_Basics/1_Basics.ipynb)
+1) [The basics](tutorials/1_Basics/1_Basics.ipynb) illustrate common fonctionnalities and 
 2) [Integreation](tutorials/2_Intergration/2_Integration.ipynb). You can use use extermaly defined rating system in RSTT. We provide an example for with [openskill](https://github.com/vivekjoshy/openskill.py). It can easly be extended to [trueskill](https://trueskill.org).
+3) Simulation based research should not be code dependant, rather model dependant. [tutrial_3](tutorials/3_Research_Reproduction) propose a reproduction of [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4). There is an exercises version where you code part of the experiments, and a solutions one that runs most of the research report.
+
 
 Soon Available:
-3) Simulation based research should not be code dependant, rather model dependant.
-We propose as [tutrial]() a reproduction of result from [A Krifa & Cie](https://hal.science/hal-03286065/document) [[4]](#4).
 4) [Modeling](). You can extend and developp your own model and integrate them well into simulation.  We model a professional video game ecosystem from ranking specfifcation to leagues structures with international events.
 
 
 ### Package Concept
 
-The rstt package is build on 5 fundamental abstraction:
+The rstt package is build on 5 fundamental abstractions:
 - Player: who participate in games and are items in rankings. Different models are available including ones with 'time varying skills'
 - Match: which represent more the notion of an encounter than a game title with rules. It contains players grouped in teams to which a Score (the outcome) is assigned once.
-- Solver: Protocol with a solve(Match) that assign a score to a game instance. Usually implements probabilistic model based on player level. 
-- Scheduler: Automated game generator protocol. Matchmaking and Competition are scheduler, the package includes standards like elimination bracket and round robin variations..
-- Ranking: Implmeneted as a tuple (standing, rating system, inference method, observer) that estimate a skill value (or point) for player.
+- Solver: Protocol that assign a score to a game instance. Usually implements probabilistic model based on player level. 
+- Scheduler: Automated game generator procedure. Matchmaking and Competition are scheduler. The package provides standards like elimination bracket and round robin variations.
+- Ranking: Composed of a standing, a rating system, an inference method and a data update procedure, rankings estimate skill value of player.
 
 
 Regarding ranking's component. 
 - Standing: is an hybrid container that implement a triplet relationship between (rank: int, player: Player, point: float) and behave similar to a List[Player ], Dict[Player, rank] and Dict[rank, Player]
 - RatingSystem: store rating computed by ranking for player
-- Inferer: in charge of statistical inference.
+- Inference: in charge of statistical inference.
 - Observer: manage the workflow from the observation that triggers the update of a ranking to the new computed ratings of players.
 
 ## Community
-Join our Discord and exchange with us.
+Join our [Discord](https://discord.gg/m8gN4UgHZ3) and exchange with us.
 
 ## How to cite
 If you use RSTT, consider linking back to this repo!
