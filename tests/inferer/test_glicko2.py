@@ -84,3 +84,19 @@ def test_step7():
     mu, phi = glicko2._step7(rating=r, phi_star=1.1513, v=1.7785, games=games)
     assert phi == pytest.approx(0.8722, abs=0.001)
     assert mu == pytest.approx(-0.2069, abs=0.001)
+
+
+def test_step8():
+    r, RD = glicko2._step8(-0.2069, 0.8722)
+    assert r == pytest.approx(1464.06, abs=0.01)
+    assert RD == pytest.approx(151.52, abs=0.01)
+
+
+def test_rate():
+    # r = glicko2._step2(rating)
+    # rs = [glicko2._step2(opp) for opp in opponents]
+    # new_rating = glicko2.rate(r, rs, scores)
+    new_rating = glicko2.rate(rating, opponents, scores)
+    assert new_rating.mu == pytest.approx(1464.06, abs=0.01)
+    assert new_rating.sigma == pytest.approx(151.52, abs=0.01)
+    assert new_rating.volatility == pytest.approx(0.05999, abs=0.00001)

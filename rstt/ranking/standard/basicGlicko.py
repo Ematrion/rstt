@@ -1,8 +1,8 @@
-from rstt.stypes import SPlayer, RatingSystem
-from rstt.ranking.rating import GlickoRating
+from rstt.stypes import Inference, Observer, SPlayer, RatingSystem
+from rstt.ranking.rating import GlickoRating, Glicko2Rating
 from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import GaussianModel
-from rstt.ranking.inferer import Glicko
+from rstt.ranking.inferer import Glicko, Glicko2
 from rstt.ranking.observer import BatchGame
 from rstt.ranking.observer.gameObserver import new_ratings_groups_to_ratings_dict
 from rstt.ranking.observer.utils import *
@@ -75,3 +75,56 @@ class BasicGlicko(Ranking):
         self.__step1()
         self.handler.handle_observations(
             infer=self.backend, datamodel=self.datamodel, *args, **kwargs)
+
+
+class BasicGlicko2(Ranking):
+    def __init__(self, name: str, mu: float = 1500, sigma: float = 350, volatility: float = 0.06, tau: float = 0.3, epsilon: float = 0.000000005, players: list[SPlayer] | None = None):
+        super().__init__(name, datamodel=GaussianModel(default=Glicko2Rating(mu=mu, sigma=sigma, volatility=volatility)),
+                         backend=Glicko2(tau=tau, mu=mu, epsilon=epsilon),
+                         handler=BatchGame(),
+                         players=players)
+
+    def _estimate_tau(self, *args, **kwargs):
+        # !!! Specification missing -> No system modification
+        return self.backend.tau
+
+    def _adjust_unactive_player_RD(self, games: list[Duel]):
+        '''
+        NOTE: author note p.8, after step8, before example calculation
+            increase RD for player who does not compete during the rating period
+        '''
+
+        # find unactive players
+        players = set(self.datamodel.keys())
+        actives = active_players(games)
+        unactives = players - actives
+
+        # update rating deviation (RD / sigma)
+        for player in unactives:
+            # get rating
+            rating = self.datamodel.get(player)
+            scaled_rating = self.backend._step2(rating)
+
+            # update phi
+            phi = self.backend._step6(scaled_rating.sigma,
+                                      scaled_rating.volatility)
+
+            # scale back
+            _, post_rd = self._step8(mu_prime=scaled_rating.mu,
+                                     phi_prime=phi)
+            rating.sigma = post_rd
+
+            # push
+            self.datamodel.set(player, rating)
+
+    def forward(self, *args, **kwargs):
+        # unactive players
+        self._adjust_unactive_player_RD(*args, **kwargs)
+
+        # adjust tau
+        self.backend._step1(self._estimate_tau(*args, **kwargs))
+
+        # process games
+        self.handler.handle_observations(infer=self.backend,
+                                         datamodel=self.datamodel,
+                                         *args, **kwargs)

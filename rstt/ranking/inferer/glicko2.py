@@ -5,17 +5,17 @@ import math
 
 
 class Glicko2(Glicko):
-    def __init__(self, tau: float = 0.3, *args, **kwargs):
+    def __init__(self, mu: float = 1500, tau: float = 0.3, epsilon: float = 0.000000005, *args, **kwargs):
         super().__init__(q=1, *args, **kwargs)
         # --- system variable --- #
         self.tau = tau  # reasonable choices are between 0.3 and 1.2
 
         # --- scaling constant --- #
         self.scaling = 173.718
-        self.base_mu = 1500
+        self.base_mu = mu
 
         # algorithm constant
-        self.epsilon = 0.000000005
+        self.epsilon = epsilon
         ''' NOTE on epsilon for _step5
         
         The value does not match
@@ -95,9 +95,10 @@ class Glicko2(Glicko):
         """
         self.tau = tau
 
-    def _step2(self, prior_g2r: Glicko2Rating) -> GlickoRating:
-        return GlickoRating(mu=(prior_g2r.mu-self.base_mu)/self.scaling,
-                            sigma=prior_g2r.sigma/self.scaling)
+    def _step2(self, prior: Glicko2Rating) -> Glicko2Rating:
+        return Glicko2Rating(mu=(prior.mu-self.base_mu)/self.scaling,
+                             sigma=prior.sigma/self.scaling,
+                             volatility=prior.volatility)
 
     def _step3(self, rating1: GlickoRating, games: list[tuple[GlickoRating, float]]):
         return self.d2(rating1, games)
@@ -154,8 +155,8 @@ class Glicko2(Glicko):
         # 5) post volatility
         return math.exp(A/2)
 
-    def _step6(self, phi: float, sigma: float):
-        return math.sqrt(phi**2 + sigma**2)
+    def _step6(self, phi: float, volatility: float):
+        return math.sqrt(phi**2 + volatility**2)
 
     def _step7(self, rating: GlickoRating, phi_star: float, v: float, games: list[tuple[GlickoRating, float]]):
         phi_prime = 1 / math.sqrt(1/phi_star**2 + 1/v)
@@ -163,37 +164,40 @@ class Glicko2(Glicko):
                                                    for rj, sj in games])
         return mu_prime, phi_prime
 
-    def _step8(self, post_g1r: GlickoRating):
-        return Glicko2Rating(mu=self.scaling*post_g1r.sigma,
-                             sigma=self.scaling * post_g1r.mu + self.base_mu,
-                             volatility=None)
+    def _step8(self, mu_prime: float, phi_prime: float):
+        mu = self.scaling * mu_prime + self.base_mu
+        sigma = self.scaling * phi_prime
+        return mu, sigma
 
     # --- Inference --- #
     def rate(self, rating: Glicko2Rating, ratings_opponents: list[Glicko2Rating], scores: list[float]):
-        # formating
-        games = [(rating, score)
-                 for rating, score in zip(ratings_opponents, scores)]
+        # !!! self._step1(...) needs to be performed in the forward method
+        '''
+        NOTE: scaling up and down rating
+            - within the rate method increase number of operation.
+            - within the forward method makes it harder to read and maintain.
+        '''
 
-        # NOTE: author note p.8, after step8, before example calculation
-        if ratings_opponents == [] and scores == []:
-            new_rating = Glicko2Rating(rating.mu,
-                                       self._step6(phi=rating.sigma,
-                                                   sigma=rating.volatility),
-                                       rating.volatility)
-        else:
-            # !!! needs to be performed in the forward method
-            # self._step1(...)
-            # !!! needs to be performed by the observer before any rate calls
-            # mu_phi = self._step2(...)
-            v = self._step3(rating, games)
-            delta = self._step4(rating, games, v)
-            post_volatility = self._step5(rating.sigma**2, v, delta**2)
-            phi_star = self._step6(phi=rating.sigma,
-                                   sigma=post_volatility)
-            phi_prime, mu_prime = self._step7(...)
-            post_mu, post_rd = self._step8(...)
-            new_rating = Glicko2Rating(post_mu, post_rd, post_volatility)
-        return new_rating
+        # step2 - scaling down
+        r = self._step2(rating)
+        rs = [self._step2(opp) for opp in ratings_opponents]
+
+        # NOTE: unecessary formating -> change method signature
+        games = [(rating, score)
+                 for rating, score in zip(rs, scores)]
+
+        # perform steps
+        v = self._step3(r, games)
+        delta = self._step4(r, games, v)
+        post_volatility = self._step5(r.sigma**2,
+                                      r.volatility**2,
+                                      v, delta**2)
+        phi_star = self._step6(phi=r.sigma,
+                               volatility=post_volatility)
+        mu_prime, phi_prime = self._step7(r, phi_star, v, games)
+        post_mu, post_rd = self._step8(mu_prime, phi_prime)
+
+        return Glicko2Rating(post_mu, post_rd, post_volatility)
 
 
 '''
