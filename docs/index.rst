@@ -8,9 +8,9 @@ Welcome to RSTT's documentation!
 
 .. toctree::
    :maxdepth: 5
-   :caption: Contents:
+   :caption: Table of Contents:
 
-   readme_link
+   readme
    modules
 
 Indices and tables

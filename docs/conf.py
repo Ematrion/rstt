@@ -22,7 +22,10 @@ release = '0.6.6.2'
 extensions = ["sphinx.ext.todo",
               "sphinx.ext.viewcode",
               "sphinx.ext.autodoc",
+              "m2r2",
               ]
+
+source_suffix = [".rst", ".md"]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build',
