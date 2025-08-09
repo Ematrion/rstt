@@ -6,3 +6,9 @@ SMatch have participants, accessed by the method :func:`rstt.game.match.Match.pl
 
 
 from .match import Match, Duel
+
+
+__all__ = [
+    Match,
+    Duel
+]

@@ -4,6 +4,7 @@ from rstt.ranking.datamodel import KeyModel
 from rstt.ranking.inferer import EventScoring
 from rstt.ranking.observer import PlayerChecker
 
+import warnings
 
 '''
     TODO: Redesign the ranking concepts
@@ -12,9 +13,6 @@ from rstt.ranking.observer import PlayerChecker
         - backend extracting the relevant achievements of players
         - where goes the  'EventDataSet' component ?
 '''
-
-
-import warnings
 
 
 class SuccessRanking(Ranking):
@@ -47,9 +45,13 @@ class SuccessRanking(Ranking):
             Players to register in the ranking, by default None
         """
 
-        if buffer or nb:
-            window_range = buffer, tops = nb
-            msg = f"buffer and nb will be removed in version 1.0.0, use instead window_range and tops."
+        if buffer:
+            window_range = buffer
+            msg = "buffer and nb will be removed in version 1.0.0, use instead window_range and tops."
+            warnings.warn(msg, DeprecationWarning)
+        if nb:
+            tops = nb
+            msg = "buffer and nb will be removed in version 1.0.0, use instead window_range and tops."
             warnings.warn(msg, DeprecationWarning)
 
         super().__init__(name=name,

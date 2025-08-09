@@ -17,3 +17,11 @@ This method is responsible:
 from .obs import ObsTemplate, NoHandling
 from .gameObserver import GameByGame, BatchGame
 from .playerObserver import PlayerChecker
+
+__all__ = [
+    ObsTemplate,
+    NoHandling,
+    GameByGame,
+    BatchGame,
+    PlayerChecker
+]

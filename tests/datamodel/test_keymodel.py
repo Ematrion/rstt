@@ -2,7 +2,7 @@ import pytest
 
 from rstt.ranking.datamodel import KeyModel
 from rstt.ranking.rating import GlickoRating
-from rstt import BasicPlayer, Player
+from rstt import BasicPlayer
 
 
 # --- Const --- #
@@ -51,7 +51,7 @@ def test_get(km, value, dummy):
 
 @pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])
 def test_rtypes(km, value):
-    assert km.rtype() == type(value)
+    assert km.rtype() is type(value)
 
 
 '''@pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])    

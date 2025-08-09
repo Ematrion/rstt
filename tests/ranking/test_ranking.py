@@ -96,7 +96,7 @@ def test_rerank_direct_and_indirect_random(elo, random_perm):
 
 def test_fit_unseeded_not_added(elo):
     unseeded = Player.create(nb=5)
-    seeding = elo.fit(unseeded)
+    _ = elo.fit(unseeded)
     for p in unseeded:
         assert p not in elo
 

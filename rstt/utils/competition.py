@@ -42,7 +42,7 @@ def find_valid_draw(draws: List[List[Duel]], games: List[Duel], symetric: bool =
     # deal with mission failed
     if not good_draw:
         good_draw = first_option
-        msg = f"No Valid matchups where found"
+        msg = "No Valid matchups where found"
         warnings.warn(msg, RuntimeWarning)
 
     return good_draw

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from typeguard import typechecked
 
 from rstt.stypes import SPlayer, Score
@@ -7,7 +7,7 @@ import rstt.config as cfg
 
 class Match():
     @typechecked
-    def __init__(self, teams: List[List[SPlayer]], tracking: Optional[bool] = None) -> None:
+    def __init__(self, teams: list[list[SPlayer]], tracking: Optional[bool] = None) -> None:
         """Match base Class
 
         General purpose match class. It can be used to create arbitrary game mode such as Many-versus-Many or Free-For-All games.
@@ -25,15 +25,15 @@ class Match():
             A Splayer can not be an element of two distinct sublist in the parameter teams.
         """
         self.__teams = teams
-        self.__scores = None
+        self.__scores: list[float] = None
         self.__tracking = tracking if tracking is not None else cfg.MATCH_HISTORY
 
         if len(set(self.players())) != len(self.players()):
-            msg = f"Teams must contain different players."
+            msg = "Teams must contain different players."
             raise ValueError(msg)
 
     # --- getter --- #
-    def teams(self) -> List[List[SPlayer]]:
+    def teams(self) -> list[list[SPlayer]]:
         """Getter method for teams
 
         Returns
@@ -43,7 +43,7 @@ class Match():
         """
         return self.__teams
 
-    def players(self) -> List[SPlayer]:
+    def players(self) -> list[SPlayer]:
         """Getter method for player
 
         Unlike :func:`rstt.game.match.Match.teams`, it returns a simple list of SPlayer, without grouping them by teams.
@@ -55,7 +55,7 @@ class Match():
         """
         return [player for team in self.__teams for player in team]
 
-    def opponents(self, player: SPlayer) -> List[SPlayer]:
+    def opponents(self, player: SPlayer) -> list[SPlayer]:
         """Getter method for opponents
 
         Opponents are participants of the match that or not in the same team as the given player.
@@ -72,7 +72,7 @@ class Match():
         """
         return [p for p in self.players() if p not in self.teammates(player)]
 
-    def teammates(self, player: SPlayer) -> List[SPlayer]:
+    def teammates(self, player: SPlayer) -> list[SPlayer]:
         """Getter method for teammates
 
         Teammates of a player are other players in the same teams
@@ -132,7 +132,7 @@ class Match():
             if player in team:
                 return score
 
-    def ranks(self) -> List[int]:
+    def ranks(self) -> list[int]:
         """Getter method for the team ranks
 
         The ranks method is an alternative to the scores method. For a Match between n teams, the return list contains the values 1,...,n.

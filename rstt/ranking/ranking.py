@@ -321,7 +321,7 @@ class Ranking():
             return self.datamodel.get(player)
         else:
             msg = f"{player} is not present in {self.standing}"
-            raise KeyError
+            raise KeyError(msg)
 
     def ratings(self) -> List[Any]:
         """Get method for all ratings
@@ -544,7 +544,7 @@ class Ranking():
             self.__equivalence = True
         else:
             # TODO: write a good error message
-            msg = f''
+            msg = ''
             raise RuntimeError(msg)
 
     def __RankDisambiguity(self):

@@ -26,37 +26,35 @@ p1_achievements = [
 forbbiden_event = Achievement('test1', 10, 3000)
 
 
-    
 @pytest.mark.parametrize("p,achievements", [(p0, p0_achievements), (p1, p1_achievements)])
 def test_collect_achievements(p, achievements):
     p.collect(achievements)
     assert p.achievements() == achievements
+
 
 @pytest.mark.parametrize("p", [p0, p1])
 def test_collect_event_name_error(p):
     with pytest.raises(ValueError):
         p.collect(forbbiden_event)
 
+
 @pytest.mark.parametrize("p,achievements", [(p0, p0_achievements), (p1, p1_achievements)])
 def test_earnings(p, achievements):
     assert p.earnings() == sum([ach.prize for ach in achievements])
-    
+
+
 def test_games_played():
     assert played_game in p0.games() and played_game in p1.games()
+
 
 def test_reset_games():
     p0.reset()
     p1.reset()
     assert played_game not in p0.games() and played_game not in p1.games()
 
-def test_reset_games():
-    p0.reset()
-    assert played_game not in p0.games()
 
 def test_reset_all():
     p1.reset()
     assert p1.games() == []
     assert p1.achievements() == []
     assert p1.earnings() == 0
-
-

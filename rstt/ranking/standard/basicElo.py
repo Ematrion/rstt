@@ -4,7 +4,6 @@ from rstt.ranking.inferer import Elo
 from rstt.ranking.observer import GameByGame
 from rstt.stypes import SPlayer
 
-from typeguard import typechecked
 
 
 class BasicElo(Ranking):
