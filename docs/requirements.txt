@@ -1,4 +1,4 @@
-sphinx-rtd-theme>=8.3.0
+sphinx-rtd-theme>=8.0.0
 sphinx-autodoc-typehints>=1.2.0
 m2r2==0.3.4
 
