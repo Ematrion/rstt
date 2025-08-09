@@ -10,6 +10,7 @@ Welcome to RSTT's documentation!
    :maxdepth: 5
    :caption: Contents:
 
+   readme_link
    modules
 
 Indices and tables
