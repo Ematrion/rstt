@@ -24,13 +24,13 @@ First Steps
    :caption: First steps
    :hidden:
 
-   :doc: `install`
+   :doc:`install`
       Get RSTT
 
-   :doc: `usage`
+   :doc:`usage`
       A Simple example gives you a good overview of what the package has to offers.
 
-   :doc: `tutorials`
+   :doc:`tutorials`
       Selection of notebook
 
 
