@@ -1,18 +1,22 @@
 .. _usage:
 
-================
-First Simulation
-================
+===================
+Intuitive Interface
+===================
 
 
 Components options are available at the package top level.
 .. code-block:: python
+    :linenos:
+
     from rstt import Player, BasicElo
     from rstt import SingleEliminationBracket, LogSolver
 
 
 Instaciate large number of players and track them in a ranking.
 .. code-block:: python
+    :linenos:
+
     # some player
     population = Player.create(nb=16)
 
@@ -26,6 +30,8 @@ Instaciate large number of players and track them in a ranking.
 
 Automatic game generation with seedings and probabilistic game outcome in few steps.
 .. code-block:: python
+    :linenos:
+
     # create a competition with elo ranking for seedings.
     tournament = SingleEliminationBracket(name='RSTT World Cup 2024',
                                         seeding=elo,
@@ -40,6 +46,8 @@ Automatic game generation with seedings and probabilistic game outcome in few st
 
 Intuitive ranking
 .. code-block:: python
+    :linenos:
+
     # update the ranking based on the game played
     elo.update(games=tournament.games())
 
@@ -50,6 +58,8 @@ Intuitive ranking
 
 Compare 'trained' ranking wiht 'model' ranking
 .. code-block:: python
+    :linenos:
+    
     # Using the LogSolver implies a 'Consensus' Ranking based on 'the real level' of players.
     from rstt import BTRanking
     truth = BTRanking(name='Consensus Ranking', players=population)

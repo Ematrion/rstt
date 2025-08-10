@@ -42,10 +42,23 @@ First Steps
 Concepts
 ========
 
+The rstt package is build on 5 fundamental abstractions:
+- Player: who participate in games and are items in rankings. Different models are available including ones with 'time varying skills'.
+- Match: which represent more the notion of an encounter than a game title with rules. It contains players grouped in teams to which a Score (the outcome) is assigned once.
+- Solver: Protocol that assign a score to a game instance. Usually implements probabilistic model based on player level. 
+- Scheduler: Automated game generator procedure. Matchmaking and Competition are scheduler. The package provides standards like elimination bracket and round robin variations.
+- Ranking: Composed of a standing, a rating system, an inference method and a data update procedure, rankings estimate skill value of player.
+
+
+Regarding ranking's component. 
+- Standing: is an hybrid container that implement a triplet relationship between (rank: int, player: Player, point: float) and behave similar to a List[Player ], Dict[Player, rank] and Dict[rank, Player]
+- RatingSystem: store rating computed by ranking for player
+- Inference: in charge of statistical inference.
+- Observer: manage the workflow from the observation that triggers the update of a ranking to the new computed ratings of players.
+
 
 
 .. toctree::
-   :maxdepth: 5
    :caption: Table of Contents:
 
    tutorials

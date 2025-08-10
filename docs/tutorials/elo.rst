@@ -4,4 +4,4 @@
 Research Example
 ================
 
-.. mdinclude:: 3_Research_Reproduction.md
+.. mdinclude:: tutorials/3_Research_Reproduction.md

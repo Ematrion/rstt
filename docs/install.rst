@@ -54,9 +54,8 @@ RSTT is open source and welcomes any contribution. Once you have read the `guidl
 
 The project is build using `poetry`_.  If you also use it then simply:
 
-.. code-block:: bash
-
-    poetry install --with dev
+    .. code-block:: bash
+        poetry install --with dev
 
 3. Alternative Installation
 
@@ -65,7 +64,6 @@ If you do use poetry you need to perform manually steps,
     1. Create a virtual environement
    
     .. code-block:: bash
-
         python -m venv .venv
     
     2. activate it
@@ -73,19 +71,16 @@ If you do use poetry you need to perform manually steps,
     On macOS/Linux
 
     .. code-block:: bash
-
         source .venv/bin/activate
     
     On Windows
 
     .. code-block:: bash
-        
         .venv\Scripts\activate
 
     3. Install Dependencies
     
     .. code-block:: bash
-
         pip install --editable '.[dev]'
 
 4. Check your Installation

@@ -8,10 +8,11 @@ Tutorials
 
 Here is a collections of notebooks that helps learning the package functionnalities.
 
-   :doc:`tutorials/basics`
+
+   :doc:`tutorials/basic`
       RSTT fundamentals, from concepts to user interfaces
 
-   :doc:`tutorials/intergration`
+   :doc:`tutorials/integration`
       Run simulation with externally defined rating system
 
    :doc:`tutorials/elo`

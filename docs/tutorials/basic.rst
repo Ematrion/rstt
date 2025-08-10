@@ -1,7 +1,7 @@
-.. _basics:
+.. _basic:
 
 ===========
 RSTT Basics
 ===========
 
-.. mdinclude:: 1_Basics.md
+.. mdinclude:: tutorials/1_Basics.md
