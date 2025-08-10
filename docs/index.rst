@@ -22,7 +22,6 @@ First Steps
 
 .. toctree::
    :caption: First steps
-   :hidden:
 
    :doc:`install`
       Get RSTT
@@ -40,13 +39,10 @@ Concepts
 
 
 
-
-
 .. toctree::
    :maxdepth: 5
    :caption: Table of Contents:
 
-   readme
    tutorials
    modules
 
