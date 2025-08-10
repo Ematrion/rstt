@@ -23,7 +23,6 @@ extensions = ["sphinx.ext.todo",
               "sphinx.ext.viewcode",
               "sphinx.ext.autodoc",
               "m2r2",
-              "sphinx_copybutton",
               ]
 
 source_suffix = [".rst", ".md"]

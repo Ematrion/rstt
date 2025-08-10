@@ -1,100 +1,83 @@
 .. _install:
 
-==================
-Installation guide
-==================
+===========================
+Installation Guide
+===========================
 
-Python versions
+Python Versions
 ===============
-
-RSTT requires python 3.10 +
-
+RSTT requires Python 3.10+.
 
 Installation
 ============
 
-You can install RSTT from PyPi with::
+You can install RSTT from PyPI with::
 
     pip install rstt
-
 
 Dependencies
 ------------
 
-RSTT relies on the following python packages:
+RSTT relies on the following Python packages:
 
-* `names`_ to provides random name for players.
-* `typeguard`_ for runtime type-check.
-* `numpy`_ as a computing tool.
-
+* `names`_ — provides random names for players.
+* `typeguard`_ — for runtime type-checking.
+* `numpy`_ — as a computing tool.
 
 Integration
 -----------
 
-RSTT was develloped with intent to be used alongside other packages to test.
-You can integrate in your simulation rating system like:
+RSTT was developed with the intent to be used alongside other packages for testing. You can integrate it into your simulation rating system like:
 
-* `trueskill`_, a famous rating system in video game.
-* `openskill`_, a revent alternative.
+* `trueskill`_, a famous rating system in video games.
+* `openskill`_, a recent alternative.
 
+Developer
+---------
 
-Develloper
-----------
+RSTT is open source and welcomes contributions. Once you have read the `guidelines`_, you can start working.
 
-RSTT is open source and welcomes any contribution. Once you have read the `guidlines`_ you can start working.
+1. Get the code::
 
-1. Get the code
+       git clone https://github.com/Ematrion/rstt.git
 
+   and then::
 
-.. code-block:: bash
-    git clone https://github.com/Ematrion/rstt.git
-
-and then 
-
-.. code-block:: bash
-    cd rstt
+       cd rstt
 
 2. Install Dependencies with Poetry
 
-The project is build using `poetry`_.  If you also use it then simply, 
+   The project is built using `poetry`_. If you also use it, simply run::
 
-.. code-block:: bash
-    poetry install --with dev
+       poetry install --with dev
 
 3. Alternative Installation
 
-If you do use poetry you need to perform manually steps, 
+   If you don’t use Poetry, you need to perform the steps manually:
 
-    1. Create a virtual environement
-   
-        .. code-block:: bash
-            python -m venv .venv
-    
-    2. activate it
+   a. Create a virtual environment::
 
-        On macOS/Linux
+          python -m venv .venv
 
-        .. code-block:: bash
+   b. Activate it:
+
+      - On macOS/Linux::
+
             source .venv/bin/activate
-    
-        On Windows
 
-        .. code-block:: bash
+      - On Windows::
+
             .venv\Scripts\activate
 
-    3. Install Dependencies
-    
-        .. code-block:: bash
-            pip install --editable '.[dev]'
+   c. Install dependencies::
 
-4. Check your Installation
+          pip install --editable '.[dev]'
 
-Make sure everything works fine and run the tests with::
-    pytest
+4. Check Your Installation
 
+   Make sure everything works fine by running the tests with::
 
-
-
+       pytest
 
 .. _names: https://pypi.org/project/names/
 .. _typeguard: https://typeguard.readthedocs.io/en/latest/
@@ -102,5 +85,5 @@ Make sure everything works fine and run the tests with::
 .. _trueskill: https://trueskill.org
 .. _openskill: https://openskill.me/en/stable/
 
-.. _guidlines: https://github.com/Ematrion/rstt/blob/main/CONTRIBUTING.md
+.. _guidelines: https://github.com/Ematrion/rstt/blob/main/CONTRIBUTING.md
 .. _poetry: https://python-poetry.org
