@@ -22,7 +22,8 @@ release = '0.6.6.2'
 extensions = ["sphinx.ext.todo",
               "sphinx.ext.viewcode",
               "sphinx.ext.autodoc",
-              "m2r2",
+              "m2r2",       # .md files
+              # "nbsphinx", # .ipynb files:
               ]
 
 source_suffix = [".rst", ".md"]
