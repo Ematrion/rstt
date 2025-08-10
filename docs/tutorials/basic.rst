@@ -4,4 +4,4 @@
 RSTT Basics
 ===========
 
-..mdinclude:: 1_Basics.md
+.. mdinclude:: 1_Basics.md

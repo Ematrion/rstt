@@ -22,15 +22,20 @@ First Steps
 
 .. toctree::
    :caption: First steps
+   :hidden:
 
-   :doc:`install`
-      Get RSTT
+   install
+   usage
+   tutorials
 
-   :doc:`usage`
-      A Simple example gives you a good overview of what the package has to offers.
+:doc:`install`
+   Get RSTT
 
-   :doc:`tutorials`
-      Selection of notebook
+:doc:`usage`
+   A Simple example gives you a good overview of what the package has to offers.
+
+:doc:`tutorials`
+   Selection of notebook
 
 
 
