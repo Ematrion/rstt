@@ -7,14 +7,12 @@ First Simulation
 
 Components options are available at the package top level.
 .. code-block:: python
-    :testcode:
     from rstt import Player, BasicElo
     from rstt import SingleEliminationBracket, LogSolver
 
 
 Instaciate large number of players and track them in a ranking.
 .. code-block:: python
-    :testcode:
     # some player
     population = Player.create(nb=16)
 
@@ -24,12 +22,10 @@ Instaciate large number of players and track them in a ranking.
     # display the ranking to the standard output
     elo.plot()
 
-.. testoutput::
 
 
 Automatic game generation with seedings and probabilistic game outcome in few steps.
 .. code-block:: python
-    :testcode:
     # create a competition with elo ranking for seedings.
     tournament = SingleEliminationBracket(name='RSTT World Cup 2024',
                                         seeding=elo,
@@ -44,25 +40,21 @@ Automatic game generation with seedings and probabilistic game outcome in few st
 
 Intuitive ranking
 .. code-block:: python
-    :testcode:
     # update the ranking based on the game played
     elo.update(games=tournament.games())
 
     # display the updated ranking
     elo.plot()
 
-.. testoutput::
 
 
 Compare 'trained' ranking wiht 'model' ranking
 .. code-block:: python
-    :testcode:
     # Using the LogSolver implies a 'Consensus' Ranking based on 'the real level' of players.
     from rstt import BTRanking
     truth = BTRanking(name='Consensus Ranking', players=population)
     truth.plot()
 
-.. testoutput::
 
 
 Code Execution Explanation

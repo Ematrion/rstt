@@ -44,7 +44,7 @@ Develloper
 RSTT is open source and welcomes any contribution. Once you have read the `guidlines`_ you can start working.
 
 1. Get the code
-    run::
+.. code-block:: bash
 
     git clone https://github.com/Ematrion/rstt.git
 
@@ -52,7 +52,9 @@ RSTT is open source and welcomes any contribution. Once you have read the `guidl
 
 2. Install Dependencies with Poetry
 
-The project is build using `poetry`_.  If you also use it then simply run::
+The project is build using `poetry`_.  If you also use it then simply:
+
+.. code-block:: bash
 
     poetry install --with dev
 
@@ -62,19 +64,28 @@ If you do use poetry you need to perform manually steps,
 
     1. Create a virtual environement
    
-    run::
+    .. code-block:: bash
+
         python -m venv .venv
     
     2. activate it
 
-    On macOS/Linux, run::
+    On macOS/Linux
+
+    .. code-block:: bash
+
         source .venv/bin/activate
     
-    On Windows, run::
+    On Windows
+
+    .. code-block:: bash
+        
         .venv\Scripts\activate
 
     3. Install Dependencies
-    run::
+    
+    .. code-block:: bash
+
         pip install --editable '.[dev]'
 
 4. Check your Installation
