@@ -11,12 +11,12 @@ from .gaussian import GaussianPlayer
 
 
 __all__ = [
-    BasicPlayer,
-    Player,
-    PlayerTVS,
-    ExponentialPlayer,
-    LogisticPlayer,
-    CyclePlayer,
-    JumpPlayer,
-    GaussianPlayer,
+    "BasicPlayer",
+    "Player",
+    "PlayerTVS",
+    "ExponentialPlayer",
+    "LogisticPlayer",
+    "CyclePlayer",
+    "JumpPlayer",
+    "GaussianPlayer",
 ]

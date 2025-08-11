@@ -9,6 +9,6 @@ from .match import Match, Duel
 
 
 __all__ = [
-    Match,
-    Duel
+    "Match",
+    "Duel"
 ]

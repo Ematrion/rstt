@@ -15,12 +15,12 @@ Solver are responsible to produce a :class:`rstt.stypes.Score` and assign it to 
 from .solvers import BetterWin, BradleyTerry, LogSolver, CoinFlip, ScoreProb, WIN, LOSE, DRAW
 
 __all__ = [
-    BetterWin,
-    BradleyTerry,
-    LogSolver,
-    CoinFlip,
-    ScoreProb,
-    WIN,
-    LOSE,
-    DRAW
+    "BetterWin",
+    "BradleyTerry",
+    "LogSolver",
+    "CoinFlip",
+    "ScoreProb",
+    "WIN",
+    "LOSE",
+    "DRAW"
 ]

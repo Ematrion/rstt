@@ -19,9 +19,9 @@ from .gameObserver import GameByGame, BatchGame
 from .playerObserver import PlayerChecker
 
 __all__ = [
-    ObsTemplate,
-    NoHandling,
-    GameByGame,
-    BatchGame,
-    PlayerChecker
+    "ObsTemplate",
+    "NoHandling",
+    "GameByGame",
+    "BatchGame",
+    "PlayerChecker"
 ]

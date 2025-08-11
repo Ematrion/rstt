@@ -6,7 +6,7 @@ Tutorials
 =========
 
 
-Here is a collections of notebooks that helps learning the package functionnalities.
+Here is a collection of notebooks that helps learning the package functionnalities.
 
 
    :doc:`tutorials/basic`

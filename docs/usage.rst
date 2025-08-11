@@ -1,11 +1,13 @@
 .. _usage:
 
-===================
-Intuitive Interface
-===================
+============
+Code Example
+============
 
 
 Components options are available at the package top level.
+
+
 .. code-block:: python
     :linenos:
 
@@ -14,6 +16,8 @@ Components options are available at the package top level.
 
 
 Instaciate large number of players and track them in a ranking.
+
+
 .. code-block:: python
     :linenos:
 
@@ -29,6 +33,8 @@ Instaciate large number of players and track them in a ranking.
 
 
 Automatic game generation with seedings and probabilistic game outcome in few steps.
+
+
 .. code-block:: python
     :linenos:
 
@@ -45,6 +51,8 @@ Automatic game generation with seedings and probabilistic game outcome in few st
 
 
 Intuitive ranking
+
+
 .. code-block:: python
     :linenos:
 
@@ -57,6 +65,8 @@ Intuitive ranking
 
 
 Compare 'trained' ranking wiht 'model' ranking
+
+
 .. code-block:: python
     :linenos:
     

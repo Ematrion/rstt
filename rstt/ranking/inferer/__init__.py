@@ -10,9 +10,9 @@ from .eventscoring import EventScoring
 
 
 __all__ = [
-    Elo,
-    Glicko,
-    PlayerLevel,
-    PlayerWinPRC,
-    EventScoring
+    "Elo",
+    "Glicko",
+    "PlayerLevel",
+    "PlayerWinPRC",
+    "EventScoring"
 ]

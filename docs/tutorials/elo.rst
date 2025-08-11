@@ -4,4 +4,4 @@
 Research Example
 ================
 
-.. mdinclude:: tutorials/3_Research_Reproduction.md
+.. include:: 3_Elo_Convergence/3_Solutions.rst

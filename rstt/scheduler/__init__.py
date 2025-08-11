@@ -7,12 +7,12 @@ from .tournament import Competition
 from .tournament import RoundRobin, SwissRound, RandomRound, SwissBracket, SingleEliminationBracket, DoubleEliminationBracket, Snake
 
 __all__ = [
-    Competition,
-    RoundRobin,
-    SwissRound,
-    RandomRound,
-    SwissBracket,
-    SingleEliminationBracket,
-    DoubleEliminationBracket,
-    Snake
+    "Competition",
+    "RoundRobin",
+    "SwissRound",
+    "RandomRound",
+    "SwissBracket",
+    "SingleEliminationBracket",
+    "DoubleEliminationBracket",
+    "Snake"
 ]

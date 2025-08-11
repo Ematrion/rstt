@@ -4,4 +4,4 @@
 Externaly defined system
 ========================
 
-.. mdinclude:: tutorials/2_Integration.md
+.. include:: 2_Integration.rst
