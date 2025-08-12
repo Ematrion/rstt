@@ -2,7 +2,7 @@ from rstt.stypes import Inference, Observer, RatingSystem
 from ..datamodel import KeyModel
 import rstt.utils.observer as uo
 
-from typing import Any, Optional
+from typing import Any
 
 
 class ObsTemplate(Observer):

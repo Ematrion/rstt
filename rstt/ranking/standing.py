@@ -3,7 +3,7 @@
 Standing is a sorted container class implementing a triplet relationship between player, rank and points.
 """
 
-from typing import Union, List, Dict, Tuple, Callable, Any, Optional
+from typing import Union, List, Tuple, Callable, Any, Optional
 
 from typeguard import typechecked
 import numpy as np
