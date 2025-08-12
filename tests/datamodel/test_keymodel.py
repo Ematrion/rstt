@@ -22,21 +22,6 @@ def dummy():
     return BasicPlayer(DUMMY_NAME, DUMMY_LEVEL)
 
 
-@pytest.fixture
-def rating_km():
-    return KeyModel(default=GlickoRating())
-
-
-@pytest.fixture
-def template_km():
-    return KeyModel(template=GlickoRating, mu=MU, sigma=SIGMA)
-
-
-@pytest.fixture
-def factory_km():
-    return KeyModel(factory=lambda x: x.name())
-
-
 # --- TESTING --- #
 @pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])
 def test_set(km, value, dummy):
@@ -52,12 +37,3 @@ def test_get(km, value, dummy):
 @pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])
 def test_rtypes(km, value):
     assert km.rtype() is type(value)
-
-
-'''@pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])    
-def test_default(km, value):
-    assert km.default() == value
-
-@pytest.mark.parametrize("km, value", [(km, value) for km, value in zip(ALLKM, RATINGS)])     
-def test_ordinal_float_value(km, value):
-    assert isinstance(km.ordinal(value), float)'''

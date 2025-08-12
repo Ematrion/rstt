@@ -42,11 +42,13 @@ def p2_loses_p1(p2, p1):
     BetterWin().solve(duel)
     return duel
 
+
 # --- TESTING --- #
-
-
-def test_contains(p1, p2, p1_versus_p2):
-    assert p1 in p1_versus_p2 and p2 in p1_versus_p2
+def test_contains(p1, p2, p1_versus_p2, p2_versus_p1):
+    assert p1 in p1_versus_p2
+    assert p2 in p1_versus_p2
+    assert p1 in p2_versus_p1
+    assert p2 in p2_versus_p1
 
 
 def test_players(p1, p2, p1_versus_p2):

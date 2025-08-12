@@ -48,6 +48,8 @@ def to_list_of_players(player: Optional[SPlayer] = None,
                        players: Optional[list[SPlayer]] = None,
                        team: Optional[SPlayer] = None,
                        teams: Optional[list[SPlayer]] = None,
+                       game: Optional[SMatch] = None,
+                       games: Optional[list[SMatch]] = None,
                        event: Optional[Event] = None,
                        events: Optional[list[Event]] = None
                        # standing: Optional[Standing] = None,
@@ -62,6 +64,11 @@ def to_list_of_players(player: Optional[SPlayer] = None,
         observations.append(team)
     if teams:
         observations += teams
+    if game:
+        observations += game.players()
+    if games:
+        for game in games:
+            observations += game.players()
     if event:
         observations += event.participants()
     if events:
@@ -157,6 +164,7 @@ def active_players(games: list[SMatch]) -> list[SPlayer]:
 # --- no processing --- #
 def no_convertion(*args, **kwargs) -> Any:
     # !!! probably not what a user expect. BUT what does he expect ?
+    # NOTE: also, this module is definitly not for users
     return (*args, *kwargs)
 
 
