@@ -83,6 +83,9 @@ class BasicGlicko2(Ranking):
                          backend=Glicko2(tau=tau, mu=mu, epsilon=epsilon),
                          handler=BatchGame(),
                          players=players)
+        self.handler.query = get_ratings_for_glicko
+        self.handler.output_formater = lambda d, x: new_ratings_groups_to_ratings_dict(d, [
+                                                                                       [x]])
 
     def _estimate_tau(self, *args, **kwargs):
         # !!! Specification missing -> No system modification
@@ -97,7 +100,7 @@ class BasicGlicko2(Ranking):
         # find unactive players
         players = set(self.datamodel.keys())
         actives = active_players(games)
-        unactives = players - actives
+        unactives = players - set(actives)
 
         # update rating deviation (RD / sigma)
         for player in unactives:

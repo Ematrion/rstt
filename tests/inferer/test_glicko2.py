@@ -51,7 +51,7 @@ def test_v():
     r = glicko2._step2(rating)
     rs = [glicko2._step2(opp) for opp in opponents]
     games = zip(rs, scores)
-    assert glicko2.d2(r, games) == pytest.approx(1.7785, 0.001)  # !!! 1.778976
+    assert glicko2.d2(r, games) == pytest.approx(1.7785, 0.001)
 
 
 def test_step4():
