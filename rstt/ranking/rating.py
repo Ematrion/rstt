@@ -21,6 +21,6 @@ class GlickoRating:
 
 @dataclass
 class Glicko2Rating:
-    mean: float = cst.GLICKO2_MEAN
-    variance: float = cst.GLICKO2_VAR
+    mu: float = cst.GLICKO2_MEAN
+    sigma: float = cst.GLICKO2_VAR
     volatility: float = cst.GLICKO2_VOLATILITY
