@@ -13,6 +13,7 @@ from .eventscoring import EventScoring
 __all__ = [
     "Elo",
     "Glicko",
+    "Glicko2",
     "PlayerLevel",
     "PlayerWinPRC",
     "EventScoring"
