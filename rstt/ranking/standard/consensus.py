@@ -44,7 +44,7 @@ class BTRanking(Ranking):
 class WinRate(Ranking):
     def __init__(self, name: str,
                  default: float = -1.0,
-                 scope: float = np.iinfo(np.int32).max,
+                 scope: int = np.iinfo(np.int32).max,
                  players: list[SPlayer] | None = None):
         """Ranking based on Win rate
 

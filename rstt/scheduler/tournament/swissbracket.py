@@ -1,5 +1,4 @@
-from typing import Union, List, Dict, Tuple, Optional, Any, Iterable
-from typing import Protocol, runtime_checkable
+from typing import Union, List, Dict, Tuple, Optional
 from typeguard import typechecked
 
 from rstt import Duel, BetterWin

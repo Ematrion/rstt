@@ -2,7 +2,7 @@
 """
 
 from .obs import ObsTemplate
-from .utils import *
+import rstt.utils.observer as uo
 
 
 class PlayerChecker(ObsTemplate):
@@ -44,9 +44,9 @@ class PlayerChecker(ObsTemplate):
         player: SPlayer
         """
         super().__init__()
-        self.convertor = to_list_of_players
+        self.convertor = uo.to_list_of_players
         self.extractor = lambda players: [
-            {PLAYER: player}for player in players]
-        self.query = no_query
-        self.output_formater = new_player_rating
-        self.push = push_new_ratings
+            {uo.PLAYER: player}for player in players]
+        self.query = uo.no_query
+        self.output_formater = uo.new_player_rating
+        self.push = uo.push_new_ratings

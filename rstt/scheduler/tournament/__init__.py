@@ -26,3 +26,15 @@ from .snake import Snake
         A simple approach to implement it is to create BYE player(s), always losing, and remove them of the final state of the event.
         To ensure the lose of BYE players, the competition.solver can be wrapped in one that hanle BYE-games and delegate for others.
 '''
+
+
+__all__ = [
+    "Competition",
+    "RoundRobin",
+    "SwissRound",
+    "RandomRound",
+    "SwissBracket",
+    "SingleEliminationBracket",
+    "DoubleEliminationBracket",
+    "Snake"
+]

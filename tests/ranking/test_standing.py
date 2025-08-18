@@ -170,9 +170,9 @@ def test_fit_maintain_standing():
 def test_fit_unseeded_not_added():
     ref = standing
     unseeded = Player.create(nb=5)
-    seeding = ref.fit(unseeded)
+    _ = ref.fit(unseeded)
     for p in unseeded:
-        assert not p in ref
+        assert p not in ref
 
 
 def test_fit_seed_unseeded():

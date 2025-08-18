@@ -50,8 +50,8 @@ def test_create_level_dist_params_correct_nb(distribution, parameters):
 def test_create_level_dist_params_correct_levels(distribution, parameters, levels):
     pop = BasicPlayer.create(
         nb=NB, level_dist=distribution, level_params=parameters)
-    for p, l in zip(pop, levels):
-        assert p.level() == l
+    for player, rho in zip(pop, levels):
+        assert player.level() == rho
 
 
 @pytest.mark.parametrize('start, inc', [(0, 100), (600, 10)])

@@ -3,7 +3,7 @@
 Standing is a sorted container class implementing a triplet relationship between player, rank and points.
 """
 
-from typing import Union, List, Dict, Tuple, Callable, Any, Optional
+from typing import Union, List, Tuple, Callable, Any, Optional
 
 from typeguard import typechecked
 import numpy as np
@@ -126,7 +126,7 @@ class Standing:
         """
 
         # data
-        self.ranks = []  # [(key: Player, value: float)]
+        self.ranks: list[SPlayer, float] = []  # [(key: Player, value: float)]
         self.__default = default  # default value
 
         # sorting controls
@@ -273,7 +273,7 @@ class Standing:
 
     # TODO: define clearly output format
     @get_sort
-    def tied_items(self) -> Dict[float, List[SPlayer]]:
+    def tied_items(self) -> dict[tuple[int, int], list[SPlayer]]:
         """Getter method for tied items in the Standing
 
         Returns
@@ -281,17 +281,21 @@ class Standing:
         Dict[Tuple[int, int], List[Player]]
             return a dictionary where keys are a tuple indicating the ranks range and values are the tied keys (player)
         """
-        ties = {}
+
+        ties: dict[tuple[int, int], list[SPlayer]] = {}  # returned value
+        tied_players: dict[float, list[SPlayer]] = {}  # intermediate steps
         values = uu.multiples([entry[1] for entry in self.ranks])
+
         for val in values:
-            ties[val] = []
+            tied_players[val] = []
             for player in self:
                 if self.value(player) == val:
-                    ties[val].append(player)
+                    tied_players[val].append(player)
         for val in values:
-            top = (min(self[ties[val]]), max(self[ties[val]]))
-            ties[top] = ties[val]
+            top = (min(self[tied_players[val]]), max(self[tied_players[val]]))
+            ties[top] = tied_players[val]
             del ties[val]
+
         return ties
 
     # --- setter --- #
@@ -299,7 +303,7 @@ class Standing:
     @typechecked
     # TODO: investigate redundancy between sorting=False and protocol='never'
     # TODO: define protocol type (enum ?)
-    def set_sorting(self, sorting: bool = None, protocol: str = None):
+    def set_sorting(self, sorting: Optional[bool] = None, protocol: Optional[str] = None):
         """Set the ordering properties of the Standing
 
         Control the internal mechanism. How/When the Standing handle the data and the sorting calls. 

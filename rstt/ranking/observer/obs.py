@@ -1,6 +1,8 @@
 from rstt.stypes import Inference, Observer, RatingSystem
 from ..datamodel import KeyModel
-from . import utils as uo
+import rstt.utils.observer as uo
+
+from typing import Any
 
 
 class ObsTemplate(Observer):
@@ -9,19 +11,19 @@ class ObsTemplate(Observer):
         self.posteriori: RatingSystem = None
 
     # --- Observer 'Parameters' --- #
-    def convertor(self, *args, **kwargs) -> any:
+    def convertor(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
-    def extractor(self, observations: any) -> list[any]:
+    def extractor(self, observations: Any) -> list[Any]:
         raise NotImplementedError
 
-    def query(self, prior: RatingSystem, data: any):
+    def query(self, prior: RatingSystem, data: Any):
         raise NotImplementedError
 
-    def output_formater(self, data: any, output: any):
+    def output_formater(self, data: Any, output: Any):
         raise NotImplementedError
 
-    def push(self, data: any, posteriori: RatingSystem):
+    def push(self, data: Any, posteriori: RatingSystem):
         raise NotImplementedError
 
     # --- Observer Main Function --- #

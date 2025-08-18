@@ -225,7 +225,7 @@ class Competition(metaclass=abc.ABCMeta):
 
         # ??? Can we extend .run for competiton that have been 'manually partially runed'
         if self.__started:
-            msg = f"Can not run an event that has already started. Did you mean to use play() or perhaps did you wrongly call start()?"
+            msg = "Can not run an event that has already started. Did you mean to use play() or perhaps did you wrongly call start()?"
             raise RuntimeError(msg)
         else:
             self.start()
@@ -253,7 +253,7 @@ class Competition(metaclass=abc.ABCMeta):
             An error is raised if the competition is not in a suited state, if it has not started yet.
         """
         if not self.__started:
-            msg = f"Can not play an event that has not yet started. Did you mean to use .run() or perhaps did you forgot to call .start() first?"
+            msg = "Can not play an event that has not yet started. Did you mean to use .run() or perhaps did you forgot to call .start() first?"
             raise RuntimeError(msg)
         while not self.__finished:
             current_round = self.generate_games()

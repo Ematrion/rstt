@@ -2,7 +2,7 @@
 """
 
 from .obs import ObsTemplate
-from .utils import *
+import rstt.utils.observer as uo
 
 
 class GameByGame(ObsTemplate):
@@ -36,11 +36,11 @@ class GameByGame(ObsTemplate):
         ratings_groups : list[list[any]]
         """
         super().__init__()
-        self.convertor = to_list_of_games
-        self.extractor = lambda duels: [duel_data(duel) for duel in duels]
-        self.query = get_ratings_groups_of_teams_from_datamodel
-        self.output_formater = new_ratings_groups_to_ratings_dict
-        self.push = push_new_ratings
+        self.convertor = uo.to_list_of_games
+        self.extractor = lambda duels: [uo.duel_data(duel) for duel in duels]
+        self.query = uo.get_ratings_groups_of_teams_from_datamodel
+        self.output_formater = uo.new_ratings_groups_to_ratings_dict
+        self.push = uo.push_new_ratings
 
     def _set_posteriori(self, *args, **kwargs) -> None:
         # trick: time <=>
@@ -80,8 +80,8 @@ class BatchGame(ObsTemplate):
         ratings_groups : list[list[any]]
         """
         super().__init__()
-        self.convertor = to_list_of_games
-        self.extractor = players_records
-        self.query = get_ratings_groups_of_teams_from_datamodel
-        self.output_formater = new_ratings_groups_to_ratings_dict
-        self.push = push_new_ratings
+        self.convertor = uo.to_list_of_games
+        self.extractor = uo.players_records
+        self.query = uo.get_ratings_groups_of_teams_from_datamodel
+        self.output_formater = uo.new_ratings_groups_to_ratings_dict
+        self.push = uo.push_new_ratings

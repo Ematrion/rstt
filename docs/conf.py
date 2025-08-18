@@ -22,7 +22,15 @@ release = '0.6.6.2'
 extensions = ["sphinx.ext.todo",
               "sphinx.ext.viewcode",
               "sphinx.ext.autodoc",
+              "myst_parser",
+              "sphinx_copybutton",
               ]
+
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build',
@@ -36,4 +44,4 @@ autoclass_content = 'both'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
+html_static_path = ['_static', 'tutorials/3_Elo_Convergence']

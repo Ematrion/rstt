@@ -337,7 +337,7 @@ class Observer(Protocol):
 # ---------------------------- #
 @runtime_checkable
 class Shuffler(Protocol):
-    def rearange(status: list[int]) -> list[int]:
+    def rearange(self, status: list[int]) -> list[int]:
         """Reorder elements in a 'meaningfull' fashion
 
         Parameters
@@ -354,7 +354,7 @@ class Shuffler(Protocol):
 
 @runtime_checkable
 class Seeder(Protocol):
-    def seed(players: list[SPlayer], initial_seeds: Iterable, results: Any, **kwargs) -> list[SPlayer]:
+    def seed(self, players: list[SPlayer], initial_seeds: Iterable, results: Any, **kwargs) -> list[SPlayer]:
         """Reorder players in a 'meaningfull' fashion
 
         Parameters
@@ -375,7 +375,7 @@ class Seeder(Protocol):
 
 @runtime_checkable
 class Generator(Protocol):
-    def generate(status: Union[list[int], list[SPlayer]]) -> Union[list[list[int]], list[list[SPlayer]]]:
+    def generate(self, status: Union[list[int], list[SPlayer]]) -> Union[list[list[int]], list[list[SPlayer]]]:
         """Generate different ordering version of a given List
 
 
@@ -399,7 +399,7 @@ class Generator(Protocol):
 
 @runtime_checkable
 class Evaluator(Protocol):
-    def eval(options: list[list[SPlayer]], initial_seeds: Iterable, results: Any, **kwargs) -> list[list[SPlayer]]:
+    def eval(self, options: list[list[SPlayer]], initial_seeds: Iterable, results: Any, **kwargs) -> list[list[SPlayer]]:
         """reorder options based on criteria
 
         The options can be evaluated based on an history of Game(s), or Player(s) appreciation.

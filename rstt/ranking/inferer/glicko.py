@@ -1,8 +1,9 @@
 import copy
 import math
 
-
 from typeguard import typechecked
+from typing import Any
+
 import warnings
 
 
@@ -92,7 +93,7 @@ class Glicko:
         ri, rj = rating1.mu, rating2.mu
         return 1 / (1 + math.pow(10, -self.G(math.sqrt(RDi*RDi + RDj*RDj)) * (ri-rj)/400))
 
-    def d2(self, rating1, games: list[tuple[any, float]]) -> float:
+    def d2(self, rating1, games: list[tuple[Any, float]]) -> float:
         """
         Implements: page 4, d^2 formula.
 
@@ -126,7 +127,7 @@ class Glicko:
             all_GJ.append(Gj)
 
         # big sum
-        bigSum = 0
+        bigSum = 0.
         for Gj, Ej, in zip(all_GJ, all_EJ):
             bigSum += Gj*Gj*Ej*(1-Ej)
 
@@ -165,7 +166,7 @@ class Glicko:
             return correction
 
     # TODO: how to typecked
-    def prePeriod_RD(self, rating: any) -> float:
+    def prePeriod_RD(self, rating: Any) -> float:
         """pre update RD value
 
         Implements: page 3, step1, formula (b).
@@ -184,7 +185,7 @@ class Glicko:
         # check boundaries on sigma - ??? move max() elsewhere
         return max(min(new_RD, self.__maxRD), self.__minRD)
 
-    def newRating(self, rating1, games: list[tuple[any, float]]):
+    def newRating(self, rating1, games: list[tuple[Any, float]]):
         """Rating Update method
 
         Implements: page 3, step2.
@@ -221,7 +222,7 @@ class Glicko:
 
         return rating
 
-    def rate(self, rating, ratings_opponents: list[any], scores: list[float], *args, **kwars):
+    def rate(self, rating, ratings_opponents: list[Any], scores: list[float], *args, **kwars):
         """Glicko rate method
 
         End to end method to compute a new glicko rating based on a collection of results

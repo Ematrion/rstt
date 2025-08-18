@@ -24,13 +24,13 @@ def power_of_two(n):
     return (n != 0) and (n & (n-1) == 0)
 
 
-def nmax(l: list, n: int):
+def nmax(a_list: list, n: int):
     # https://stackoverflow.com/questions/50477976/location-of-n-max-values-in-a-python-list
-    b = l[:]
+    b = a_list[:]
     locations = []
     minimum = min(b)-1
-    for i in range(n):
+    for _ in range(n):
         maxIndex = b.index(max(b))
         locations.append(maxIndex)
         b[maxIndex] = minimum
-    return [l[loc] for loc in locations]
+    return [a_list[loc] for loc in locations]

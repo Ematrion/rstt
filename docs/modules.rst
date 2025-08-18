@@ -1,5 +1,5 @@
-rstt
-====
+RSTT API DOCUMENTATION
+======================
 
 .. toctree::
    :maxdepth: 4

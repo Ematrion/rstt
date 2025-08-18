@@ -97,7 +97,7 @@ class PlayerTVS(Player, metaclass=abc.ABCMeta):
         List[Match]
             All the matches the player played in chronolgical order, from oldest to the most recent.
         """
-        return [game for game in self.games() if game != None]
+        return [game for game in self.games() if game is not None]
 
     def add_game(self, *args, **kwars) -> None:
         """Adds match to the player history

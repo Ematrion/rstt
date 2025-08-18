@@ -1,11 +1,9 @@
 from rstt.stypes import SPlayer, SMatch, Event, RatingSystem
 from rstt import Duel
-# from rstt.ranking.ranking import Ranking
-# from rstt.ranking.standing import Standing
 
 
 from typeguard import typechecked
-from typing import Optional
+from typing import Optional, Any, Callable
 
 import inspect
 
@@ -50,6 +48,8 @@ def to_list_of_players(player: Optional[SPlayer] = None,
                        players: Optional[list[SPlayer]] = None,
                        team: Optional[SPlayer] = None,
                        teams: Optional[list[SPlayer]] = None,
+                       game: Optional[SMatch] = None,
+                       games: Optional[list[SMatch]] = None,
                        event: Optional[Event] = None,
                        events: Optional[list[Event]] = None
                        # standing: Optional[Standing] = None,
@@ -64,6 +64,11 @@ def to_list_of_players(player: Optional[SPlayer] = None,
         observations.append(team)
     if teams:
         observations += teams
+    if game:
+        observations += game.players()
+    if games:
+        for game in games:
+            observations += game.players()
     if event:
         observations += event.participants()
     if events:
@@ -78,10 +83,10 @@ def to_list_of_players(player: Optional[SPlayer] = None,
 
 
 # --- EXTRACTOR --- #
-def duel_data(duel: Duel) -> dict[str, any]:
-    # ??? match: Smatch - does it change anything
+def duel_data(duel: SMatch) -> dict[str, Any]:
     # returned value
-    data = {}
+    data: dict[str, Any] = {}
+
     # data_points are game summary
     data[TEAMS] = duel.teams()
     data[SCORES] = duel.scores()
@@ -89,7 +94,7 @@ def duel_data(duel: Duel) -> dict[str, any]:
     return data
 
 
-def players_records(duels: list[Duel]) -> list[dict[str, any]]:
+def players_records(duels: list[Duel]) -> list[dict[str, Any]]:
     # returned value
     datas = []
     for player in active_players(duels):
@@ -107,18 +112,18 @@ def players_records(duels: list[Duel]) -> list[dict[str, any]]:
 
 
 # --- QUERY --- #
-def get_ratings_groups_of_teams_from_datamodel(prior: RatingSystem, data: dict[str, any]) -> None:
+def get_ratings_groups_of_teams_from_datamodel(prior: RatingSystem, data: dict[str, Any]) -> None:
     # inplace data editing
     data[RATINGS_GROUPS] = [[prior.get(player) for player in team]
                             for team in data[TEAMS]]
 
 
-def get_rating_of_player(prior: RatingSystem, data: dict[str, any]):
+def get_rating_of_player(prior: RatingSystem, data: dict[str, Any]):
     data[RATING] = prior.get(data[PLAYER])
 
 
 # --- FORMATER --- #
-def new_ratings_groups_to_ratings_dict(data: dict[str, any], output: list[list[any]]):
+def new_ratings_groups_to_ratings_dict(data: dict[str, Any], output: list[list[Any]]):
     # inplace data editing
     data[NEW_RATINGS] = {}
     for team, team_ratings in zip(data[TEAMS], output):
@@ -126,18 +131,18 @@ def new_ratings_groups_to_ratings_dict(data: dict[str, any], output: list[list[a
             data[NEW_RATINGS][player] = rating
 
 
-def new_player_rating(data: dict[str, any], output: any):
+def new_player_rating(data: dict[str, Any], output: Any):
     data[NEW_RATINGS] = {data[PLAYER]: output}
 
 
 # --- PUSH --- #
-def push_new_ratings(data: dict[str, any], posteriori: RatingSystem):
+def push_new_ratings(data: dict[str, Any], posteriori: RatingSystem):
     for player, rating in data[NEW_RATINGS].items():
         posteriori.set(player, rating)
 
 
 # --- Clean Method Calls --- #
-def get_function_args(func: callable):
+def get_function_args(func: Callable):
     return inspect.getfullargspec(func).args
 
 
@@ -145,7 +150,7 @@ def filter_valid_args(args_name: list[str], **kwargs):
     return {key: value for key, value in kwargs.items() if key in args_name}
 
 
-def call_function_with_args(func: callable, **kwargs):
+def call_function_with_args(func: Callable, **kwargs):
     func_args = get_function_args(func)
     call_args = filter_valid_args(args_name=func_args, **kwargs)
     return func(**call_args)
@@ -157,22 +162,23 @@ def active_players(games: list[SMatch]) -> list[SPlayer]:
 
 
 # --- no processing --- #
-def no_convertion(*args, **kwargs) -> any:
+def no_convertion(*args, **kwargs) -> Any:
     # !!! probably not what a user expect. BUT what does he expect ?
+    # NOTE: also, this module is definitly not for users
     return (*args, *kwargs)
 
 
-def no_extraction(observations: any) -> any:
+def no_extraction(observations: Any) -> Any:
     return observations
 
 
-def no_query(prior: RatingSystem, data: any):
+def no_query(prior: RatingSystem, data: Any):
     pass
 
 
-def no_formating(data: any, output: any):
+def no_formating(data: Any, output: Any):
     pass
 
 
-def no_push(data: any, posteriori: RatingSystem):
+def no_push(data: Any, posteriori: RatingSystem):
     pass

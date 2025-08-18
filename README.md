@@ -7,14 +7,14 @@
 **Simulation Framework for Tournament and Ranking in Competition**
 
 
-- :warning: ALPHA version. Package still under construction. Feature suggestions are welcomed.
-- :bulb: Design for simulation based research
-- :minidisc: Production of large synthetic dataset
-- :computer: Automated simulation workflow
-- :page_with_curl: Document model by referercing class sources
-- :chart_with_upwards_trend: Enhance Analysis by comparing trained models to simulation models. 
-- :wrench: Design and integrate custom components
-- :question: Support and advise on [Discord](https://discord.gg/CzjPzdzY) 
+- ⚠️ ALPHA version. Package still under construction. Feature suggestions are welcomed.
+- 💡 Design for simulation based research
+- 💽 Production of large synthetic dataset
+- 💻 Automated simulation workflow
+- 📃 Document model by referercing class sources
+- 📈 Enhance Analysis by comparing trained models to simulation models.
+- 🔧 Design and integrate custom components
+- ❓ Support and advise on [Discord](https://discord.gg/CzjPzdzY)
 
 
 ## Installation
@@ -30,10 +30,12 @@ User [Documentation](https://rstt.readthedocs.io/en/latest/) is available on rea
 
 ## Description
 
+RSTT stands for Ranking Simulation Testing Tool.
+
 The package provides everything needed to simulate competition and generate synthetic match dataset.
 It contains ranking implementation (such as Elo and Glicko ...), popular tournament format (Single elimination bracket, round robin, ...), many versus many game mode with automated outcome (score/result) generation methods. Additionaly different player model are available, including time varing strenght.
 
-RSTT is a framework, letting user developp and intergrate with ease their own models to test.
+It is a framework, letting user developp and intergrate with ease their own models to test.
 
 ## Getting Started
 

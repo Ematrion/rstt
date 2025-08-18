@@ -4,16 +4,17 @@ from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import GaussianModel
 from rstt.ranking.inferer import Glicko, Glicko2
 from rstt.ranking.observer import BatchGame
-from rstt.ranking.observer.gameObserver import new_ratings_groups_to_ratings_dict
-from rstt.ranking.observer.utils import *
+import rstt.utils.observer as uo
+
+from typing import Any
 
 import math
 
 
-def get_ratings_for_glicko(prior: RatingSystem, data: dict[str, any]) -> None:
-    data[RATING] = prior.get(data[TEAMS][0][0])
-    data[RATINGS_OPPONENTS] = [prior.get(opponent)
-                               for opponent in data[TEAMS][1]]
+def get_ratings_for_glicko(prior: RatingSystem, data: dict[str, Any]) -> None:
+    data[uo.RATING] = prior.get(data[uo.TEAMS][0][0])
+    data[uo.RATINGS_OPPONENTS] = [prior.get(opponent)
+                                  for opponent in data[uo.TEAMS][1]]
 
 
 class BasicGlicko(Ranking):
@@ -61,8 +62,8 @@ class BasicGlicko(Ranking):
                          handler=BatchGame(),
                          players=players)
         self.handler.query = get_ratings_for_glicko
-        self.handler.output_formater = lambda d, x: new_ratings_groups_to_ratings_dict(d, [
-                                                                                       [x]])
+        self.handler.output_formater = lambda d, x: uo.active_playersnew_ratings_groups_to_ratings_dict(d, [
+            [x]])
 
     @get_disamb
     def __step1(self):

@@ -1,9 +1,11 @@
-from rstt.stypes import SPlayer, SMatch
+from rstt.stypes import SPlayer, SMatch, RatingSystem
 from rstt.ranking import Ranking
 from rstt.ranking.observer import ObsTemplate
-from rstt.ranking.observer.utils import *
-from rstt.ranking.observer.gameObserver import *
+import rstt.utils.observer as rou
+# from rstt.ranking.observer.gameObserver import TEAMS, to_list_of_games, push_new_ratings
 from rstt.ranking.datamodel import GaussianModel
+
+from typing import Any
 
 
 class OSGBG(ObsTemplate):
@@ -18,26 +20,26 @@ class OSGBG(ObsTemplate):
         # HACK: switch args roles at the right moment
         # TODO: make the rate input a tunable user choice (ranks / scores)
 
-        self.convertor = to_list_of_games
-        self.push = push_new_ratings
+        self.convertor = rou.to_list_of_games
+        self.push = rou.push_new_ratings
 
     def extractor(self, matches: list[SMatch]):
         data = []
         for match in matches:
             # !!! future bug: duel_data expect a Duel but is not (yet) typechecked
-            data_point = duel_data(match)
-            data_point[PLAYERS] = data_point[TEAMS]
-            data_point[RANKS] = None
+            data_point = rou.duel_data(match)
+            data_point[rou.PLAYERS] = data_point[rou.TEAMS]
+            data_point[rou.RANKS] = None
             data.append(data_point)
         return data
 
-    def query(self, prior: dict[SPlayer, any], data: dict[str, any]):
-        get_ratings_groups_of_teams_from_datamodel(prior, data)
-        data[TEAMS] = data[RATINGS_GROUPS]
+    def query(self, prior: RatingSystem, data: dict[str, Any]):
+        rou.get_ratings_groups_of_teams_from_datamodel(prior, data)
+        data[rou.TEAMS] = data[rou.RATINGS_GROUPS]
 
-    def output_formater(self, data: dict[str, any], output: list[list[any]]):
-        data[TEAMS] = data[PLAYERS]
-        new_ratings_groups_to_ratings_dict(data, output)
+    def output_formater(self, data: dict[str, Any], output: list[list[Any]]):
+        data[rou.TEAMS] = data[rou.PLAYERS]
+        rou.new_ratings_groups_to_ratings_dict(data, output)
 
 
 class BasicOS(Ranking):
@@ -84,7 +86,7 @@ class BasicOS(Ranking):
                          players=players)
 
     def quality(self, game: SMatch) -> float:
-        # TODO: provide a default implementation in the Ranking or Observer class
+        # TODO: provide a default implementation at the Ranking class level
         data = self.handler.extractor(game)
-        data = self.handler.query(prior=self.self.datamodel, data=data)
-        return self.backend.predict_draw(teams=data[TEAMS])
+        data = self.handler.query(prior=self.datamodel, data=data)
+        return self.backend.predict_draw(teams=data[rou.TEAMS])

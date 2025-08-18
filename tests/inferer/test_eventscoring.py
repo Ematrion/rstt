@@ -85,9 +85,9 @@ def major_event(important_event):
     return {place: 2 * point for place, point in important_event.items()}
 
 
-def test_rate_not_tracked_event(seb, deb, rr, sr, snake):
+def test_rate_not_tracked_event(seb, deb, rr, sr, sb, snake):
     inferer = EventScoring()
-    for event in [seb, deb, rr, sr, snake]:
+    for event in [seb, deb, rr, sr, sb, snake]:
         for p in event.participants():
             r = inferer.rate(p)
             assert r == pytest.approx(0.0, 0.0001)
