@@ -1,4 +1,5 @@
-from rstt.stypes import Inference, Observer, SPlayer, RatingSystem
+from rstt import Duel
+from rstt.stypes import SPlayer, RatingSystem
 from rstt.ranking.rating import GlickoRating, Glicko2Rating
 from rstt.ranking.ranking import Ranking, get_disamb
 from rstt.ranking.datamodel import GaussianModel
@@ -62,7 +63,7 @@ class BasicGlicko(Ranking):
                          handler=BatchGame(),
                          players=players)
         self.handler.query = get_ratings_for_glicko
-        self.handler.output_formater = lambda d, x: uo.active_playersnew_ratings_groups_to_ratings_dict(d, [
+        self.handler.output_formater = lambda d, x: uo.new_ratings_groups_to_ratings_dict(d, [
             [x]])
 
     @get_disamb
@@ -85,8 +86,8 @@ class BasicGlicko2(Ranking):
                          handler=BatchGame(),
                          players=players)
         self.handler.query = get_ratings_for_glicko
-        self.handler.output_formater = lambda d, x: new_ratings_groups_to_ratings_dict(d, [
-                                                                                       [x]])
+        self.handler.output_formater = lambda d, x: uo.new_ratings_groups_to_ratings_dict(d, [
+            [x]])
 
     def _estimate_tau(self, *args, **kwargs):
         # !!! Specification missing -> No system modification
@@ -100,7 +101,7 @@ class BasicGlicko2(Ranking):
 
         # find unactive players
         players = set(self.datamodel.keys())
-        actives = active_players(games)
+        actives = uo.active_players(games)
         unactives = players - set(actives)
 
         # update rating deviation (RD / sigma)
