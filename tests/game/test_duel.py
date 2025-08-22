@@ -69,7 +69,8 @@ def test_opponent_player2(p1_versus_p2):
         p1_versus_p2.player1()) == p1_versus_p2.player2()
 
 
-def test_opponent_error(p1_versus_p2):
+def test_opponent_error(p1_versus_p2, p3):
+    "Obviously, there is no p3 in the duel. It test the specific error nature i.e. KeyError"
     with pytest.raises(KeyError):
         p1_versus_p2.opponent(p3)
 

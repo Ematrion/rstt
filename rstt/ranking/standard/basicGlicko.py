@@ -81,6 +81,41 @@ class BasicGlicko(Ranking):
 
 class BasicGlicko2(Ranking):
     def __init__(self, name: str, mu: float = 1500, sigma: float = 350, volatility: float = 0.06, tau: float = 0.3, epsilon: float = 0.000000005, players: list[SPlayer] | None = None):
+        """Glicko-2 system
+
+        Implement the `glicko-2 <https://www.glicko.net/glicko/glicko2.pdf>`_ rating system as descried by Prof. Mark E. Glickman.
+
+
+        Attributes
+        ----------
+        rating: :class:`rstt.ranking.rating.Glicko2Rating`
+        datamodel: :class:`rstt.ranking.datamodel.GaussianModel`
+        backend: :class:`rstt.ranking.inferer.Glicko2` as Inference
+        handler :class:`rstt.ranking.observer.BatchGame` as Observer
+
+
+        Parameters
+        ----------
+        name : str, optional
+            A name to identify the ranking, by default ''
+        handler : _type_, optional
+            Backend as parameter, by default BatchGame()
+            The original recommendation is to update the ranking by grouping matches within rating period.
+            Which is what the BatchGame Observer do, (each update call represent one period). To match other glicko, use A GameByGame observer
+        mu : float, optional
+            Glicko2Rating parameter, the default mu of the rating, by default 1500.0
+        sigma : float, optional
+            Glicko2Rating parameter, the default sigma of the rating, by default 350.0
+        volatility: float, optional
+            Glicko2Rating parameter, the default volatility of rating, by default 0.06
+        tau: float, optional
+            Glicko2 Inference parameter. Tau constrains the change in volatility over time. Reasonable choices are between 0.3 and 1.2, by default 0.3
+        epsilon: float, optional
+            Glicko2 Inference parameter. Convergence tolerance of the Illinois algorithm used in step 5 of rating update, by default 0.000000005
+        players : Optional[List[SPlayer]], optional
+            Players to register in the ranking, by default None
+
+        """
         super().__init__(name, datamodel=GaussianModel(default=Glicko2Rating(mu=mu, sigma=sigma, volatility=volatility)),
                          backend=Glicko2(tau=tau, mu=mu, epsilon=epsilon),
                          handler=BatchGame(),
@@ -89,11 +124,44 @@ class BasicGlicko2(Ranking):
         self.handler.output_formater = lambda d, x: uo.new_ratings_groups_to_ratings_dict(d, [
             [x]])
 
-    def _estimate_tau(self, *args, **kwargs):
-        # !!! Specification missing -> No system modification
-        return self.backend.tau
+    def _estimate_tau(self, tau: float = None, *args, **kwargs) -> float:
+        """Estimate System Tau value
 
-    def _adjust_unactive_player_RD(self, games: list[Duel]):
+
+        Placeholder for tau estimator function. The returned value of this method is assigned to the backend Glicko2 tau value during the forward() execution.
+        The provided implementation let a user pass the tau value via the update() call.
+
+        .. note::
+            Glickman does not provide a detail tau estimator.
+
+        Parameters
+        ----------
+        tau : float, optional
+            the system constrain on rating volatility for rating updates, by default None
+            If none, this method return the current tau value.
+
+        Return
+        ------
+        float
+            the system new tau.
+        """
+        # !!! Specification missing -> No system modification
+        return tau if tau else self.backend.tau
+
+    def _adjust_unactive_player_RD(self, games: list[Duel]) -> None:
+        """Adjust rating deviation of players
+
+
+        Player with no game in the rating period have a rating adjustement as recommanded.
+        This method is a wrapper arround Glicko2._step6 and is called by the forward method.
+
+
+        Parameters
+        ----------
+        games : list[Duel]
+            rating period
+        """
+
         '''
         NOTE: author note p.8, after step8, before example calculation
             increase RD for player who does not compete during the rating period
@@ -123,6 +191,13 @@ class BasicGlicko2(Ranking):
             self.datamodel.set(player, rating)
 
     def forward(self, *args, **kwargs):
+        """Glicko2 algorithm
+
+        1. adjust rating of unactive player
+        2. adapt system parameter tau
+        3. update rating
+        """
+
         # unactive players
         self._adjust_unactive_player_RD(*args, **kwargs)
 

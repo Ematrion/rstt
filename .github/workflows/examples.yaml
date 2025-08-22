@@ -10,7 +10,7 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
         os: [ubuntu-22.04, macos-latest]
-        scripts: ["basic.py"]
+        scripts: ["basic.py", "btranking.py", "cup_editions.py", "first_simulation.py", "rerank.py", "seedings.py"]
 
     runs-on: ${{matrix.os}}
 

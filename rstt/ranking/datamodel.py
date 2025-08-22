@@ -40,7 +40,7 @@ class keydefaultdict(defaultdict[SPlayer, Any]):
 
 class KeyModel:
     @typechecked
-    def __init__(self, default: Optional[Any] = None, template: Optional[Callable] = None, factory: Optional[Callable] = None, *args, **kwargs):
+    def __init__(self, default: Optional[Any] = None, template: Optional[Callable] = None, factory: Optional[Callable] = None, **kwargs):
         r"""Basic Rating system
 
         The KeyModel is a intuitive implementation of :class:`rstt.stypes.RatingSystem` that strores ratings of player in a defauldict.
@@ -57,8 +57,8 @@ class KeyModel:
             the KeyModel stores ratings in  a :class:`rstt.ranking.datamodel.keydefauldict`.
 
         .. note::
-            If you are using the \'template\' you can additionaly specify \*args and \**kwargs to be passed to the template every time it is called to generate a new rating.
-            In the case of the \'factory\', only \**kwargs can be specified. And for the \'default\', no additonal parameters are allowed.
+            If you are using the \'template\' or \'factory\', you can additionaly specify \**kwargs to be passed to the template every time it is called to generate a new rating.
+            And for the \'default\', no additonal parameters are allowed.
 
         Raises
         ------
@@ -69,7 +69,7 @@ class KeyModel:
             KeyModel(factory=GaussianRating, mu=1500, sigma=250)
         """
         self.__ratings = self.__init_ratings(
-            default, template, factory, *args, **kwargs)
+            default, template, factory, **kwargs)
         self.__rtype = self.__get_rating_type()
         self.__default = self.__get_default_rating()
 
@@ -205,7 +205,7 @@ class KeyModel:
             return 0
 
     # --- internal mechanism --- #
-    def __init_ratings(self, default, template, factory, *args, **kwargs):
+    def __init_ratings(self, default, template, factory, **kwargs):
         ''' rating initialization
 
         return: defaultdict {key: rating}
@@ -224,16 +224,13 @@ class KeyModel:
             - check functool.partial to improve code quaity and readabiltiy.
         '''
         if default is not None and not template and not factory:
-            if args or kwargs:
+            if kwargs:
                 msg = "Can not pass additional argument when using the 'default' parameter."
                 raise ValueError(msg)
             ratings = self.__default_ratings(value=default)
         elif template and not default and not factory:
-            ratings = self.__template_ratings(template, *args, **kwargs)
+            ratings = self.__template_ratings(template, **kwargs)
         elif factory and not default and not template:
-            if args:
-                msg = "Can not pass additional positional arguments with the 'factory' parameter specified. Did you mean to use template? Or did you want to pass keyword arguments instead?'"
-                raise ValueError(msg)
             ratings = self.__factory_ratings(factory, **kwargs)
         else:
             msg = "Exactly one parameter among 'default', 'template' and 'factory' should be passed."
@@ -243,11 +240,11 @@ class KeyModel:
     def __default_ratings(self, value):
         return defaultdict(lambda: copy.deepcopy(value))
 
-    def __template_ratings(self, template, *args, **kwargs):
-        return defaultdict(lambda: template(*args, **kwargs))
+    def __template_ratings(self, template, **kwargs):
+        return defaultdict(lambda: template(**kwargs))
 
     def __factory_ratings(self, func: Callable, **kwargs):
-        return keydefaultdict(default_factory=func)
+        return keydefaultdict(default_factory=lambda x: func(x, **kwargs))
 
     def __get_rating_type(self):
         dummy = BasicPlayer('dummy', 0.0)

@@ -2,7 +2,7 @@ from . import stypes, config
 
 from .player import BasicPlayer, Player, GaussianPlayer
 from .game import Match, Duel
-from .solver import BetterWin, BradleyTerry, CoinFlip, LogSolver
+from .solver import BetterWin, BradleyTerry, CoinFlip, LogSolver, WIN, DRAW, LOSE
 from .ranking import (
     Standing,
     Ranking,
@@ -29,6 +29,9 @@ __all__ = ["stypes",
            "BradleyTerry",
            "CoinFlip",
            "LogSolver",
+           "WIN",
+           "DRAW",
+           "LOSE",
            "Standing",
            "Ranking",
            "BTRanking",

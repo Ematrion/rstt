@@ -6,6 +6,26 @@ import math
 
 class Glicko2(Glicko):
     def __init__(self, mu: float = 1500, tau: float = 0.3, epsilon: float = 0.000000005, *args, **kwargs):
+        """Glicko2 Inference
+
+        Implement the `glicko-2 <https://www.glicko.net/glicko/glicko2.pdf>`_ rating system as descried by Prof. Mark E. Glickman.
+
+
+
+        Parameters
+        ----------
+        mu : float, optional
+            The default mu of the rating, used to scaled down the GlickoRating, by default 1500.0
+        tau: float, optional
+            Glicko2 Inference parameter. Tau constrains the change in volatility over time. Reasonable choices are between 0.3 and 1.2, by default 0.3
+        epsilon: float, optional
+            Glicko2 Inference parameter. Convergence tolerance of the Illinois algorithm used in step 5 of rating update, by default 0.000000005
+
+        .. note::
+            Glicko2 is implemented using Glicko Inference with q := 1.0
+
+        """
+
         super().__init__(q=1, *args, **kwargs)
         # --- system variable --- #
         self.tau = tau  # reasonable choices are between 0.3 and 1.2
