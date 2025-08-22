@@ -1,7 +1,7 @@
 <div align="center">
 <h1>RSTT</h1>
 
-[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![PyPI - Types](https://img.shields.io/pypi/types/RSTT)](https://pypi.org/project/rstt/) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![codecov](https://codecov.io/github/Ematrion/rstt/graph/badge.svg?token=GY15EY4OTZ)](https://codecov.io/github/Ematrion/rstt) [![RSTT Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/m8gN4UgHZ3) 
+[![MIT License](https://img.shields.io/badge/license-MIT-lightgrey)](https://github.com/Ematrion/rstt/blob/main/LICENSE) [![PyPI - Types](https://img.shields.io/pypi/types/RSTT)](https://pypi.org/project/rstt/) [![Documentation Status](https://readthedocs.org/projects/rstt/badge/?version=latest)](https://rstt.readthedocs.io/en/latest/?badge=latest) [![codecov](https://codecov.io/github/Ematrion/rstt/graph/badge.svg?token=GY15EY4OTZ)](https://codecov.io/github/Ematrion/rstt) [![RSTT Discord](https://img.shields.io/discord/1354379146221981777?color=blue&label=Discord&logo=discord)](https://discord.gg/m8gN4UgHZ3) [![DOI](https://zenodo.org/badge/929746523.svg)](https://zenodo.org/badge/latestdoi/929746523)
 </div>
 
 **Simulation Framework for Tournament and Ranking in Competition**
@@ -119,7 +119,7 @@ Regarding ranking's component.
 Join our [Discord](https://discord.gg/m8gN4UgHZ3) and exchange with us.
 
 ## How to cite
-If you use RSTT, consider linking back to this repo!
+You can cite rstt with DOI 10.5281/zenodo.16926605. Also consider linking the repo.
 
 ## Source
 <a id="1">[1]</a> 
