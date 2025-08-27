@@ -62,15 +62,16 @@ class SuccessRanking(Ranking):
                          handler=PlayerChecker(),
                          players=players)
 
-    def forward(self, event: Event | None = None, events: list[Event] | None = None):
-        new_events = []
+    def forward(self, event: Event | None = None,
+                events: list[Event] | None = None,
+                relevance: dict[int, float] | None = None,
+                relevances: dict[str, dict[int, float]] | None = None):
+        # TODO: good docstring explaining valid inputs
         if event:
-            new_events.append(event)
-        if events:
-            new_events += events
-
-        for new_event in new_events:
-            self.backend.add_event(new_event)
+            self.backend.add_event(event=event, relevance=relevance)
+        if events and relevances:
+            for event in events:
+                self.backend.add_event(event, relevances[event.name()])
 
         self.handler.handle_observations(infer=self.backend,
                                          datamodel=self.datamodel,

@@ -177,3 +177,11 @@ def test_rate_more_event_than_tops(gt, minor_event, nb, tops):
         for p in gt:
             target_points = minor_event[p.achievements()[0].place] * tops
             assert target_points == inferer.rate(p)
+
+
+def test_rate_players_not_in_event(gt, seb, minor_event):
+    untracked_players = Player.create(nb=10)
+    inferer = EventScoring(window_range=1, tops=1)
+    inferer.add_event(seb, minor_event)
+    for player in untracked_players:
+        assert inferer.rate(player) == 0

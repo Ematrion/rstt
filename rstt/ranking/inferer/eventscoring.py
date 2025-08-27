@@ -17,7 +17,7 @@ class EventDataSet():
         else:
             self.events.append(event)
 
-    def window(self, window: Optional[int] = None):
+    def window(self, window: Optional[int] = None) -> list[Event]:
         nb = window if window else self.window_range
         return self.events[-nb:]
 
@@ -35,7 +35,7 @@ class EventScoring():
 
     def rate(self, player: SPlayer) -> float:
         points = [self.relevance[event.name()][event.standing()[player]]
-                  for event in self.dataset.window()]
+                  for event in self.dataset.window() if player in event.participants()]
         if points == []:
             return 0
         else:
