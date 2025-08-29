@@ -1,5 +1,5 @@
 name: Bug Report
-description: 
+description: Report a Bug
 title: "[Bug]: "
 labels: ["bug"]
 assignees: []
@@ -12,8 +12,6 @@ body:
         Thanks for reporting a bug! Please fill out the form below.
 
 
-
-  
   - type: input
     id: environment
     attributes:
@@ -44,7 +42,7 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: Expected Behaviour
+      label: Expected Behavior
       description: A clear and concise description of the bug.
       placeholder: An updated ranking
     validations:
