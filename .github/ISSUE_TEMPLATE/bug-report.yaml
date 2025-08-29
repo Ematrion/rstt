@@ -1,0 +1,64 @@
+name: Bug Report
+description: 
+title: "[Bug]: "
+labels: ["bug"]
+assignees: []
+
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill out the form below.
+
+
+
+  
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: What environment are you running? (OS, python version, rstt version, etc)
+      placeholder: "e.g.  macOS 13.5, python 3.12, rstt 0.6.7"
+    validations:
+      required: false
+
+  
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce your issue. Try to provide a deterministic code snippet.
+      placeholder: |
+        ```python
+        pop = Player(...)
+        ranking = Ranking(...)
+        solver = BetterWin()
+        data = ...
+        ranking.update(data)
+        ```
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behaviour
+      description: A clear and concise description of the bug.
+      placeholder: An updated ranking
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: What happened ?
+      placeholder: |
+        ```text
+        KeyError: '...'
+        ```
+    validations:
+      required: true
