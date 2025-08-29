@@ -81,7 +81,7 @@ body:
       description: How can you contribute?
       options:
         - label: I can implement it.
-        - label: I can implement the model, but have no experience with the codebase.
+        - label: I could implement the model, but have no experience with the codebase.
         - label: I have experience with the code base, but struggle with the model specifics.
         - label: I can not implement, but can provide support and advise.
         - label: I will use the feature and report any potential bugs.
