@@ -15,18 +15,18 @@ body:
     id: model-title
     attributes:
       label: Model Title 🧩
-      description: A short and clear title for the feature
-      placeholder: e.g. Dark Mode for the dashboard
+      description: A short and clear title for the model
+      placeholder: ManyManyBradleyTerrySolver
     validations:
-      required: true
+      required: false
 
 
   - type: input
     id: source-link
     attributes:
       label: Source Link
-      description: Link to the model description (DOI, arXiv, ...)
-      placeholder: e.g. https://www.glicko.net/glicko/glicko.pdf
+      description: Link to the model description
+      placeholder: e.g. https://www.glicko.net/glicko/glicko.pdf (or DOI, arXiv, ...)
     validations:
       required: true
 
@@ -80,9 +80,9 @@ body:
       label: Contribute
       description: How can you contribute?
       options:
-        - label: I can implement it alone
-        - label: I can implement the model, but have no experience with the codebase
-        - label: I can not implement, but am available for support/advise
-        - label: I will use the feature and report any potential bugs
+        - label: I can implement it.
+        - label: I can implement the model, but have no experience with the codebase.
+        - label: I can not implement, but can provide support and advise.
+        - label: I will use the feature and report any potential bugs.
     validations:
       required: false 
