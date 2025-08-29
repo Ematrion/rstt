@@ -60,3 +60,36 @@ body:
         ```
     validations:
       required: true
+
+
+  - type: textarea
+    id: information
+    attributes:
+      label: Additional Information
+      description: Can you tell us more about it?
+      placeholder: | 
+        e.g. logs, related issues, links, ideas, debuggin notes
+    validations:
+      required: false
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: Fix Suggestion
+      description: Is there an easy fix you have in mind?
+      placeholder: e.g code, or remarks
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribute
+      description: How can you contribute?
+      options:
+        - label: I can implement the fix.
+        - label: I could implement the fix, but have no experience with the codebase.
+        - label: I have experience with the code base, but no idea how to fix it.
+        - label: I can not implement a fix, but can investigate deeper the issue and report in comments below.
+    validations:
+      required: false 
