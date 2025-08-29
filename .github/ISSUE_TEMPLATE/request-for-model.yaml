@@ -1,0 +1,88 @@
+name: Request for Model Implementation
+description: Suggest a model that RSTT could provide
+title: "[Model]: "
+labels: ["model", "feature"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a model! Please fill out the form below.
+
+
+  - type: input
+    id: model-title
+    attributes:
+      label: Model Title 🧩
+      description: A short and clear title for the feature
+      placeholder: e.g. Dark Mode for the dashboard
+    validations:
+      required: true
+
+
+  - type: input
+    id: source-link
+    attributes:
+      label: Source Link
+      description: Link to the model description (DOI, arXiv, ...)
+      placeholder: e.g. https://www.glicko.net/glicko/glicko.pdf
+    validations:
+      required: true
+
+
+  - type: checkboxes
+    id: component-type
+    attributes:
+      label: Related Component(s)
+      description: Select one or more components that can implement the model
+      options:
+        - label: SPlayer
+        - label: SMatch (game mode)
+        - label: Solver
+        - label: Ranking
+        - label: Inference
+        - label: Observer
+        - label: Rating
+        - label: Scheduler
+        - label: Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Model Description
+      description: Please provide a general description of the model. How does the RSTT community benefit from it? Example of research and application are the best!
+      placeholder: models goals, research benefits
+    validations:
+      required: true
+
+  - type: textarea
+    id: usage-syntax
+    attributes:
+      label: Usage Syntax
+      description: Please, provide a potential code usage of the model
+      placeholder: "consensus = BTRanking('Model', players=PlayerModel(nb=16)) # Model defines a transitive skill relationship among player"
+    validations:
+      required: true
+
+  - type: textarea
+    id: pitfall
+    attributes:
+      label: Pitfall & Implementation
+      description: Are you aware of any difficulties, edge cases with the model? Do you know any implementation? Can you provide any useful additional resources?
+      placeholder: https://github.com/sublee/glicko/ is a python implementation labeled as [DO NOT USE] and the issue https://github.com/sublee/glicko/issues/2 describe an edge case with ZeroDivision error.
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribute
+      description: How can you contribute?
+      options:
+        - label: I can implement it alone
+        - label: I can implement the model, but have no experience with the codebase
+        - label: I can not implement, but am available for support/advise
+        - label: I will use the feature and report any potential bugs
+    validations:
+      required: false 
