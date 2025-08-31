@@ -1,0 +1,284 @@
+{
+    "FirstStand": {
+        "PlayIns": {
+            "tournament": "DoubleEliminationBracket",
+            "invitation": [
+                {
+                    "infos": {
+                        "region": "LTAN",
+                        "split": "Winter",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1,2]
+                },
+                {
+                    "infos": {
+                        "region": "LTAS",
+                        "split": "Winter",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1,2]
+                }
+            ],
+            "qualified": []
+        },
+        "MainStage": {
+            "tournament": "RoundRobin",
+            "invitation": [
+                {
+                    "infos": {
+                        "region": "LCK",
+                        "split": "Winter",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LPL",
+                        "split": "Winter",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LEC",
+                        "split": "Winter",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LCP",
+                        "split": "Winter",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                }
+            ],
+            "qualified": [1]
+        },
+        "PlayOffs": {
+            "tournament": "SingleEliminationBracket",
+            "invitation": [],
+            "qualified": [1,2,3,4]
+        }
+    },
+    "MSI": {
+        "PlayIns": {
+            "tournament": "DoubleEliminationBracket",
+            "invitation": [
+                {
+                    "infos": {
+                        "region": "LPL",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [2]
+                },
+                {
+                    "infos": {
+                        "region": "LEC",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [2]
+                },
+                {
+                    "infos": {
+                        "region": "LTAS",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LCP",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [2]
+                }
+            ],
+            "qualified": []
+        },
+        "MainStage": {
+            "tournament": "SingleEliminationBracket",
+            "invitation": [
+                {
+                    "infos": {
+                        "region": "LCK",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1, 2]
+                },
+                {
+                    "infos": {
+                        "region": "LPL",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LEC",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LCP",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LTAN",
+                        "split": "Spring",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                }
+            ],
+            "qualified": [1,2]
+        },
+        "PlayOffs": {
+            "tournament": "DoubleEliminationBracket",
+            "invitation": [],
+            "qualified": [1,2,3,4]
+        }
+    },
+    "Worlds": {
+        "PlayIns": {
+            "tournament": "DoubleEliminationBracket",
+            "invitation": [
+                {
+                    "infos": {
+                        "region": "LCK",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [4]
+                },
+                {
+                    "infos": {
+                        "region": "LPL",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [4]
+                },
+                {
+                    "infos": {
+                        "region": "LTAN",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [2]
+                },
+                {
+                    "infos": {
+                        "region": "LTAS",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [2]
+                }
+            ],
+            "qualified": []
+        },
+        "MainStage": {
+            "tournament": "SwissBracket",
+            "invitation": [
+                {
+                    "infos": {
+                        "region": "LCK",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1, 2, 3]
+                },
+                {
+                    "infos": {
+                        "region": "LPL",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1, 2,3]
+                },
+                {
+                    "infos": {
+                        "region": "LEC",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1, 2, 3]
+                },
+                {
+                    "infos": {
+                        "region": "LTAN",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LTAS",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1]
+                },
+                {
+                    "infos": {
+                        "region": "LCP",
+                        "split": "Summer",
+                        "year": null,
+                        "stage":"PlayOffs"
+                    },
+                    "top": [1, 2, 3]
+                }
+            ],
+            "qualified": [1,2]
+        },
+        "PlayOffs": {
+            "tournament": "SingleEliminationBracket",
+            "invitation": [],
+            "qualified": [1,2,3,4,5,6,7,8]
+        }
+    }
+}
