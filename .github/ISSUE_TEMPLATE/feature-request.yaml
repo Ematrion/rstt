@@ -1,0 +1,57 @@
+name: Feature Request
+description: Request a new feature
+title: "[Feature]: "
+labels: ["feature"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your suggestions! 
+        Keep in mind that we distinguish 'general feature request' from model proposition.
+        Use this form for 'standard' feature request, like a get method or a syntax support. 
+        If the feature is linked to a source paper, consider using the model form.
+
+
+  - type: checkboxes
+    id: component-type
+    attributes:
+      label: Related Component(s)
+      description: Select one or more components that the feature is related to.
+      options:
+        - label: SPlayer
+        - label: SMatch
+        - label: Solver
+        - label: Ranking
+        - label: Inference
+        - label: Observer
+        - label: Rating
+        - label: Scheduler
+        - label: Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Please provide a general description, example of usage etc.
+      placeholder: Use list as seedings for competition.
+    validations:
+      required: true
+
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribute
+      description: How can you contribute?
+      options:
+        - label: I can implement it.
+        - label: I could implement the feature, but have no experience with the codebase.
+        - label: I have experience with the code base, but struggle with the feature.
+        - label: I can not implement, but can provide support and advise.
+        - label: I will use the feature and report any potential bugs.
+    validations:
+      required: false 

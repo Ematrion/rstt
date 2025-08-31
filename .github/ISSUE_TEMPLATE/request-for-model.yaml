@@ -1,4 +1,4 @@
-name: Request for Model Implementation
+name: Model Request
 description: Suggest a model that RSTT could provide
 title: "[Model]: "
 labels: ["model", "feature"]
