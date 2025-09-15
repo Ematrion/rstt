@@ -1,7 +1,5 @@
-from .scene import AUDIENCE_MAPPING, REGIONAL, INTERNATIONAL
-from .utils import LeagueSystem, EventInfos, GameHistory
-from .scene import REGIONS, SPLITS, STAGES, FINALS
-from .scene import FIRSTSTAND, MSI, WORLDS
+from project.gpr.utils import LeagueSystem, EventInfos, GameHistory, AUDIENCE_MAPPING, REGIONAL, INTERNATIONAL
+from project.scene import Region, Finals, Stages, Split
 from .stagedevent import StagedEventV2
 
 from rstt import Ranking, Competition
@@ -36,7 +34,7 @@ class calendar:
             infos = self.future_events.pop(0)
             event = StagedEventV2(
                 name=str(infos), seeding=self.seeding, solver=self.solver,
-                tournaments=tournaments_types(infos, self.source), stage_names=STAGES)
+                tournaments=tournaments_types(infos, self.source), stage_names=[Stages.PlayIns, Stages.MainStage, Stages.PlayOffs])
             return event
         else:
             raise StopIteration
@@ -45,9 +43,9 @@ class calendar:
 def year_schedule(start: int, end: int):
     events = []
     for year in range(start, end, 1):
-        for split, final in zip(SPLITS, FINALS):
+        for split, final in zip(Split, Finals):
             # A split for every leagues
-            for region in REGIONS:
+            for region in Region:
                 infos = EventInfos(
                     region=region, split=split, year=year, stage='')
                 events.append(infos)
@@ -64,8 +62,8 @@ def tournaments_types(infos: EventInfos, source: str) -> list[Competition]:
     elif AUDIENCE_MAPPING[infos.region] == INTERNATIONAL:
         with open(source, 'r') as file:
             qualif_data = json.load(file)
-        return [getattr(rstt, qualif_data[infos.region][stage]['tournament'])
-                for stage in STAGES]
+        return [getattr(rstt, qualif_data[infos.region][stage.value]['tournament'])
+                for stage in Stages]
     else:
         raise ValueError(f'Event \'{infos.region}\' not part of the calendar')
 
@@ -87,8 +85,8 @@ def event_qualification(infos: EventInfos, ecosystem: LeagueSystem, dataset: Gam
     # international finals
     elif AUDIENCE_MAPPING[infos.region] == INTERNATIONAL:
         qualifications = [qualif_data[infos.region][stage]['qualified']
-                          for stage in STAGES]
-        for stage in STAGES:
+                          for stage in Stages]
+        for stage in Stages:
             stage_invites = []
             for invitational in qualif_data[infos.region][stage]['invitation']:
                 invitational['infos']['year'] = infos.year

@@ -1,15 +1,34 @@
-
-from rstt import Player
 from rstt.stypes import SPlayer, Event, Inference, RatingSystem
+from rstt import Player
 
-from .scene import (EVENT_NAMING,
-                    STAGED_EVENT_NAMING,
-                    IMPORTANCE,
-                    AUDIENCE_MAPPING,
-                    MODES)
+from project.scene import Region, Finals, Stages
 
+from enum import StrEnum
 from dataclasses import dataclass
 import parse
+
+
+EVENT_NAMING = "{region} {split} {year} {stage}"
+STAGED_EVENT_NAMING = "{region} {split} {year} "
+
+REGIONAL, INTERNATIONAL = 'Regional', 'International'
+AUDIENCE = [REGIONAL, INTERNATIONAL]
+
+AUDIENCE_MAPPING = {event: audience for audience,
+                    events in zip(AUDIENCE, [Region, Finals])
+                    for event in events}
+
+IMPORTANCE = {REGIONAL: {stage: importance for stage,
+                         importance in zip(Stages, [8, 16, 20])},
+              INTERNATIONAL: {stage: importance for stage,
+                              importance in zip(Stages, [12, 20, 36])},
+              }
+
+
+# Ranking Specificity
+class Modes(StrEnum):
+    Team = "Team"
+    League = "League"
 
 
 @dataclass
@@ -24,11 +43,11 @@ class EventInfos:
 
 
 class GameHistory:
-    def __init__(self, mode_range: dict[str: int]):
+    def __init__(self, mode_range: dict[Modes, int]):
         self.events: list[Event] = []
-        self.ranges: mode_range = mode_range
+        self.ranges = mode_range
 
-    def window(self, mode: str) -> list[Event]:
+    def window(self, mode: Modes) -> list[Event]:
         return self.events[-self.ranges[mode]:]
 
     def add(self, event: Event):
@@ -41,9 +60,9 @@ class GameHistory:
 
 
 class LeagueSystem:
-    def __init__(self, region_teams: dict[str: list[SPlayer]]):
-        self._leagues: dict[str: SPlayer] = {}
-        self._teams: dict[SPlayer: str] = {}
+    def __init__(self, region_teams: dict[Region, list[SPlayer]]):
+        self._leagues: dict[Region: SPlayer] = {}
+        self._teams: dict[SPlayer: Region] = {}
 
         # initialize both dict
         for region, teams in region_teams.items():
@@ -51,26 +70,26 @@ class LeagueSystem:
             for team in teams:
                 self._teams[team] = region
 
-    def teams(self, region: str = None):
+    def teams(self, region: str = None) -> list[SPlayer]:
         all_teams = list(self._teams.keys())
         if region:
             all_teams = [
                 team for team in all_teams if self.region_of(team) == region]
         return all_teams
 
-    def leagues(self):
+    def leagues(self) -> list[SPlayer]:
         return list(self._leagues.values())
 
-    def regions(self):
+    def regions(self) -> list[Region]:
         if set(self._leagues.keys()) == set(self._teams.values()):
             return list(self._leagues.keys())
         else:
             raise RuntimeError('Regions of leagues and teams do not match')
 
-    def region_of(self, team: SPlayer):
+    def region_of(self, team: SPlayer) -> Region:
         return self._teams[team]
 
-    def league_of(self, region: str):
+    def league_of(self, region: Region) -> SPlayer:
         return self._leagues[region]
 
 
@@ -95,8 +114,7 @@ def set_event_importance(backend: Inference, infos: EventInfos):
 
 def reset_ratings(datamodel: RatingSystem):
     '''assuming a RegionalRating datamodel'''
-    for mode in MODES:
-        keys = list(datamodel.ratings[mode].keys())
-        for key in keys:
-            # remove ratings
-            del datamodel.ratings[mode][key]
+    keys = list(datamodel.keys())
+    for key in keys:
+        # remove ratings
+        del datamodel[key]
