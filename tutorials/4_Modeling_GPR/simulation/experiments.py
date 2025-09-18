@@ -4,14 +4,6 @@ from rstt.stypes import SPlayer, Solver
 from typing import Callable
 
 
-def one_round_robin(name: str, seeding: Ranking, population: list[SPlayer] | None = None, solver: Solver = LogSolver):
-    population = population if population else seeding.players()
-    cup = RoundRobin(name, seeding, solver)
-    cup.registration(population)
-    cup.run()
-    return {'event': cup}
-
-
 def regional_round_robins(name: str, seeding: Ranking, population: list[list[SPlayer]], solver: Solver = LogSolver):
     cups = []
 

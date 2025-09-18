@@ -1,12 +1,12 @@
 from rstt.stypes import SPlayer
-from rstt.player import Player, PlayerTVS
+from rstt.player import BasicPlayer, PlayerTVS
 from project.scene import Role
 
 from statistics import mean
 
 
 class LoLTeam(PlayerTVS):
-    def __init__(self, name: str, players: dict[Role, SPlayer] = {r: Player() for r in Role}) -> None:
+    def __init__(self, name: str, players: dict[Role, SPlayer] = {r: BasicPlayer() for r in Role}) -> None:
         self._players = players.values()
         self._players_by_roles = players
 
