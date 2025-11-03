@@ -24,7 +24,7 @@ def baseModel(region: int, nb: int):
         ecosystem=utils.LeagueSystem(regions),
         meta=None,
         solver=LogSolver(),
-        groundtruth=BTRanking('basicRegional - Consensus',
+        groundtruth=BTRanking('basicRegional',
                               players=[p for reg in regions.values() for p in reg])
     )
 
@@ -36,7 +36,7 @@ def regionalSkills(region: int, nb: int, mus: list[float], sigmas: list[float]):
         ecosystem=utils.LeagueSystem(regions),
         meta=None,
         solver=LogSolver(),
-        groundtruth=BTRanking(' - Consensus',
+        groundtruth=BTRanking('regionalSkills',
                               players=[p for reg in regions.values() for p in reg])
     )
 
@@ -47,6 +47,6 @@ def basicMeta(nb):
         ecosystem=utils.LeagueSystem(regions),
         meta=model.MetaData(),
         solver=LogSolver(),
-        groundtruth=BTRanking('basicMeta - Consensus',
+        groundtruth=BTRanking('basicMeta',
                               players=[p for reg in regions.values() for p in reg])
     )

@@ -6,12 +6,13 @@ from statistics import mean
 
 
 class LoLTeam(PlayerTVS):
-    def __init__(self, name: str, players: dict[Role, SPlayer] = {r: BasicPlayer() for r in Role}) -> None:
+    def __init__(self, name: str, players: dict[Role, SPlayer] | None = None) -> None:
+        if not players:
+            players = self._init_players()
         self._players = players.values()
         self._players_by_roles = players
 
-        super().__init__(name, level=mean(
-            [player.level() for player in self._players]))
+        super().__init__(name, level=mean([p.level() for p in self._players]))
 
     def level(self, weights: dict[Role, float] | None = None) -> float:
         if weights:
@@ -30,3 +31,7 @@ class LoLTeam(PlayerTVS):
         for player in self._players:
             if isinstance(player, PlayerTVS):
                 player._update_level()
+
+    # --- specifics --- #
+    def _init_players(self) -> dict[Role, SPlayer]:
+        return {r: BasicPlayer() for r in Role}

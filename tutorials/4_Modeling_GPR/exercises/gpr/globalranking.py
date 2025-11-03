@@ -1,6 +1,7 @@
 from rstt import Ranking
+from rstt.stypes import SPlayer
+
 from gpr import RegionalRatings, GlobalHandler, GPRElo
-from rstt.stypes import Inference, Observer, RatingSystem, SPlayer
 
 
 class GlobalRanking(Ranking):
