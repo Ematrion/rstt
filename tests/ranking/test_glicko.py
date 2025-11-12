@@ -58,7 +58,7 @@ def glicko():
     return BasicGlicko(name='test-glicko')
 
 
-def test_glicko2__with_paper_example(glicko, player, p1, p2, p3, games):
+def test_glicko_with_paper_example(glicko, player, p1, p2, p3, games):
     # the test: glicko2 user interface
     for p in [player, p1, p2, p3]:
         glicko.set_rating(p.player, p.prior)

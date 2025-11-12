@@ -489,7 +489,7 @@ class Ranking():
         if len(self) != len(permutation):
             # NOTE: without this check, the code will raise an IndexError and could be harder for the user to understand what went wrong.
             msg = f"permutation must be a list of len {len(self)}"
-            raise ValueError
+            raise ValueError(msg)
         if not (set(permutation) == set(list(range(len(self))))):
             msg = f"permutation must contain each value from 0 to {len(self)-1} exactly once"
             raise ValueError(msg)
