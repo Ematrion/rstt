@@ -1,7 +1,6 @@
 import rstt.utils.functions as uf
 
 from typeguard import typechecked
-import warnings
 
 
 class Elo:
