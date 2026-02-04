@@ -25,7 +25,7 @@ The package is available on PyPi. To install, run
 pip install rstt
 ```
 
-User [Documentation](https://rstt.readthedocs.io/en/latest/) is available on readthedocs.
+For Developers, please refer to [Installation](https://rstt.readthedocs.io/en/latest/install.html)
 
 
 ## Description
@@ -36,6 +36,8 @@ The package provides everything needed to simulate competition and generate synt
 It contains ranking implementation (such as Elo and Glicko ...), popular tournament format (Single elimination bracket, round robin, ...), many versus many game mode with automated outcome (score/result) generation methods. Additionaly different player model are available, including time varing strenght.
 
 It is a framework, letting user developp and intergrate with ease their own models to test.
+
+User [Documentation](https://rstt.readthedocs.io/en/latest/) is available on readthedocs.
 
 ## Getting Started
 
@@ -73,6 +75,8 @@ elo.plot()
 truth = BTRanking(name='Consensus Ranking', players=population)
 truth.plot()
 ```
+
+See the example [breakdown](https://rstt.readthedocs.io/en/latest/usage.html#) for more details
 
 ### Simulation Based Research
 
@@ -120,6 +124,10 @@ Join our [Discord](https://discord.gg/m8gN4UgHZ3) and exchange with us.
 
 ## How to cite
 You can cite rstt with DOI 10.5281/zenodo.16926605. Also consider linking the repo.
+
+## Disclosure
+
+This package was develloped without the use of any generative AI tools. This includes ideas, design, code, test and documentation.
 
 ## Source
 <a id="1">[1]</a> 
