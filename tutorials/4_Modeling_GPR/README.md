@@ -53,7 +53,7 @@ The tutorial includes:
 * **`data/`** – Includes:
 
   * `teams.json` with GPR ratings from 2024
-  * `qualifications.fson` describing tournament dependencies and qualification rules
+  * `qualifications.json` describing tournament dependencies and qualification rules
 * **`Experiments.ipynb`** – Evaluation notebook for testing your models via comparative studies and ablation experiments
 
 ---

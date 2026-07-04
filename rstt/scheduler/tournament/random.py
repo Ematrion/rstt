@@ -1,3 +1,5 @@
+from typeguard import typechecked
+
 from .groups import RoundRobin
 from rstt.ranking.ranking import Ranking
 from rstt import BetterWin
@@ -7,6 +9,7 @@ import random
 
 
 class RandomRound(RoundRobin):
+    @typechecked
     def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin(), cashprize: dict[int, float] = {}, rounds: int = 1, amount: int = 1):
         """Random tournament
 
@@ -47,5 +50,4 @@ class RandomRound(RoundRobin):
         for _ in range(self.nb_rounds):
             random.shuffle(participants)
             new_round = participants[:self.nb_duel*2]
-
-        self.future_rounds.append(new_round)
+            self.future_rounds.append(new_round)

@@ -4,8 +4,15 @@ from rstt.stypes import SPlayer, Solver
 
 
 class StagedEvent(Competition):
-    def __init__(self, name: str, seeding: Ranking, solver: Solver = BetterWin()):
-        super().__init__(name, seeding, solver)
+    def __init__(self, name: str, seeding: Ranking,
+                 stages: list[type[Competition]],
+                 stage_names: list[str],
+                 solver: Solver = BetterWin(),
+                 cashprize: dict[int, float] | None = None):
+        super().__init__(name, seeding, solver, cashprize)
+        
+        self.stages = stages
+        self.stage_names = stage_names
 
     # --- abstract method --- #
     def generate_games(self) -> list[Duel]:
@@ -17,7 +24,7 @@ class StagedEvent(Competition):
     def _end_of_stage(self) -> bool:
         ...
 
-    # --- empty method --- #
+    # --- optional  --- #
     def _initialise(self) -> None:
         return super()._initialise()
 

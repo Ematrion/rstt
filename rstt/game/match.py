@@ -87,9 +87,10 @@ class Match():
         List[SPlayer]
             All the player's teammates
         """
-        for team in self.players():
+        for team in self.teams():
             if player in team:
                 return [p for p in team if p != player]
+        return []
 
     def scores(self) -> Score:
         """Getter method for the match outcome

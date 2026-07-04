@@ -56,9 +56,7 @@ class SuccessRanking(Ranking):
 
         super().__init__(name=name,
                          datamodel=KeyModel(template=int),
-                         backend=EventScoring(window_range=window_range,
-                                              tops=tops,
-                                              default=default),
+                         backend=EventScoring(window_range=window_range, tops=tops, default=default),
                          handler=PlayerChecker(),
                          players=players)
 

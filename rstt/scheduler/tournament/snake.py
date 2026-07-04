@@ -22,7 +22,7 @@ class Snake(Competition):
         - The final standing is an untied ranking.
         - Matches are all 'a priori balanced'.
     """
-
+    
     def __init__(self, *args, **kwars):
         super().__init__(*args, **kwars)
         self.snake = []

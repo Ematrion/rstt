@@ -36,7 +36,4 @@ class EventScoring():
     def rate(self, player: SPlayer) -> float:
         points = [self.relevance[event.name()][event.standing()[player]]
                   for event in self.dataset.window() if player in event.participants()]
-        if points == []:
-            return 0
-        else:
-            return sum(uu.nmax(points, self.tops))
+        return sum(sorted(points[-self.tops:]))

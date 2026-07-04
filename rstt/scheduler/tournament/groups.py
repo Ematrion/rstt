@@ -4,6 +4,7 @@ Such tournament do not have a direct elimination process, but allows participant
 Groups usually have tables that track points to determine each participant achievements.
 """
 
+
 from typing import Dict
 
 from rstt import BetterWin

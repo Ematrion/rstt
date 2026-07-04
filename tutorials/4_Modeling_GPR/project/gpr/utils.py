@@ -1,7 +1,7 @@
 from rstt.stypes import SPlayer, Event, Inference, RatingSystem
 from rstt import Player
 
-from project.scene import Region, Finals, Stages
+from project.scene import Region, Split, Finals, Stage
 
 from enum import StrEnum
 from dataclasses import dataclass
@@ -19,9 +19,9 @@ AUDIENCE_MAPPING = {event: audience for audience,
                     for event in events}
 
 IMPORTANCE = {REGIONAL: {stage: importance for stage,
-                         importance in zip(Stages, [8, 16, 20])},
+                         importance in zip(Stage, [8, 16, 20])},
               INTERNATIONAL: {stage: importance for stage,
-                              importance in zip(Stages, [12, 20, 36])},
+                              importance in zip(Stage, [12, 20, 36])},
               }
 
 
@@ -33,10 +33,10 @@ class Modes(StrEnum):
 
 @dataclass
 class EventInfos:
-    region: str
-    split: str
+    region: Region | Finals
+    split: Split
     year: int
-    stage: str
+    stage: Stage | str
 
     def __str__(self):
         return EVENT_NAMING.format(region=self.region, split=self.split, year=self.year, stage=self.stage)

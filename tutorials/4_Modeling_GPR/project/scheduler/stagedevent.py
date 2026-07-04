@@ -1,23 +1,24 @@
-from rstt import BetterWin, Competition, Duel, SuccessRanking
+from rstt import BetterWin, Competition, Duel, SuccessRanking, DoubleEliminationBracket
 from rstt.ranking.ranking import Ranking
 from rstt.stypes import SPlayer, Solver
 
 
 class StagedEvent(Competition):
     def __init__(self, name: str, seeding: Ranking,
-                 tournaments: list[type[Competition]],
+                 stages: list[type[Competition]],
                  stage_names: list[str],
                  solver: Solver = BetterWin(),
                  cashprize: dict[int, float] | None = None):
         super().__init__(name, seeding, solver, cashprize)
 
-        self.tournaments = tournaments
+        # params
+        self.tournaments = stages
         self.stage_names = stage_names
 
-        # basic usage
-        self.stages: list[Competition] = None
-        self.current: int = None
-        self.round_games: list[Duel] = None
+        # logic
+        self.stages: list[Competition] | None  = None
+        self.current: int | None  = None
+        self.round_games: list[Duel] | None = None
         self.live_ranking = seeding
 
     # abstract method override
@@ -57,25 +58,30 @@ class StagedEvent(Competition):
         stage.registration(self.qualification())
         stage.start()
         self.stages.append(stage)
+        self._fix_deb()
 
     def qualification(self) -> list[SPlayer]:
         return self.participants()
 
+    def _fix_deb(self):
+        if isinstance(self.stages[self.current], DoubleEliminationBracket):
+            self.played_matches += self.stages[self.current].games(by_rounds=True)
+
 
 class StagedEventV2(StagedEvent):
-    def __init__(self, name: str, seeding: Ranking, tournaments: list[Competition], stage_names: list[str], solver: Solver = BetterWin(), cashprize: dict[int, float] | None = None):
-        super().__init__(name, seeding, tournaments, stage_names, solver, cashprize)
+    def __init__(self, name: str, seeding: Ranking, stages: list[Competition], stage_names: list[str], solver: Solver = BetterWin(), cashprize: dict[int, float] | None = None):
+        super().__init__(name, seeding, stages, stage_names, solver, cashprize)
 
         # qualif/ elimination
         self.invited: list[list[SPlayer]] = None
         self.qualified: list[list[int]] = None
         self.live_ranking = SuccessRanking(f"{self.name()} - Ranking",
-                                           buffer=len(self.tournaments),
-                                           nb=len(self.tournaments))
+                                           window_range=len(self.tournaments),
+                                           tops=1)
 
     # override
     def _standing(self) -> dict[SPlayer, int]:
-        return {team: self.live_ranking[team] for team in self.participants()}
+        return {team: self.live_ranking[team]+1 for team in self.participants()}
 
     def _update(self) -> None:
         stage = self.stages[self.current]
@@ -110,7 +116,7 @@ class StagedEventV2(StagedEvent):
             return self.invited[self.current]
 
     def update_live_ranking(self, stage: Competition) -> None:
-        tot = len(self.participants())
-        points = {i: (100-i) * 10**self.current
-                  for i in range(1, tot+1)}
+        nb = len(self.participants()) 
+        total = nb**(self.current+1)
+        points = {i: total-i for i in range(1, nb+1)}
         self.live_ranking.update(event=stage, relevance=points)

@@ -16,10 +16,7 @@ class LoLTeam(PlayerTVS):
 
     def level(self, weights: dict[Role, float] | None = None) -> float:
         if weights:
-            levels_sum = sum([self._players_by_roles[role].level(
-            )*weight for role, weight in weights.items()])
-            weights_sum = sum(weights.values())
-            return levels_sum/weights_sum
+            return sum([self._players_by_roles[role].level()*weight for role, weight in weights.items()])
         else:
             return mean([player.level() for player in self._players])
 

@@ -13,7 +13,7 @@ def logistic_elo(diff, base, constant):
 
 
 class LoLSolver(ScoreProb):
-    def __init__(self, meta: MetaData, func: Callable[[Duel], list[float]] = functools.partial(logistic_elo, base=10, constant=600)):
+    def __init__(self, meta: MetaData, func: Callable[[float], float] = functools.partial(logistic_elo, base=10, constant=600)):
         self.meta = meta
         self._probability_estimator = func
         super().__init__(scores=[WIN, LOSE], func=self.probabilities)
@@ -24,14 +24,14 @@ class LoLSolver(ScoreProb):
         red_level = self.meta.red().level()
 
         # team strenght
-        blue_team_level = duel.player1().level(weights=self.meta.weights())
-        red_team_level = duel.player2().level(weights=self.meta.weights())
+        blue_team_level = duel.player1().level(weights=self.meta.weights())     # type: ignore
+        red_team_level = duel.player2().level(weights=self.meta.weights())      # type: ignore
 
         # adjustement for side
         blue_team_level += blue_level - red_level
 
-        return [blue_team_level, red_team_level]
+        return [blue_team_level, red_team_level]    # type: ignore
 
     def probabilities(self, duel: Duel) -> list[float]:
         level1, level2 = self._evaluate_strenght(duel)
-        return [self._probability_estimator(diff=level1-level2), self._probability_estimator(diff=level2-level1)]
+        return [self._probability_estimator(level1-level2), self._probability_estimator(level2-level1)]

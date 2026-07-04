@@ -4,13 +4,14 @@ Such tournament do have a strict elimination process and losing participants are
 Standing is based on 'how far' the competitors go.
 """
 
-from typing import Callable
+from typing import Callable, Protocol
+from enum import StrEnum
 from typeguard import typechecked
 
 
 from . import Competition
 from rstt.ranking.ranking import Ranking
-from rstt import BetterWin
+from rstt import BetterWin, Duel
 from rstt.stypes import Solver, SPlayer
 
 from rstt.utils import utils as uu, matching as um, competition as uc
@@ -88,80 +89,140 @@ class SingleEliminationBracket(Competition):
         return standing
 
 
-class DoubleEliminationBracket(Competition):
-    """Double Elimination Bracket
 
-    `Variation <https://en.wikipedia.org/wiki/Double-elimination_tournament>`_ of the Single Elimination Bracket where participants have a 2nd chance after losing before elimination.
-    """
+
+
+
+class Bracket(StrEnum):
+    UPPER       = "Upper"
+    INJECTOR    = "Injector"
+    LOWER       = "Lower"
+    
+    FIRSTUPPER  = "FirstUpper"
+    GRANDFINAL  = "GrandFinal"
+
+
+class DEB(Protocol):
+    played_matches: list[list[Duel]]
+    _brackets: dict[Bracket, list[SPlayer]]
+
+
+Transition = Callable[[Competition], Bracket]
+
+def from_firstupper(deb: DEB) -> Bracket:
+    winners = [game.winner() for game in deb.played_matches[-1]]
+    losers = [game.loser() for game in deb.played_matches[-1]]
+    deb._brackets[Bracket.UPPER] = winners
+    deb._brackets[Bracket.LOWER] = losers
+    return Bracket.LOWER
+
+def from_upper(deb: DEB) -> Bracket:
+    winners = [game.winner() for game in deb.played_matches[-1]]
+    losers = [game.loser() for game in deb.played_matches[-1]]
+    if len(winners) == 1:
+        deb._brackets[Bracket.GRANDFINAL] = winners
+    else:
+        deb._brackets[Bracket.UPPER] = winners
+    deb._brackets[Bracket.INJECTOR] += losers
+    return Bracket.INJECTOR
+
+def from_injector(deb: DEB) -> Bracket:
+    winners = [game.winner() for game in deb.played_matches[-1]]
+    if len(winners) == 1:
+        deb._brackets[Bracket.GRANDFINAL] += winners
+        return Bracket.GRANDFINAL
+    deb._brackets[Bracket.LOWER] = winners
+    return Bracket.LOWER
+
+def from_lower(deb: DEB) -> Bracket:
+    winners = [game.winner() for game in deb.played_matches[-1]]
+    deb._brackets[Bracket.INJECTOR] = winners
+    return Bracket.UPPER
+
+
+TRANSITIONS = {
+    Bracket.FIRSTUPPER: from_firstupper,
+    Bracket.UPPER: from_upper,
+    Bracket.INJECTOR: from_injector,
+    Bracket.LOWER: from_lower,
+    Bracket.GRANDFINAL: lambda x: Bracket.GRANDFINAL
+}
+
+
+class DoubleEliminationBracket(Competition):
+    # TODO:
+    # + upper / lower / injector (riffle_shuffle ?) matching policy
+    # Try to fit in the game generator of SwissBracket
     @typechecked
     def __init__(self, name: str,
                  seeding: Ranking,
                  solver: Solver = BetterWin(),
-                 lower_policy: Callable[[list[any]], list[any]] = lambda x: x,
-                 injector_policy: Callable[[
-                     list[any], list[any]], list[any]] = um.riffle_shuffle,
+
                  cashprize: dict[int, float] = {}):
         super().__init__(name, seeding, solver, cashprize)
 
-        self.upper = SingleEliminationBracket(name+'_UpperBracket',
-                                              seeding, solver)
-        self.lower = []  # List[Player]
-        self.lower_policy = lower_policy
-        self.injector_policy = injector_policy
+        self._brackets: dict[Bracket, list[SPlayer]] = {bracket: [] for bracket in Bracket}
+        self._current = Bracket.FIRSTUPPER
+
+        # TODO: add matching specifications
+        # self.policies : dict[(str, int): matching_policy]
 
     # --- override --- #
     def _initialise(self):
-        # NOBUG: do notrun(). Not 'event' in itself -> no upper.trophies() called
-        self.upper.registration(self.participants())
-        self.upper.start()
-        self.upper.play()
-
-        # lower bracket
-        self.lower = [[game.loser() for game in r]
-                      for r in self.upper.games(by_rounds=True)]
-        self.lower += [[self.upper.games(by_rounds=True)[-1][0].winner()]]
-
-    def _update(self):
-        self.lower.insert(0, [game.winner()
-                          for game in self.played_matches[-1]])
-
-    def _standing(self) -> dict[SPlayer, int]:
-        standing = {}
-        top = len(self.participants())
-        for round in self.played_matches:
-            for game in round:
-                standing[game.loser()] = top
-            top = len(self.participants()) - len(standing)
-        # winner
-        standing[self.played_matches[-1][0].winner()] = 1
-        return standing
-
-    def _end_of_stage(self) -> bool:
-        return len(self.lower) == 1
+        msg = (f'{type(self)} '
+               'needs a power of two as number of participants '
+               '(2,4,8,16,...)'
+               f', given {len(self.participants())}')
+        assert uu.power_of_two(len(self.participants())), msg
+        nb_rounds = int(math.log(len(self.participants()), 2))
+        self._brackets[Bracket.FIRSTUPPER] = self.seeding[[i-1 for i in balanced_tree(nb_rounds)]] # type: ignore
 
     def generate_games(self):
-        if len(self.lower[0]) != len(self.lower[1]):
-            # lower bracket games
-            games = uc.playersToDuel(self.lower_policy(self.lower.pop(0)))
-        else:
-            # injector games
-            lower = self.lower.pop(0)
-            injector = self.lower.pop(0)
-            games = uc.playersToDuel(self.injector_policy(lower, injector))
+        games = uc.playersToDuel(self._brackets[self._current]) #type: ignore
+        self._brackets[self._current] = []
         return games
+    
+    def _update(self):
+        self._current = TRANSITIONS[self._current](self)
 
+    def _end_of_stage(self) -> bool:
+        return self._current == Bracket.GRANDFINAL and self._brackets[self._current] == []
+    
+    def _standing(self) -> dict[SPlayer, int]:
+        final_standing = {}
+        top = len(self.participants())
+        loser_bracket = set()
+        for round in self.played_matches:
+            eliminated = set()
+            for player in [game.loser() for game in round]:
+                if player in loser_bracket:
+                    eliminated.add(player)
+                else:
+                    loser_bracket.add(player)
+            final_standing.update({player: top for player in eliminated})
+            top -= len(eliminated)
+        final_standing[self.played_matches[-1][0].winner()] = 1
+        final_standing[self.played_matches[-1][0].loser()] = 2
+        return final_standing
+    
     @typechecked
-    def games(self, by_rounds=False, upper=False, lower=False):
-        if upper and lower:
-            msg = f"At most one of upper and lower can be True. Received values upper: {upper}, lower: {lower}"
+    def games(self, by_rounds=False, upper=False, lower=False, injector=False):
+        games = []
+        if (upper and lower) or (upper and injector) or (lower and injector):
+            msg = f"At most one of upper, lower and injector can be True. Received values upper: {upper}, lower: {lower}, injector: {injector}"
             raise ValueError(msg)
-        if upper:
-            return self.upper.games(by_rounds)
+        
+        if upper: 
+            games = [self.played_matches[0]] + self.played_matches[2:-2:3]
         elif lower:
-            return super().games(by_rounds)
+            games = self.played_matches[1:-1:3]
+        elif injector:
+            games = self.played_matches[3:-1:3]
         else:
-            games = self.upper.played_matches + self.played_matches
-            if by_rounds:
-                return games
-            else:
-                return uu.flatten(games)
+            # ALT: games = self.played_matches
+            return super().games(by_rounds=by_rounds)
+        
+        if by_rounds:
+            return games
+        else:
+            return uu.flatten(games)

@@ -175,7 +175,8 @@ def test_rate_more_event_than_tops(gt, minor_event, nb, tops):
             inferer.add_event(cup, minor_event)
 
         for p in gt:
-            target_points = minor_event[p.achievements()[0].place] * tops
+            target_top = min(tops, j)
+            target_points = minor_event[p.achievements()[0].place] * target_top
             assert target_points == inferer.rate(p)
 
 

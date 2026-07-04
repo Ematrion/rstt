@@ -1,5 +1,5 @@
 from project.gpr.utils import LeagueSystem, EventInfos, GameHistory, AUDIENCE_MAPPING, REGIONAL, INTERNATIONAL
-from project.scene import Region, Finals, Stages, Split
+from project.scene import Region, Finals, Stage, Split
 from .stagedevent import StagedEventV2
 
 from rstt import Ranking, Competition
@@ -34,7 +34,7 @@ class calendar:
             infos = self.future_events.pop(0)
             event = StagedEventV2(
                 name=str(infos), seeding=self.seeding, solver=self.solver,
-                tournaments=tournaments_types(infos, self.source), stage_names=[Stages.PlayIns, Stages.MainStage, Stages.PlayOffs])
+                stages=tournaments_types(infos, self.source), stage_names=[Stage.PlayIns, Stage.MainStage, Stage.PlayOffs])
             return event
         else:
             raise StopIteration
@@ -63,7 +63,7 @@ def tournaments_types(infos: EventInfos, source: str) -> list[Competition]:
         with open(source, 'r') as file:
             qualif_data = json.load(file)
         return [getattr(rstt, qualif_data[infos.region][stage.value]['tournament'])
-                for stage in Stages]
+                for stage in Stage]
     else:
         raise ValueError(f'Event \'{infos.region}\' not part of the calendar')
 
@@ -85,8 +85,8 @@ def event_qualification(infos: EventInfos, ecosystem: LeagueSystem, dataset: Gam
     # international finals
     elif AUDIENCE_MAPPING[infos.region] == INTERNATIONAL:
         qualifications = [qualif_data[infos.region][stage]['qualified']
-                          for stage in Stages]
-        for stage in Stages:
+                          for stage in Stage]
+        for stage in Stage:
             stage_invites = []
             for invitational in qualif_data[infos.region][stage]['invitation']:
                 invitational['infos']['year'] = infos.year
