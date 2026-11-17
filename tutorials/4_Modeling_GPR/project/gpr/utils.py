@@ -61,8 +61,8 @@ class GameHistory:
 
 class LeagueSystem:
     def __init__(self, region_teams: dict[Region, list[SPlayer]]):
-        self._leagues: dict[Region: SPlayer] = {}
-        self._teams: dict[SPlayer: Region] = {}
+        self._leagues: dict[Region, SPlayer] = {}
+        self._teams: dict[SPlayer, Region] = {}
 
         # initialize both dict
         for region, teams in region_teams.items():
@@ -70,7 +70,7 @@ class LeagueSystem:
             for team in teams:
                 self._teams[team] = region
 
-    def teams(self, region: str = None) -> list[SPlayer]:
+    def teams(self, region: str | None = None) -> list[SPlayer]:
         all_teams = list(self._teams.keys())
         if region:
             all_teams = [
